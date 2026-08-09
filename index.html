@@ -326,6 +326,7 @@ body{
 .card:active{ transform:translateY(-1px); }
 
 .card-title{ font-weight:600; font-size:14.5px; margin-bottom:4px; }
+.card-date{ color:var(--muted); font-size:12px; margin-bottom:11px; font-family:'JetBrains Mono', monospace; }
 .card-period{ color:var(--muted); font-size:12px; margin-bottom:11px; font-family:'JetBrains Mono', monospace; }
 .card-value{ color:var(--accent); font-weight:600; font-size:14px; }
 
@@ -466,9 +467,15 @@ body{
    ==========================================================================
    - "visible": true  → la voce si vede sul sito.
      "visible": false → la voce resta scritta qui ma NON compare sul sito.
+   - "date" nella card "currently" è opzionale: se non la vuoi, cancella
+     la riga "date: ..." dalla voce.
    - "link": metti l'URL che vuoi far aprire quando si clicca la card
      (lascia "#" se non deve essere cliccabile).
    - "color" può essere: cyan, teal, green, blue, purple, red, pink, gray.
+   - In "experience" puoi aggiungere quante categorie vuoi: basta
+     aggiungere una nuova chiave tipo "Media": [ ... ] con lo stesso
+     formato delle altre. Qui sotto trovi già pronta "Media" per i
+     server dove sei stato nello staff media / content team.
    - Per aggiungere/togliere una card, copia o cancella un blocco { ... }.
    ========================================================================== */
 
@@ -485,6 +492,7 @@ const PROFILE = {
   currently: [
     {
       title: "Pirate NetworK",
+      date: "August 2026",
       badge: "Trial • Supporter", color: "blue",
       link: "https://imgur.com/a/bcntXtO",
       visible: true
@@ -502,6 +510,9 @@ const PROFILE = {
       { name: "Server 2", period: "July 2025 to September 2025", badge: "MOD, HEAD SS", color: "green", link: "#", visible: false },
       { name: "Server 3", period: "October 2025 to June 2026", badge: "ADMIN, HEAD SS", color: "teal", link: "#", visible: false },
       { name: "Server 4", period: "June 2026", badge: "MOD, SS MANAGER", color: "blue", link: "#", visible: false }
+    ],
+    "Media": [
+      { name: "Server Name", period: "Month 2025 to Month 2025", badge: "MEDIA TEAM", color: "purple", link: "#", visible: false }
     ],
     "Discord": [
       { name: "Tierlist 1", period: "December 2025 to March 2026", badge: "SS VERIFIED", color: "blue", link: "#", visible: false },
@@ -558,10 +569,11 @@ function render() {
     curGrid.innerHTML = '<div class="empty-note">Nessun elemento visibile</div>';
   } else {
     currentlyVisible.forEach(c => {
+      const dateHtml = c.date ? `<div class="card-date">${c.date}</div>` : "";
       curGrid.appendChild(makeCard({
         link: c.link,
         color: c.color,
-        inner: `<div class="card-title">${c.title}</div><span class="badge ${c.color}">${c.badge}</span>`
+        inner: `<div class="card-title">${c.title}</div>${dateHtml}<span class="badge ${c.color}">${c.badge}</span>`
       }));
     });
   }
@@ -582,7 +594,7 @@ function render() {
     });
   }
 
-  const categoryColors = ["green", "purple", "blue", "teal"];
+  const categoryColors = ["green", "purple", "blue", "teal", "red", "pink"];
   const expEl = document.getElementById("experienceContent");
   expEl.innerHTML = "";
   Object.entries(PROFILE.experience).forEach(([category, items], i) => {
