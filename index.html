@@ -139,6 +139,7 @@ body{
 .nav-btn:hover{ color:var(--text); background:#ffffff06; transform:translateX(2px); }
 .nav-btn:nth-child(2) svg{ color:var(--accent); opacity:.55; }
 .nav-btn:nth-child(3) svg{ color:var(--purple); opacity:.55; }
+.nav-btn:nth-child(4) svg{ color:var(--pink); opacity:.55; }
 .nav-btn.active{ color:var(--text); background:#ffffff09; }
 .nav-btn.active svg{ opacity:1; }
 .nav-btn::before{
@@ -415,6 +416,10 @@ body{
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/></svg>
       Staff Experience
     </a>
+    <a class="nav-btn" data-view="content" href="#content">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
+      Content Creator Experience
+    </a>
   </aside>
 
   <main class="panel">
@@ -458,6 +463,15 @@ body{
       <div id="experienceContent"></div>
     </section>
 
+    <!-- ================= CONTENT CREATOR ================= -->
+    <section id="content" class="view">
+      <div class="view-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
+        <span class="view-title">Content Creator Experience</span>
+      </div>
+      <div id="contentExperienceContent"></div>
+    </section>
+
   </main>
 </div>
 
@@ -472,10 +486,12 @@ body{
    - "link": metti l'URL che vuoi far aprire quando si clicca la card
      (lascia "#" se non deve essere cliccabile).
    - "color" può essere: cyan, teal, green, blue, purple, red, pink, gray.
-   - In "experience" puoi aggiungere quante categorie vuoi: basta
-     aggiungere una nuova chiave tipo "Media": [ ... ] con lo stesso
-     formato delle altre. Qui sotto trovi già pronta "Media" per i
-     server dove sei stato nello staff media / content team.
+   - In "experience" e "contentExperience" puoi aggiungere quante
+     categorie vuoi: basta aggiungere una nuova chiave tipo
+     "Media": [ ... ] con lo stesso formato delle altre.
+   - "experience" è per i ruoli da Staff, "contentExperience" è per
+     i server dove sei stato Content Creator/Media — compaiono in
+     due sezioni separate del sito.
    - Per aggiungere/togliere una card, copia o cancella un blocco { ... }.
    ========================================================================== */
 
@@ -511,9 +527,6 @@ const PROFILE = {
       { name: "Server 3", period: "October 2025 to June 2026", badge: "ADMIN, HEAD SS", color: "teal", link: "#", visible: false },
       { name: "Server 4", period: "June 2026", badge: "MOD, SS MANAGER", color: "blue", link: "#", visible: false }
     ],
-    "Media": [
-      { name: "CoralMC", period: "September 2025 to January 2026", badge: "MEDIA TEAM (Auto Depex)", color: "cyan", link: "https://youtu.be/23ZBr55Y9Wo", visible: true }
-    ],
     "Discord": [
       { name: "Tierlist 1", period: "December 2025 to March 2026", badge: "SS VERIFIED", color: "blue", link: "#", visible: false },
       { name: "Tierlist 2", period: "December 2025 to now", badge: "SS VERIFIED", color: "red", link: "#", visible: false },
@@ -521,6 +534,12 @@ const PROFILE = {
       { name: "Tier Tests 1", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "blue", link: "#", visible: false },
       { name: "Tier Tests 2", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "cyan", link: "#", visible: false },
       { name: "Anticheat Team", period: "March 2026", badge: "PC CHECKER", color: "green", link: "#", visible: false }
+    ]
+  },
+
+  contentExperience: {
+    "Minecraft": [
+      { name: "Server Name", period: "Month 2025 to Month 2025", badge: "CONTENT CREATOR", color: "purple", link: "#", visible: false }
     ]
   }
 };
@@ -594,18 +613,34 @@ function render() {
     });
   }
 
+  renderExperienceBlock("experienceContent", PROFILE.experience);
+  renderExperienceBlock("contentExperienceContent", PROFILE.contentExperience);
+
+  // stagger the reveal delay a little so cards don't all pop at once
+  document.querySelectorAll(".reveal").forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 6) * 45}ms`;
+  });
+}
+
+function renderExperienceBlock(containerId, dataObj) {
   const categoryColors = ["green", "purple", "blue", "teal", "red", "pink"];
-  const expEl = document.getElementById("experienceContent");
-  expEl.innerHTML = "";
-  Object.entries(PROFILE.experience).forEach(([category, items], i) => {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = "";
+
+  const entries = Object.entries(dataObj || {});
+  let anyVisible = false;
+
+  entries.forEach(([category, items], i) => {
     const visibleItems = items.filter(isVisible);
     if (visibleItems.length === 0) return;
+    anyVisible = true;
 
     const label = document.createElement("div");
     label.className = "category-label reveal";
     label.style.setProperty("--dot-color", COLOR_VAR[categoryColors[i % categoryColors.length]]);
     label.textContent = category;
-    expEl.appendChild(label);
+    el.appendChild(label);
 
     const grid = document.createElement("div");
     grid.className = "grid";
@@ -616,13 +651,12 @@ function render() {
         inner: `<div class="card-title">${item.name}</div><div class="card-period">${item.period}</div><span class="badge ${item.color}">${item.badge}</span>`
       }));
     });
-    expEl.appendChild(grid);
+    el.appendChild(grid);
   });
 
-  // stagger the reveal delay a little so cards don't all pop at once
-  document.querySelectorAll(".reveal").forEach((el, i) => {
-    el.style.transitionDelay = `${(i % 6) * 45}ms`;
-  });
+  if (!anyVisible) {
+    el.innerHTML = '<div class="empty-note">Nessun elemento visibile</div>';
+  }
 }
 
 function setupNavClicks() {
