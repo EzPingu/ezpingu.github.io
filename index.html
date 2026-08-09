@@ -28,6 +28,7 @@
   --blue:#5b9dff;
   --green:#5fe08a;
   --red:#ff5e78;
+  --pink:#ff8fd0;
   --gray:#8b98a8;
   --radius:14px;
   --sidebar-w:230px;
@@ -283,7 +284,7 @@ body{
 @media (max-width:640px){ .grid{ grid-template-columns:1fr; } }
 
 .card{
-  background:var(--bg-2)cc;
+  --card-color:var(--accent);
   background:linear-gradient(155deg, #151b23b3, #10141ab3);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
@@ -299,7 +300,6 @@ body{
   overflow:hidden;
   transition:border-color .3s ease, transform .3s cubic-bezier(.2,.7,.2,1), background .3s ease, box-shadow .3s ease;
 }
-.card{ --card-color:var(--accent); }
 .card::before{
   content:'';
   position:absolute; top:0; left:14%; right:14%; height:2px;
@@ -344,6 +344,7 @@ body{
 .badge.blue{  color:var(--blue);   background:#5b9dff18; border-color:#5b9dff3d; }
 .badge.purple{color:var(--purple); background:#b48cff18; border-color:#b48cff3d; }
 .badge.red{   color:var(--red);    background:#ff5e7818; border-color:#ff5e783d; }
+.badge.pink{  color:var(--pink);   background:#ff8fd018; border-color:#ff8fd03d; }
 .badge.gray{  color:var(--gray);   background:#8b98a818; border-color:#8b98a83d; }
 
 .link-icon{ width:24px; height:24px; margin:0 auto 9px; color:var(--muted); transition:color .25s ease, transform .25s ease; }
@@ -366,6 +367,14 @@ body{
   transition:opacity .25s ease, transform .25s ease;
 }
 .card:hover .go{ opacity:.8; transform:translate(0,0); }
+
+.empty-note{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  font-family:'JetBrains Mono', monospace;
+  padding:18px 0 4px;
+}
 
 ::-webkit-scrollbar{ width:9px; }
 ::-webkit-scrollbar-track{ background:transparent; }
@@ -455,8 +464,11 @@ body{
 /* ==========================================================================
    ✏️  MODIFICA SOLO QUI SOTTO — tutto il resto del file è grafica/motore.
    ==========================================================================
-   - "link": true metti l'URL che vuoi far aprire quando si clicca la card.
-   - "color" può essere: cyan, teal, green, blue, purple, red, gray.
+   - "visible": true  → la voce si vede sul sito.
+     "visible": false → la voce resta scritta qui ma NON compare sul sito.
+   - "link": metti l'URL che vuoi far aprire quando si clicca la card
+     (lascia "#" se non deve essere cliccabile).
+   - "color" può essere: cyan, teal, green, blue, purple, red, pink, gray.
    - Per aggiungere/togliere una card, copia o cancella un blocco { ... }.
    ========================================================================== */
 
@@ -465,38 +477,39 @@ const PROFILE = {
   avatarInitial: "E",
   role: "Staff & SS Checker",
   stats: [
-    { label: "Age", value: "14 y/o" },
-    { label: "Place", value: "Italy" },
-    { label: "Occupation", value: "Student • Staff & Ex-Content Creator}
+    { label: "Age", value: "14 y/o", visible: true },
+    { label: "Place", value: "Italy", visible: true },
+    { label: "Occupation", value: "Student • Staff & Ex-Content Creator", visible: true }
   ],
 
   currently: [
     {
       title: "Pirate NetworK",
       badge: "Trial • Supporter", color: "green",
-      link: "https://imgur.com/a/bcntXtO"
+      link: "https://imgur.com/a/bcntXtO",
+      visible: true
     }
   ],
 
   links: [
-    { name: "Discord", value: "@EZPINGU", icon: "discord", link: "https://discord.com/users/YOUR-ID" },
-    { name: "guns.lol", value: "ezpingu",  icon: "gunslol", link: "https://guns.lol/ezpingu" }
+    { name: "Discord", value: "@EZPINGU", icon: "discord", link: "https://discord.com/users/YOUR-ID", visible: true },
+    { name: "guns.lol", value: "ezpingu",  icon: "gunslol", link: "https://guns.lol/ezpingu", visible: true }
   ],
 
   experience: {
     "Minecraft": [
-      { name: "AxisMC", period: "November 2025", badge: "MOD, SUPPORTER", color: "pink", link: "#" },
-      { name: "Server 2", period: "July 2025 to September 2025", badge: "MOD, HEAD SS", color: "green", link: "#" },
-      { name: "Server 3", period: "October 2025 to June 2026", badge: "ADMIN, HEAD SS", color: "teal", link: "#" },
-      { name: "Server 4", period: "June 2026", badge: "MOD, SS MANAGER", color: "blue", link: "#" }
+      { name: "AxisMC", period: "November 2025", badge: "MOD, SUPPORTER", color: "pink", link: "#", visible: true },
+      { name: "Server 2", period: "July 2025 to September 2025", badge: "MOD, HEAD SS", color: "green", link: "#", visible: true },
+      { name: "Server 3", period: "October 2025 to June 2026", badge: "ADMIN, HEAD SS", color: "teal", link: "#", visible: true },
+      { name: "Server 4", period: "June 2026", badge: "MOD, SS MANAGER", color: "blue", link: "#", visible: true }
     ],
     "Discord": [
-      { name: "Tierlist 1", period: "December 2025 to March 2026", badge: "SS VERIFIED", color: "blue", link: "#" },
-      { name: "Tierlist 2", period: "December 2025 to now", badge: "SS VERIFIED", color: "red", link: "#" },
-      { name: "Community 1", period: "January 2026 to February 2026", badge: "SS VERIFIED", color: "purple", link: "#" },
-      { name: "Tier Tests 1", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "blue", link: "#" },
-      { name: "Tier Tests 2", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "cyan", link: "#" },
-      { name: "Anticheat Team", period: "March 2026", badge: "PC CHECKER", color: "green", link: "#" }
+      { name: "Tierlist 1", period: "December 2025 to March 2026", badge: "SS VERIFIED", color: "blue", link: "#", visible: true },
+      { name: "Tierlist 2", period: "December 2025 to now", badge: "SS VERIFIED", color: "red", link: "#", visible: true },
+      { name: "Community 1", period: "January 2026 to February 2026", badge: "SS VERIFIED", color: "purple", link: "#", visible: true },
+      { name: "Tier Tests 1", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "blue", link: "#", visible: true },
+      { name: "Tier Tests 2", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "cyan", link: "#", visible: true },
+      { name: "Anticheat Team", period: "March 2026", badge: "PC CHECKER", color: "green", link: "#", visible: true }
     ]
   }
 };
@@ -513,7 +526,7 @@ const ICONS = {
 
 const COLOR_VAR = {
   cyan:"var(--accent)", teal:"var(--teal)", green:"var(--green)",
-  blue:"var(--blue)", purple:"var(--purple)", red:"var(--red)", gray:"var(--gray)"
+  blue:"var(--blue)", purple:"var(--purple)", red:"var(--red)", pink:"var(--pink)", gray:"var(--gray)"
 };
 
 function makeCard({ inner, link, color }) {
@@ -526,39 +539,56 @@ function makeCard({ inner, link, color }) {
   return tag;
 }
 
+function isVisible(item){
+  return item.visible !== false;
+}
+
 function render() {
   document.getElementById("avatarInitial").textContent = PROFILE.avatarInitial || PROFILE.name.charAt(0);
   document.getElementById("pName").textContent = PROFILE.name;
   document.getElementById("pRole").textContent = PROFILE.role;
 
   document.getElementById("pStats").innerHTML =
-    PROFILE.stats.map(s => `<span><b>${s.label}:</b> ${s.value}</span>`).join("");
+    PROFILE.stats.filter(isVisible).map(s => `<span><b>${s.label}:</b> ${s.value}</span>`).join("");
 
   const curGrid = document.getElementById("currentlyGrid");
   curGrid.innerHTML = "";
-  PROFILE.currently.forEach(c => {
-    curGrid.appendChild(makeCard({
-      link: c.link,
-      color: c.color,
-      inner: `<div class="card-title">${c.title}</div><span class="badge ${c.color}">${c.badge}</span>`
-    }));
-  });
+  const currentlyVisible = PROFILE.currently.filter(isVisible);
+  if (currentlyVisible.length === 0) {
+    curGrid.innerHTML = '<div class="empty-note">Nessun elemento visibile</div>';
+  } else {
+    currentlyVisible.forEach(c => {
+      curGrid.appendChild(makeCard({
+        link: c.link,
+        color: c.color,
+        inner: `<div class="card-title">${c.title}</div><span class="badge ${c.color}">${c.badge}</span>`
+      }));
+    });
+  }
 
   const linksGrid = document.getElementById("linksGrid");
   linksGrid.innerHTML = "";
   const linkColors = ["blue", "red"];
-  PROFILE.links.forEach((l, i) => {
-    linksGrid.appendChild(makeCard({
-      link: l.link,
-      color: linkColors[i % linkColors.length],
-      inner: `<div class="link-icon">${ICONS[l.icon] || ICONS.default}</div><div class="card-title">${l.name}</div><span class="badge ${linkColors[i % linkColors.length]}">${l.value}</span>`
-    }));
-  });
+  const linksVisible = PROFILE.links.filter(isVisible);
+  if (linksVisible.length === 0) {
+    linksGrid.innerHTML = '<div class="empty-note">Nessun elemento visibile</div>';
+  } else {
+    linksVisible.forEach((l, i) => {
+      linksGrid.appendChild(makeCard({
+        link: l.link,
+        color: linkColors[i % linkColors.length],
+        inner: `<div class="link-icon">${ICONS[l.icon] || ICONS.default}</div><div class="card-title">${l.name}</div><span class="badge ${linkColors[i % linkColors.length]}">${l.value}</span>`
+      }));
+    });
+  }
 
   const categoryColors = ["green", "purple", "blue", "teal"];
   const expEl = document.getElementById("experienceContent");
   expEl.innerHTML = "";
   Object.entries(PROFILE.experience).forEach(([category, items], i) => {
+    const visibleItems = items.filter(isVisible);
+    if (visibleItems.length === 0) return;
+
     const label = document.createElement("div");
     label.className = "category-label reveal";
     label.style.setProperty("--dot-color", COLOR_VAR[categoryColors[i % categoryColors.length]]);
@@ -567,7 +597,7 @@ function render() {
 
     const grid = document.createElement("div");
     grid.className = "grid";
-    items.forEach(item => {
+    visibleItems.forEach(item => {
       grid.appendChild(makeCard({
         link: item.link,
         color: item.color,
