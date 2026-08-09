@@ -21,14 +21,14 @@
   --border:#2c3138b0;
   --text:#e7e6e2;
   --muted:#8b8f94;
-  --accent:#4fd1b5;
-  --accent-dim:#4fd1b522;
-  --teal:#20c9a0;
-  --purple:#a855f7;
-  --blue:#3b82f6;
-  --green:#22c55e;
-  --red:#ff1f1f;
-  --pink:#ec4899;
+  --accent:#7fab9e;
+  --accent-dim:#7fab9e22;
+  --teal:#6c9c8d;
+  --purple:#9a8bb5;
+  --blue:#7291ad;
+  --green:#84a578;
+  --red:#c1786e;
+  --pink:#bd8fa0;
   --gray:#8b8f94;
   --radius:8px;
   --sidebar-w:230px;
@@ -123,7 +123,7 @@ body{
   padding:11px 14px;
   background:transparent;
   border:none;
-  border-radius:9px;
+  border-radius:6px;
   color:var(--muted);
   font-family:'Inter', sans-serif;
   font-size:14px;
@@ -161,7 +161,7 @@ body{
   backdrop-filter:blur(26px) saturate(130%);
   -webkit-backdrop-filter:blur(26px) saturate(130%);
   border:1px solid var(--border);
-  border-radius:18px;
+  border-radius:10px;
   padding:52px 48px 60px;
 }
 
@@ -290,7 +290,7 @@ body{
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border:1px solid var(--border);
-  border-radius:12px;
+  border-radius:8px;
   padding:19px 18px;
   text-align:center;
   cursor:pointer;
@@ -304,7 +304,7 @@ body{
 .card::before{
   content:'';
   position:absolute; top:0; left:14%; right:14%; height:2px;
-  border-radius:0 0 3px 3px;
+  border-radius:0 0 2px 2px;
   background:var(--card-color);
   opacity:.35;
   transition:opacity .3s ease, left .3s ease, right .3s ease;
@@ -337,7 +337,7 @@ body{
   font-size:10px; font-weight:600;
   letter-spacing:.05em;
   padding:5px 10px;
-  border-radius:6px;
+  border-radius:4px;
   border:1px solid transparent;
 }
 .badge.cyan{  color:var(--accent); background:#7fab9e16; border-color:#7fab9e3a; }
@@ -380,7 +380,7 @@ body{
 
 ::-webkit-scrollbar{ width:9px; }
 ::-webkit-scrollbar-track{ background:transparent; }
-::-webkit-scrollbar-thumb{ background:var(--border); border-radius:8px; }
+::-webkit-scrollbar-thumb{ background:var(--border); border-radius:5px; }
 
 @media (max-width:820px){
   .app{ flex-direction:column; }
@@ -516,14 +516,14 @@ const PROFILE = {
     {
       title: "Pirate Network",
       date: "Minecraft Server",
-      badge: "Trial • Supporter", color: "blue", badgeColor: "green",
+      badge: "Trial • Supporter", color: "blue", badgeColor: "blue",
       link: "https://imgur.com/a/bcntXtO",
       visible: true
     },
     {
       title: "L'igloo Di EzPingu",
       date: "Discord Server",
-      badge: "Owner", color: "blue", badgeColor: "red",
+      badge: "Owner", color: "red", badgeColor: "red",
       link: "https://imgur.com/a/bcntXtO",
       visible: true
     }
@@ -672,7 +672,7 @@ function renderExperienceBlock(containerId, dataObj) {
   });
 
   if (!anyVisible) {
-    el.innerHTML = '<div class="empty-note">Questa sezione non è stata caricata, avvisami aprendo un ticket sul mio server discord - EzPingu</div>';
+    el.innerHTML = '<div class="empty-note">Nessun elemento visibile</div>';
   }
 }
 
