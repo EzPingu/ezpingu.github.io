@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EzPingu — Staff Profile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    ⚙️  CONTENUTO DA MODIFICARE → vai in fondo al file, nel tag
@@ -174,7 +174,7 @@ body{
 }
 .view-header svg{ width:18px; height:18px; color:var(--accent); }
 .view-title{
-  font-family:'Space Grotesk', sans-serif;
+  font-family:'Poppins', sans-serif;
   font-size:14.5px; font-weight:600;
 }
 
@@ -205,13 +205,13 @@ body{
   border-radius:50%;
   background:radial-gradient(circle at 35% 30%, #1c1f24, #0b0d10);
   display:flex; align-items:center; justify-content:center;
-  font-family:'Space Grotesk', sans-serif;
+  font-family:'Poppins', sans-serif;
   font-size:32px; font-weight:700;
   color:var(--accent);
 }
 
 .name{
-  font-family:'Space Grotesk', sans-serif;
+  font-family:'Poppins', sans-serif;
   font-size:34px; font-weight:700;
   letter-spacing:-.01em;
   margin-bottom:8px;
@@ -353,7 +353,7 @@ body{
 .card:hover .link-icon{ color:var(--card-color); transform:scale(1.08); }
 
 .category-label{
-  font-family:'Space Grotesk', sans-serif;
+  font-family:'Poppins', sans-serif;
   font-weight:600; font-size:13.5px;
   color:var(--text);
   margin:28px 0 11px;
@@ -486,6 +486,13 @@ body{
    - "link": metti l'URL che vuoi far aprire quando si clicca la card
      (lascia "#" se non deve essere cliccabile).
    - "color" può essere: cyan, teal, green, blue, purple, red, pink, gray.
+     Questo colore controlla la barra sopra la card e il bagliore quando
+     ci passi sopra il puntatore (hover).
+   - "badgeColor" è SEPARATO da "color": controlla solo il colore del
+     badge (dove c'è scritto Owner, Trial, Supporter, Mod, ecc.).
+     Accetta gli stessi valori di "color" (cyan, teal, green, blue,
+     purple, red, pink, gray). Se lo cancelli o lo lasci vuoto, il
+     badge userà automaticamente lo stesso colore di "color".
    - In "experience" e "contentExperience" puoi aggiungere quante
      categorie vuoi: basta aggiungere una nuova chiave tipo
      "Media": [ ... ] con lo stesso formato delle altre.
@@ -509,14 +516,14 @@ const PROFILE = {
     {
       title: "Pirate Network",
       date: "Minecraft Server",
-      badge: "Trial • Supporter", color: "blue",
+      badge: "Trial • Supporter", color: "blue", badgeColor: "green",
       link: "https://imgur.com/a/bcntXtO",
       visible: true
     },
     {
       title: "L'igloo Di EzPingu",
       date: "Discord Server",
-      badge: "Owner", color: "red",
+      badge: "Owner", color: "blue", badgeColor: "red",
       link: "https://imgur.com/a/bcntXtO",
       visible: true
     }
@@ -524,31 +531,31 @@ const PROFILE = {
   ],
 
   links: [
-    { name: "Discord", value: "ezpingu", icon: "discord", link: "https://discord.com/users/1070724341928571050", visible: true },
-    { name: "guns.lol", value: "ezpingu",  icon: "gunslol", link: "https://guns.lol/ezpingu", visible: true }
+    { name: "Discord", value: "ezpingu", icon: "discord", link: "https://discord.com/users/1070724341928571050", badgeColor: "blue", visible: true },
+    { name: "guns.lol", value: "ezpingu",  icon: "gunslol", link: "https://guns.lol/ezpingu", badgeColor: "red", visible: true }
   ],
 
   experience: {
     "Minecraft": [
-      { name: "AxisMC", period: "November 2025", badge: "MOD, SUPPORTER", color: "pink", link: "https://imgur.com/a/nfTtPmF", visible: true },
-      { name: "Server 2", period: "July 2025 to September 2025", badge: "MOD, HEAD SS", color: "green", link: "#", visible: false },
-      { name: "Server 3", period: "October 2025 to June 2026", badge: "ADMIN, HEAD SS", color: "teal", link: "#", visible: false },
-      { name: "Server 4", period: "June 2026", badge: "MOD, SS MANAGER", color: "blue", link: "#", visible: false }
+      { name: "AxisMC", period: "November 2025", badge: "MOD, SUPPORTER", color: "pink", badgeColor: "pink", link: "https://imgur.com/a/nfTtPmF", visible: true },
+      { name: "Server 2", period: "July 2025 to September 2025", badge: "MOD, HEAD SS", color: "green", badgeColor: "green", link: "#", visible: false },
+      { name: "Server 3", period: "October 2025 to June 2026", badge: "ADMIN, HEAD SS", color: "teal", badgeColor: "teal", link: "#", visible: false },
+      { name: "Server 4", period: "June 2026", badge: "MOD, SS MANAGER", color: "blue", badgeColor: "blue", link: "#", visible: false }
     ],
     "Discord": [
-      { name: "Tierlist 1", period: "December 2025 to March 2026", badge: "SS VERIFIED", color: "blue", link: "#", visible: false },
-      { name: "Tierlist 2", period: "December 2025 to now", badge: "SS VERIFIED", color: "red", link: "#", visible: false },
-      { name: "Community 1", period: "January 2026 to February 2026", badge: "SS VERIFIED", color: "purple", link: "#", visible: false },
-      { name: "Tier Tests 1", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "blue", link: "#", visible: false },
-      { name: "Tier Tests 2", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "cyan", link: "#", visible: false },
-      { name: "Anticheat Team", period: "March 2026", badge: "PC CHECKER", color: "green", link: "#", visible: false }
+      { name: "Tierlist 1", period: "December 2025 to March 2026", badge: "SS VERIFIED", color: "blue", badgeColor: "blue", link: "#", visible: false },
+      { name: "Tierlist 2", period: "December 2025 to now", badge: "SS VERIFIED", color: "red", badgeColor: "red", link: "#", visible: false },
+      { name: "Community 1", period: "January 2026 to February 2026", badge: "SS VERIFIED", color: "purple", badgeColor: "purple", link: "#", visible: false },
+      { name: "Tier Tests 1", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "blue", badgeColor: "blue", link: "#", visible: false },
+      { name: "Tier Tests 2", period: "February 2026 to May 2026", badge: "SS VERIFIED", color: "cyan", badgeColor: "cyan", link: "#", visible: false },
+      { name: "Anticheat Team", period: "March 2026", badge: "PC CHECKER", color: "green", badgeColor: "green", link: "#", visible: false }
     ]
   },
 
   contentExperience: {
     "Minecraft": [
-      { name: "CoralMC", period: "September 2025 – January 2026", badge: "MEDIA TEAM (Self-Depex)", color: "cyan", link: "https://youtu.be/23ZBr55Y9Wo", visible: true },
-      { name: "SkyPea", period: "August 2025 – Now", badge: "MEDIA TEAM", color: "red", link: "https://imgur.com/a/4aS9aer", visible: true }
+      { name: "CoralMC", period: "September 2025 – January 2026", badge: "MEDIA TEAM (Self-Depex)", color: "cyan", badgeColor: "cyan", link: "https://youtu.be/23ZBr55Y9Wo", visible: true },
+      { name: "SkyPea", period: "August 2025 – Now", badge: "MEDIA TEAM", color: "red", badgeColor: "red", link: "https://imgur.com/a/4aS9aer", visible: true }
     ]
   }
 };
@@ -601,7 +608,7 @@ function render() {
       curGrid.appendChild(makeCard({
         link: c.link,
         color: c.color,
-        inner: `<div class="card-title">${c.title}</div>${dateHtml}<span class="badge ${c.color}">${c.badge}</span>`
+        inner: `<div class="card-title">${c.title}</div>${dateHtml}<span class="badge ${c.badgeColor || c.color}">${c.badge}</span>`
       }));
     });
   }
@@ -614,10 +621,11 @@ function render() {
     linksGrid.innerHTML = '<div class="empty-note">Nessun elemento visibile</div>';
   } else {
     linksVisible.forEach((l, i) => {
+      const cardColor = linkColors[i % linkColors.length];
       linksGrid.appendChild(makeCard({
         link: l.link,
-        color: linkColors[i % linkColors.length],
-        inner: `<div class="link-icon">${ICONS[l.icon] || ICONS.default}</div><div class="card-title">${l.name}</div><span class="badge ${linkColors[i % linkColors.length]}">${l.value}</span>`
+        color: cardColor,
+        inner: `<div class="link-icon">${ICONS[l.icon] || ICONS.default}</div><div class="card-title">${l.name}</div><span class="badge ${l.badgeColor || cardColor}">${l.value}</span>`
       }));
     });
   }
@@ -657,14 +665,14 @@ function renderExperienceBlock(containerId, dataObj) {
       grid.appendChild(makeCard({
         link: item.link,
         color: item.color,
-        inner: `<div class="card-title">${item.name}</div><div class="card-period">${item.period}</div><span class="badge ${item.color}">${item.badge}</span>`
+        inner: `<div class="card-title">${item.name}</div><div class="card-period">${item.period}</div><span class="badge ${item.badgeColor || item.color}">${item.badge}</span>`
       }));
     });
     el.appendChild(grid);
   });
 
   if (!anyVisible) {
-    el.innerHTML = '<div class="empty-note">Nessun elemento visibile</div>';
+    el.innerHTML = '<div class="empty-note">Questa sezione non è stata caricata, avvisami aprendo un ticket sul mio server discord - EzPingu</div>';
   }
 }
 
