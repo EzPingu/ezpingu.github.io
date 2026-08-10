@@ -564,7 +564,7 @@ const PROFILE = {
   stats: [
     { label: "Età", value: "14 y/o", visible: true },
     { label: "Dove?", value: "Italy", visible: true },
-    { label: "Cosa Faccio?", value: "Diventanto Staff & Ex-Content Creator, visible: true }
+    { label: "Cosa Faccio?", value: "Diventando Staff & Ex-Content Creator", visible: true }
   ],
 
   currently: [
@@ -844,6 +844,73 @@ setupScrollSpy();
 setupRevealOnScroll();
 setupClickFeedback();
 setupSoundToggle();
+</script>
+
+<!-- ============================================================
+     🔌 INTEGRAZIONE BOT DISCORD — visite + modalità manutenzione
+     Non contiene nessun token/API key: parla solo con l'API
+     pubblica del bot (POST /api/visit, GET /api/maintenance).
+     ============================================================ -->
+<script>
+(function () {
+  const BOT_API_URL = "https://IL-TUO-PROGETTO.up.railway.app/api"; // <-- sostituisci con l'URL Railway reale dopo il deploy
+
+  // ---- 1) Ping di visita (anonimo, nessun dato personale inviato) ----
+  try {
+    fetch(BOT_API_URL + "/visit", { method: "POST", keepalive: true }).catch(function () {});
+  } catch (e) {}
+
+  // ---- 2) Modalità manutenzione: polling leggero ogni 10s ----
+  let overlay = null;
+
+  function ensureStyle() {
+    if (document.getElementById("maintenance-style")) return;
+    const style = document.createElement("style");
+    style.id = "maintenance-style";
+    style.textContent =
+      "#maintenance-overlay{position:fixed;inset:0;z-index:9999;background:#000;color:#fff;" +
+      "display:flex;flex-direction:column;align-items:center;justify-content:center;" +
+      "text-align:center;padding:24px;gap:14px;font-family:'Poppins',sans-serif;}" +
+      "#maintenance-overlay .m-title{font-size:clamp(28px,6vw,56px);font-weight:700;letter-spacing:.02em;}" +
+      "#maintenance-overlay .m-sub{font-family:'Inter',sans-serif;font-size:15px;color:#c7c7c7;}";
+    document.head.appendChild(style);
+  }
+
+  function showMaintenance(by, at) {
+    ensureStyle();
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "maintenance-overlay";
+      overlay.innerHTML = '<div class="m-title">SITO IN MANUTENZIONE</div><div class="m-sub" id="m-sub"></div>';
+      document.body.appendChild(overlay);
+    }
+    const sub = document.getElementById("m-sub");
+    if (sub) sub.textContent = "avviato da " + (by || "staff") + " alle ore " + (at || "--:--") + " dal bot di Discord";
+  }
+
+  function hideMaintenance() {
+    if (overlay) {
+      overlay.remove();
+      overlay = null;
+    }
+  }
+
+  function checkMaintenance() {
+    fetch(BOT_API_URL + "/maintenance", { cache: "no-store" })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (!data) return;
+        if (data.active) showMaintenance(data.by, data.at);
+        else hideMaintenance();
+      })
+      .catch(function () {
+        // backend non raggiungibile: il sito resta comunque visibile e funzionante
+      });
+  }
+
+  checkMaintenance();
+  setInterval(checkMaintenance, 10000);
+})();
 </script>
 </body>
 </html>
