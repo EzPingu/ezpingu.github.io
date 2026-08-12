@@ -432,6 +432,27 @@ body{
 .sound-toggle .icon-off{ display:none; }
 .sound-toggle.is-muted .icon-on{ display:none; }
 .sound-toggle.is-muted .icon-off{ display:block; }
+
+/* ---------- maintenance overlay ---------- */
+#maintenance-overlay{position:fixed;inset:0;z-index:9999;background:#000;color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:24px;gap:10px;font-family:'Poppins',sans-serif;}
+#maintenance-overlay .m-title{font-size:clamp(28px,6vw,56px);font-weight:700;letter-spacing:.02em;}
+#maintenance-overlay .m-info{font-family:'Inter',sans-serif;font-size:14px;color:#8b8f94;margin-top:2px;}
+#maintenance-overlay .m-message{font-family:'Inter',sans-serif;font-size:17px;color:#e7e6e2;
+  max-width:560px;line-height:1.5;margin-top:14px;}
+#maintenance-overlay .m-message b{color:#2dd4bf;font-weight:600;}
+#maintenance-overlay .m-sent-by{font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:#5c6066;letter-spacing:.03em;margin-top:4px;}
+#maintenance-overlay .m-bot-status{display:flex;align-items:center;gap:8px;
+  font-family:'Inter',sans-serif;font-size:13px;color:#8b8f94;margin-top:22px;
+  padding:8px 16px;border:1px solid #2c3138;border-radius:20px;background:#12151acc;}
+#maintenance-overlay .m-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;
+  box-shadow:0 0 6px currentColor;}
+#maintenance-overlay .m-dot.online{background:#4ade80;color:#4ade80;}
+#maintenance-overlay .m-dot.offline{background:#ef4444;color:#ef4444;
+  animation:m-pulse 1.4s ease-in-out infinite;}
+@keyframes m-pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 </style>
 </head>
 <body>
@@ -647,7 +668,6 @@ function render() {
   renderExperienceBlock("experienceContent", PROFILE.experience);
   renderExperienceBlock("contentExperienceContent", PROFILE.contentExperience);
 
-  // stagger the reveal delay a little so cards don't all pop at once
   document.querySelectorAll(".reveal").forEach((el, i) => {
     el.style.transitionDelay = `${(i % 6) * 45}ms`;
   });
@@ -806,7 +826,7 @@ setupSoundToggle();
 
 <script>
 (function () {
-  const BOT_API_URL = "https://portfoliio-bot-production.up.railway.app/api"; // <-- sostituisci con l'URL Railway reale dopo il deploy
+  const BOT_API_URL = "https://portfoliio-bot-production.up.railway.app/api"; // <-- il tuo dominio Railway + /api
 
   try {
     fetch(BOT_API_URL + "/visit", { method: "POST", keepalive: true }).catch(function () {});
@@ -814,29 +834,37 @@ setupSoundToggle();
 
   let overlay = null;
 
-  function ensureStyle() {
-    if (document.getElementById("maintenance-style")) return;
-    const style = document.createElement("style");
-    style.id = "maintenance-style";
-    style.textContent =
-      "#maintenance-overlay{position:fixed;inset:0;z-index:9999;background:#000;color:#fff;" +
-      "display:flex;flex-direction:column;align-items:center;justify-content:center;" +
-      "text-align:center;padding:24px;gap:14px;font-family:'Poppins',sans-serif;}" +
-      "#maintenance-overlay .m-title{font-size:clamp(28px,6vw,56px);font-weight:700;letter-spacing:.02em;}" +
-      "#maintenance-overlay .m-sub{font-family:'Inter',sans-serif;font-size:15px;color:#c7c7c7;}";
-    document.head.appendChild(style);
-  }
-
-  function showMaintenance(by, at) {
-    ensureStyle();
+  function showMaintenance(by, at, message, botOnline) {
     if (!overlay) {
       overlay = document.createElement("div");
       overlay.id = "maintenance-overlay";
-      overlay.innerHTML = '<div class="m-title">SITO IN MANUTENZIONE</div><div class="m-sub" id="m-sub"></div>';
+      overlay.innerHTML =
+        '<div class="m-title">SITO IN MANUTENZIONE</div>' +
+        '<div class="m-info" id="m-info"></div>' +
+        '<div class="m-message" id="m-message"></div>' +
+        '<div class="m-sent-by">Inviato dal bot Discord tramite comando</div>' +
+        '<div class="m-bot-status"><span class="m-dot" id="m-dot"></span><span id="m-dot-label"></span></div>';
       document.body.appendChild(overlay);
     }
-    const sub = document.getElementById("m-sub");
-    if (sub) sub.textContent = "Avviato da " + (by || "staff") + " alle ore " + (at || "--:--") + " dal bot di Discord. Sto modificando qualcosa nel sito...";
+
+    const info = document.getElementById("m-info");
+    if (info) info.textContent = "Avviato da " + (by || "staff") + " alle ore " + (at || "--:--");
+
+    const msg = document.getElementById("m-message");
+    if (msg) msg.innerHTML = "Messaggio: <b>" + escapeHtml(message || "Sto sistemando qualcosa nel sito, torno presto!") + "</b>";
+
+    const dot = document.getElementById("m-dot");
+    const label = document.getElementById("m-dot-label");
+    if (dot && label) {
+      dot.className = "m-dot " + (botOnline ? "online" : "offline");
+      label.textContent = botOnline ? "Bot Discord connesso" : "Bot Discord non raggiungibile";
+    }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   function hideMaintenance() {
@@ -851,7 +879,7 @@ setupSoundToggle();
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
         if (!data) return;
-        if (data.active) showMaintenance(data.by, data.at);
+        if (data.active) showMaintenance(data.by, data.at, data.message, data.botOnline);
         else hideMaintenance();
       })
       .catch(function () {
