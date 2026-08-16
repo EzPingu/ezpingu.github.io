@@ -413,8 +413,11 @@ body{
   *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
   .reveal{ opacity:1 !important; transform:none !important; }
 }/* ---------- sound toggle ---------- */
-.sound-toggle{
+.sound-toggle-wrap{
   position:fixed; right:18px; bottom:18px; z-index:50;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.sound-toggle{
   width:42px; height:42px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background:#0a0a0ad9;
@@ -432,6 +435,57 @@ body{
 .sound-toggle .icon-off{ display:none; }
 .sound-toggle.is-muted .icon-on{ display:none; }
 .sound-toggle.is-muted .icon-off{ display:block; }
+
+/* pannello del volume che appare tenendo il mouse sul pulsante */
+.volume-popup{
+  width:38px; height:110px;
+  display:flex; align-items:center; justify-content:center;
+  background:#0a0a0ad9;
+  border:1px solid var(--border);
+  border-radius:19px;
+  backdrop-filter:blur(8px);
+  opacity:0;
+  transform:translateY(8px) scale(.92);
+  pointer-events:none;
+  transition:opacity .22s ease, transform .22s ease;
+}
+.volume-popup.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+.volume-slider{
+  -webkit-appearance:none;
+  appearance:none;
+  width:78px;
+  height:4px;
+  border-radius:2px;
+  background:var(--border);
+  transform:rotate(-90deg);
+  outline:none;
+  cursor:pointer;
+}
+.volume-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:13px; height:13px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 6px var(--accent-dim);
+  cursor:pointer;
+}
+.volume-slider::-moz-range-thumb{
+  width:13px; height:13px;
+  border-radius:50%;
+  background:var(--accent);
+  border:none;
+  box-shadow:0 0 6px var(--accent-dim);
+  cursor:pointer;
+}
+.volume-slider::-moz-range-track{
+  background:var(--border);
+  height:4px;
+  border-radius:2px;
+}
 
 /* ---------- maintenance overlay ---------- */
 #maintenance-overlay{position:fixed;inset:0;z-index:9999;background:#000;color:#fff;
@@ -533,10 +587,15 @@ body{
   </main>
 </div>
 
-<button class="sound-toggle" id="soundToggle" type="button" aria-label="Attiva/disattiva suoni">
-  <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M17.5 8.5a5 5 0 010 7"/><path d="M20 6a9 9 0 010 12"/></svg>
-  <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
-</button>
+<div class="sound-toggle-wrap" id="soundToggleWrap">
+  <div class="volume-popup" id="volumePopup">
+    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" aria-label="Volume musica">
+  </div>
+  <button class="sound-toggle" id="soundToggle" type="button" aria-label="Attiva/disattiva musica">
+    <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M17.5 8.5a5 5 0 010 7"/><path d="M20 6a9 9 0 010 12"/></svg>
+    <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+  </button>
+</div>
 
 <script>
    
@@ -750,8 +809,19 @@ function setupRevealOnScroll() {
   document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
 }
 
+/* ---------- musica di sottofondo ---------- */
+
+// 2 canzoni: ad ogni caricamento della pagina ne viene scelta una a caso.
+// Metti i file .mp3 nella stessa cartella di questo index.html (o cambia il percorso)
+// e sostituisci il segnaposto con il nome esatto del file, es: "la-mia-canzone.mp3"
+const SONGS = [
+  "[rimpiazza con nome mp3].mp3",
+  "[rimpiazza con nome mp3].mp3"
+];
+
 let soundMuted = false;
 let audioCtx = null;
+let bgMusic = null;
 
 function getAudioCtx() {
   if (!audioCtx) {
@@ -802,17 +872,92 @@ function setupClickFeedback() {
   });
 }
 
-function setupSoundToggle() {
-  const btn = document.getElementById("soundToggle");
+function initMusic() {
+  const chosen = SONGS[Math.floor(Math.random() * SONGS.length)];
+  bgMusic = new Audio(chosen);
+  bgMusic.loop = true;
+
+  let savedVolume = 50;
+  try {
+    const v = localStorage.getItem("ezpingu-volume");
+    if (v !== null) savedVolume = parseInt(v, 10);
+  } catch (e) {}
+  bgMusic.volume = savedVolume / 100;
+
   try {
     soundMuted = localStorage.getItem("ezpingu-muted") === "1";
-  } catch (e) { /* storage unavailable, default to sound on */ }
-  btn.classList.toggle("is-muted", soundMuted);
+  } catch (e) {}
+  bgMusic.muted = soundMuted;
+
+  const slider = document.getElementById("volumeSlider");
+  if (slider) slider.value = savedVolume;
+
+  // I browser bloccano l'autoplay con audio finché l'utente non interagisce
+  // con la pagina: proviamo subito, e se viene bloccato ripartiamo al primo click/tasto.
+  const tryPlay = () => {
+    bgMusic.play().catch(() => {
+      const resume = () => {
+        bgMusic.play().catch(() => {});
+        document.removeEventListener("pointerdown", resume);
+        document.removeEventListener("keydown", resume);
+      };
+      document.addEventListener("pointerdown", resume, { once: true });
+      document.addEventListener("keydown", resume, { once: true });
+    });
+  };
+  tryPlay();
+
+  updateSoundIcon();
+}
+
+function updateSoundIcon() {
+  const btn = document.getElementById("soundToggle");
+  if (btn) btn.classList.toggle("is-muted", soundMuted);
+}
+
+function setupSoundToggle() {
+  const btn = document.getElementById("soundToggle");
+  updateSoundIcon();
   btn.addEventListener("click", () => {
     soundMuted = !soundMuted;
-    btn.classList.toggle("is-muted", soundMuted);
+    updateSoundIcon();
+    if (bgMusic) bgMusic.muted = soundMuted;
     try { localStorage.setItem("ezpingu-muted", soundMuted ? "1" : "0"); } catch (e) {}
     if (!soundMuted) { getAudioCtx(); playClickTone(); }
+  });
+}
+
+function setupVolumePopup() {
+  const wrap = document.getElementById("soundToggleWrap");
+  const popup = document.getElementById("volumePopup");
+  const slider = document.getElementById("volumeSlider");
+  if (!wrap || !popup || !slider) return;
+
+  let hoverTimer = null;
+  let hideTimer = null;
+
+  function showPopup() {
+    clearTimeout(hideTimer);
+    popup.classList.add("show");
+  }
+  function scheduleHide() {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => popup.classList.remove("show"), 350);
+  }
+
+  wrap.addEventListener("pointerenter", () => {
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(showPopup, 550);
+  });
+  wrap.addEventListener("pointerleave", () => {
+    clearTimeout(hoverTimer);
+    scheduleHide();
+  });
+
+  slider.addEventListener("input", () => {
+    const val = parseInt(slider.value, 10);
+    if (bgMusic) bgMusic.volume = val / 100;
+    try { localStorage.setItem("ezpingu-volume", String(val)); } catch (e) {}
   });
 }
 
@@ -822,6 +967,8 @@ setupScrollSpy();
 setupRevealOnScroll();
 setupClickFeedback();
 setupSoundToggle();
+setupVolumePopup();
+initMusic();
 </script>
 
 <script>
