@@ -850,9 +850,8 @@ function setupRevealOnScroll() {
 // Metti i file .mp3 nella stessa cartella di questo index.html (o cambia il percorso)
 // e sostituisci il segnaposto con il nome esatto del file, es: "la-mia-canzone.mp3"
 const SONGS = [
-  "Corvette Talking.mp3",
-  "Khodi - 440.mp3",
-  "Lito - SUPERSWAG.mp3"
+  "[rimpiazza con nome mp3].mp3",
+  "[rimpiazza con nome mp3].mp3"
 ];
 
 let soundMuted = false;
@@ -1010,7 +1009,6 @@ initMusic();
 <script>
 (function () {
   const BOT_API_URL = "https://portfoliio-bot-production.up.railway.app/api"; // <-- il tuo dominio Railway + /api
-  const DEVMODE_STORAGE_KEY = "ezpingu-devmode-token";
 
   try {
     fetch(BOT_API_URL + "/visit", { method: "POST", keepalive: true }).catch(function () {});
@@ -1018,6 +1016,10 @@ initMusic();
 
   let overlay = null;
   let devmodeActive = false;
+  // Il token vive SOLO in memoria per questo caricamento della pagina:
+  // niente localStorage, quindi un refresh o una nuova visita richiede
+  // di riaprire il link con ?devmode=... ogni volta.
+  let devmodeToken = null;
 
   function showDevBadge() {
     const badge = document.getElementById("devmodeBadge");
@@ -1027,22 +1029,6 @@ initMusic();
   function hideDevBadge() {
     const badge = document.getElementById("devmodeBadge");
     if (badge) badge.classList.remove("show");
-  }
-
-  function getStoredDevToken() {
-    try {
-      return localStorage.getItem(DEVMODE_STORAGE_KEY);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function storeDevToken(token) {
-    try { localStorage.setItem(DEVMODE_STORAGE_KEY, token); } catch (e) {}
-  }
-
-  function clearDevToken() {
-    try { localStorage.removeItem(DEVMODE_STORAGE_KEY); } catch (e) {}
   }
 
   function verifyDevToken(token) {
@@ -1057,8 +1043,9 @@ initMusic();
     const urlToken = urlParams.get("devmode");
 
     if (urlToken) {
-      storeDevToken(urlToken);
-      // rimuove il parametro dall'URL visibile, il token resta salvato in locale
+      devmodeToken = urlToken;
+      // rimuove subito il parametro dall'URL: non viene salvato da nessuna parte,
+      // quindi ricaricando la pagina il bypass sparisce e serve riaprire il link
       urlParams.delete("devmode");
       const cleanUrl = window.location.pathname + (urlParams.toString() ? "?" + urlParams.toString() : "") + window.location.hash;
       window.history.replaceState({}, document.title, cleanUrl);
@@ -1068,13 +1055,12 @@ initMusic();
   }
 
   function checkDevMode() {
-    const token = getStoredDevToken();
-    if (!token) {
+    if (!devmodeToken) {
       devmodeActive = false;
       hideDevBadge();
       return Promise.resolve(false);
     }
-    return verifyDevToken(token).then(function (valid) {
+    return verifyDevToken(devmodeToken).then(function (valid) {
       if (valid === null) {
         // bot non raggiungibile: manteniamo lo stato precedente invece di disattivare il bypass
         return devmodeActive;
@@ -1083,7 +1069,7 @@ initMusic();
       if (valid) {
         showDevBadge();
       } else {
-        clearDevToken();
+        devmodeToken = null;
         hideDevBadge();
       }
       return devmodeActive;
