@@ -507,6 +507,36 @@ body{
 #maintenance-overlay .m-dot.offline{background:#ef4444;color:#ef4444;
   animation:m-pulse 1.4s ease-in-out infinite;}
 @keyframes m-pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+
+/* ---------- dev-mode badge ---------- */
+.devmode-badge{
+  position:fixed; top:16px; right:16px; z-index:9997;
+  display:flex; align-items:center; gap:7px;
+  padding:7px 13px;
+  background:#0a0a0ad9;
+  border:1px solid #a78bfa55;
+  border-radius:20px;
+  backdrop-filter:blur(8px);
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.06em;
+  color:var(--purple);
+  text-transform:uppercase;
+  opacity:0;
+  transform:translateY(-6px);
+  transition:opacity .3s ease, transform .3s ease;
+  pointer-events:none;
+}
+.devmode-badge.show{ opacity:1; transform:translateY(0); }
+.devmode-badge .devmode-dot{
+  width:7px; height:7px; border-radius:50%;
+  background:var(--purple);
+  box-shadow:0 0 6px var(--purple);
+  flex-shrink:0;
+  animation:devmode-pulse 2s ease-in-out infinite;
+}
+@keyframes devmode-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
 </style>
 </head>
 <body>
@@ -515,6 +545,11 @@ body{
 <div class="bg-glow one"></div>
 <div class="bg-glow two"></div>
 <div class="grain"></div>
+
+<div class="devmode-badge" id="devmodeBadge">
+  <span class="devmode-dot"></span>
+  <span>Dev Mode Link</span>
+</div>
 
 <div class="app">
 
@@ -815,9 +850,8 @@ function setupRevealOnScroll() {
 // Metti i file .mp3 nella stessa cartella di questo index.html (o cambia il percorso)
 // e sostituisci il segnaposto con il nome esatto del file, es: "la-mia-canzone.mp3"
 const SONGS = [
-  "Corvette Talking.mp3",
-  "Lito - SUPERSWAG.mp3",
-  "Khodi - 440.mp3"
+  "[rimpiazza con nome mp3].mp3",
+  "[rimpiazza con nome mp3].mp3"
 ];
 
 let soundMuted = false;
@@ -975,12 +1009,85 @@ initMusic();
 <script>
 (function () {
   const BOT_API_URL = "https://portfoliio-bot-production.up.railway.app/api"; // <-- il tuo dominio Railway + /api
+  const DEVMODE_STORAGE_KEY = "ezpingu-devmode-token";
 
   try {
     fetch(BOT_API_URL + "/visit", { method: "POST", keepalive: true }).catch(function () {});
   } catch (e) {}
 
   let overlay = null;
+  let devmodeActive = false;
+
+  function showDevBadge() {
+    const badge = document.getElementById("devmodeBadge");
+    if (badge) badge.classList.add("show");
+  }
+
+  function hideDevBadge() {
+    const badge = document.getElementById("devmodeBadge");
+    if (badge) badge.classList.remove("show");
+  }
+
+  function getStoredDevToken() {
+    try {
+      return localStorage.getItem(DEVMODE_STORAGE_KEY);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function storeDevToken(token) {
+    try { localStorage.setItem(DEVMODE_STORAGE_KEY, token); } catch (e) {}
+  }
+
+  function clearDevToken() {
+    try { localStorage.removeItem(DEVMODE_STORAGE_KEY); } catch (e) {}
+  }
+
+  function verifyDevToken(token) {
+    return fetch(BOT_API_URL + "/devmode/verify?token=" + encodeURIComponent(token), { cache: "no-store" })
+      .then(function (res) { return res.ok ? res.json() : { valid: false }; })
+      .then(function (data) { return !!(data && data.valid); })
+      .catch(function () { return null; }); // null = impossibile verificare (bot offline), non invalidiamo per errore di rete
+  }
+
+  function initDevMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get("devmode");
+
+    if (urlToken) {
+      storeDevToken(urlToken);
+      // rimuove il parametro dall'URL visibile, il token resta salvato in locale
+      urlParams.delete("devmode");
+      const cleanUrl = window.location.pathname + (urlParams.toString() ? "?" + urlParams.toString() : "") + window.location.hash;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+
+    checkDevMode();
+  }
+
+  function checkDevMode() {
+    const token = getStoredDevToken();
+    if (!token) {
+      devmodeActive = false;
+      hideDevBadge();
+      return Promise.resolve(false);
+    }
+    return verifyDevToken(token).then(function (valid) {
+      if (valid === null) {
+        // bot non raggiungibile: manteniamo lo stato precedente invece di disattivare il bypass
+        return devmodeActive;
+      }
+      devmodeActive = valid;
+      if (valid) {
+        showDevBadge();
+      } else {
+        clearDevToken();
+        hideDevBadge();
+      }
+      return devmodeActive;
+    });
+  }
 
   function showMaintenance(by, at, message, botOnline) {
     if (!overlay) {
@@ -1023,18 +1130,24 @@ initMusic();
   }
 
   function checkMaintenance() {
-    fetch(BOT_API_URL + "/maintenance", { cache: "no-store" })
-      .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (data) {
-        if (!data) return;
-        if (data.active) showMaintenance(data.by, data.at, data.message, data.botOnline);
-        else hideMaintenance();
-      })
-      .catch(function () {
-        // backend non raggiungibile: il sito resta comunque visibile e funzionante
-      });
+    checkDevMode().then(function (bypass) {
+      fetch(BOT_API_URL + "/maintenance", { cache: "no-store" })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (data) {
+          if (!data) return;
+          if (data.active && !bypass) {
+            showMaintenance(data.by, data.at, data.message, data.botOnline);
+          } else {
+            hideMaintenance();
+          }
+        })
+        .catch(function () {
+          // backend non raggiungibile: il sito resta comunque visibile e funzionante
+        });
+    });
   }
 
+  initDevMode();
   checkMaintenance();
   setInterval(checkMaintenance, 10000);
 })();
