@@ -537,6 +537,74 @@ body{
   animation:devmode-pulse 2s ease-in-out infinite;
 }
 @keyframes devmode-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+
+/* ---------- bypass manutenzione ---------- */
+#maintenance-overlay .m-bypass{
+  position:absolute;
+  left:50%; bottom:38px;
+  transform:translateX(-50%);
+  width:min(400px, calc(100% - 40px));
+  text-align:center;
+}
+#maintenance-overlay .m-bypass-text{
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  margin-bottom:4px;
+}
+#maintenance-overlay .m-bypass-subtext{
+  color:#666;
+  font-family:'Inter',sans-serif;
+  font-size:12px;
+  margin-bottom:14px;
+}
+#maintenance-overlay .m-bypass-form{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+#maintenance-overlay .m-bypass-input{
+  width:100%;
+  height:43px;
+  background:#0a0a0a;
+  border:1px solid #222;
+  border-radius:5px;
+  color:#fff;
+  padding:0 13px;
+  outline:none;
+  font-family:'JetBrains Mono', monospace;
+  font-size:13px;
+  transition:border-color .2s ease;
+}
+#maintenance-overlay .m-bypass-input::placeholder{ color:#4d4d4d; }
+#maintenance-overlay .m-bypass-input:focus{ border-color:var(--accent); }
+#maintenance-overlay .m-bypass-submit{
+  width:43px; height:43px; flex:0 0 43px;
+  border:1px solid #222;
+  border-radius:5px;
+  background:#fff;
+  color:#000;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:background .2s ease, transform .2s ease;
+}
+#maintenance-overlay .m-bypass-submit:hover{ background:#ddd; transform:translateX(2px); }
+#maintenance-overlay .m-bypass-submit svg{ width:16px; height:16px; }
+#maintenance-overlay .m-bypass-message{
+  height:16px;
+  margin-top:9px;
+  font-family:'Inter',sans-serif;
+  font-size:11px;
+  color:#666;
+  opacity:0;
+  transition:opacity .2s ease;
+}
+#maintenance-overlay .m-bypass-message.show{ opacity:1; }
+#maintenance-overlay .m-bypass-message.error{ color:#c75c5c; }
+#maintenance-overlay .m-bypass-message.success{ color:#71b86a; }
+@media (max-width:600px){
+  #maintenance-overlay .m-bypass{ bottom:22px; }
+}
 </style>
 </head>
 <body>
@@ -848,7 +916,6 @@ function setupRevealOnScroll() {
 
 // 2 canzoni: ad ogni caricamento della pagina ne viene scelta una a caso.
 // Metti i file .mp3 nella stessa cartella di questo index.html (o cambia il percorso)
-// e sostituisci il segnaposto con il nome esatto del file, es: "la-mia-canzone.mp3"
 const SONGS = [
   "Corvette Talking.mp3.mp3",
   "Khodi - 440.mp3",
@@ -928,8 +995,6 @@ function initMusic() {
   const slider = document.getElementById("volumeSlider");
   if (slider) slider.value = savedVolume;
 
-  // I browser bloccano l'autoplay con audio finché l'utente non interagisce
-  // con la pagina: proviamo subito, e se viene bloccato ripartiamo al primo click/tasto.
   const tryPlay = () => {
     bgMusic.play().catch(() => {
       const resume = () => {
@@ -1019,7 +1084,7 @@ initMusic();
   let devmodeActive = false;
   // Il token vive SOLO in memoria per questo caricamento della pagina:
   // niente localStorage, quindi un refresh o una nuova visita richiede
-  // di riaprire il link con ?devmode=... ogni volta.
+  // di riaprire il link (o reinserire il codice) ogni volta.
   let devmodeToken = null;
 
   function showDevBadge() {
@@ -1036,7 +1101,7 @@ initMusic();
     return fetch(BOT_API_URL + "/devmode/verify?token=" + encodeURIComponent(token), { cache: "no-store" })
       .then(function (res) { return res.ok ? res.json() : { valid: false }; })
       .then(function (data) { return !!(data && data.valid); })
-      .catch(function () { return null; }); // null = impossibile verificare (bot offline), non invalidiamo per errore di rete
+      .catch(function () { return null; });
   }
 
   function initDevMode() {
@@ -1045,8 +1110,6 @@ initMusic();
 
     if (urlToken) {
       devmodeToken = urlToken;
-      // rimuove subito il parametro dall'URL: non viene salvato da nessuna parte,
-      // quindi ricaricando la pagina il bypass sparisce e serve riaprire il link
       urlParams.delete("devmode");
       const cleanUrl = window.location.pathname + (urlParams.toString() ? "?" + urlParams.toString() : "") + window.location.hash;
       window.history.replaceState({}, document.title, cleanUrl);
@@ -1063,7 +1126,6 @@ initMusic();
     }
     return verifyDevToken(devmodeToken).then(function (valid) {
       if (valid === null) {
-        // bot non raggiungibile: manteniamo lo stato precedente invece di disattivare il bypass
         return devmodeActive;
       }
       devmodeActive = valid;
@@ -1077,6 +1139,44 @@ initMusic();
     });
   }
 
+  function setupBypassForm() {
+    const form = document.getElementById("m-bypass-form");
+    const input = document.getElementById("m-bypass-input");
+    const message = document.getElementById("m-bypass-message");
+    if (!form || !input || !message) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const code = input.value.trim();
+
+      message.className = "m-bypass-message";
+
+      if (!code) {
+        message.textContent = "Inserisci un codice.";
+        message.classList.add("show", "error");
+        return;
+      }
+
+      verifyDevToken(code).then(function (valid) {
+        if (valid === true) {
+          devmodeToken = code;
+          devmodeActive = true;
+          showDevBadge();
+          message.textContent = "Codice valido.";
+          message.classList.add("show", "success");
+          setTimeout(hideMaintenance, 500);
+        } else if (valid === false) {
+          message.textContent = "Codice non valido.";
+          message.classList.add("show", "error");
+          input.select();
+        } else {
+          message.textContent = "Impossibile verificare il codice ora, riprova.";
+          message.classList.add("show", "error");
+        }
+      });
+    });
+  }
+
   function showMaintenance(by, at, message, botOnline) {
     if (!overlay) {
       overlay = document.createElement("div");
@@ -1086,8 +1186,20 @@ initMusic();
         '<div class="m-info" id="m-info"></div>' +
         '<div class="m-message" id="m-message"></div>' +
         '<div class="m-sent-by">Inviato dal bot Discord tramite comando</div>' +
-        '<div class="m-bot-status"><span class="m-dot" id="m-dot"></span><span id="m-dot-label"></span></div>';
+        '<div class="m-bot-status"><span class="m-dot" id="m-dot"></span><span id="m-dot-label"></span></div>' +
+        '<div class="m-bypass">' +
+          '<div class="m-bypass-text">Hai un codice bypass della manutenzione?</div>' +
+          '<div class="m-bypass-subtext">inseriscilo qui sotto:</div>' +
+          '<form class="m-bypass-form" id="m-bypass-form">' +
+            '<input class="m-bypass-input" id="m-bypass-input" type="text" placeholder="Codice bypass" autocomplete="off" spellcheck="false">' +
+            '<button class="m-bypass-submit" type="submit" aria-label="Invia codice">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>' +
+            '</button>' +
+          '</form>' +
+          '<div class="m-bypass-message" id="m-bypass-message"></div>' +
+        '</div>';
       document.body.appendChild(overlay);
+      setupBypassForm();
     }
 
     const info = document.getElementById("m-info");
@@ -1130,7 +1242,6 @@ initMusic();
           }
         })
         .catch(function () {
-          // backend non raggiungibile: il sito resta comunque visibile e funzionante
         });
     });
   }
