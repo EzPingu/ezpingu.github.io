@@ -1163,9 +1163,10 @@ body{
 }
 
 
-/* ================= MAINTENANCE ================= */
+/* ========= MAINTENANCE + SITE OFFLINE (base condivisa) ========= */
 
-#maintenance-overlay{
+#maintenance-overlay,
+#site-offline-overlay{
   position:fixed;
   inset:0;
 
@@ -1190,7 +1191,8 @@ body{
   font-family:'Poppins',sans-serif;
 }
 
-#maintenance-overlay .m-title{
+#maintenance-overlay .m-title,
+#site-offline-overlay .m-title{
   font-size:clamp(28px,6vw,56px);
 
   font-weight:700;
@@ -1198,7 +1200,8 @@ body{
   letter-spacing:.02em;
 }
 
-#maintenance-overlay .m-info{
+#maintenance-overlay .m-info,
+#site-offline-overlay .m-info{
   font-family:'Inter',sans-serif;
 
   font-size:14px;
@@ -1208,7 +1211,8 @@ body{
   margin-top:2px;
 }
 
-#maintenance-overlay .m-message{
+#maintenance-overlay .m-message,
+#site-offline-overlay .m-message{
   font-family:'Inter',sans-serif;
 
   font-size:17px;
@@ -1222,12 +1226,14 @@ body{
   margin-top:14px;
 }
 
-#maintenance-overlay .m-message b{
+#maintenance-overlay .m-message b,
+#site-offline-overlay .m-message b{
   color:#2dd4bf;
   font-weight:600;
 }
 
-#maintenance-overlay .m-sent-by{
+#maintenance-overlay .m-sent-by,
+#site-offline-overlay .m-sent-by{
   font-family:'JetBrains Mono',monospace;
 
   font-size:11px;
@@ -1239,7 +1245,8 @@ body{
   margin-top:4px;
 }
 
-#maintenance-overlay .m-bot-status{
+#maintenance-overlay .m-bot-status,
+#site-offline-overlay .m-bot-status{
   display:flex;
 
   align-items:center;
@@ -1263,7 +1270,8 @@ body{
   background:#12151acc;
 }
 
-#maintenance-overlay .m-dot{
+#maintenance-overlay .m-dot,
+#site-offline-overlay .m-dot{
   width:9px;
   height:9px;
 
@@ -1274,12 +1282,14 @@ body{
   box-shadow:0 0 6px currentColor;
 }
 
-#maintenance-overlay .m-dot.online{
+#maintenance-overlay .m-dot.online,
+#site-offline-overlay .m-dot.online{
   background:#4ade80;
   color:#4ade80;
 }
 
-#maintenance-overlay .m-dot.offline{
+#maintenance-overlay .m-dot.offline,
+#site-offline-overlay .m-dot.offline{
   background:#ef4444;
   color:#ef4444;
 
@@ -1294,6 +1304,138 @@ body{
   50%{
     opacity:.35;
   }
+}
+
+
+/* ================= SITE OFFLINE / RESTART ================= */
+/* Schermata mostrata quando il bot Discord ha fermato il sito con /stop
+   oppure lo sta riavviando con /restart. Sopra c'è la base condivisa con
+   la manutenzione: qui solo l'accento e il countdown del riavvio. */
+
+#site-offline-overlay .s-badge{
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  padding:7px 15px;
+
+  border-radius:20px;
+
+  border:1px solid #ef444455;
+
+  background:#ef44440f;
+
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:11px;
+  font-weight:600;
+
+  letter-spacing:.1em;
+
+  text-transform:uppercase;
+
+  color:#ef4444;
+
+  margin-bottom:6px;
+}
+
+#site-offline-overlay.restarting .s-badge{
+  border-color:#e0b84f55;
+
+  background:#e0b84f0f;
+
+  color:#e0b84f;
+}
+
+#site-offline-overlay .s-badge-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:currentColor;
+
+  box-shadow:0 0 6px currentColor;
+
+  flex-shrink:0;
+
+  animation:m-pulse 1.4s ease-in-out infinite;
+}
+
+#site-offline-overlay .m-title{
+  color:#ef4444;
+}
+
+#site-offline-overlay.restarting .m-title{
+  color:#e0b84f;
+}
+
+#site-offline-overlay .m-message b{
+  color:#fff;
+}
+
+/* ---------- countdown del riavvio ---------- */
+
+#site-offline-overlay .s-countdown{
+  display:none;
+
+  width:min(320px,calc(100% - 40px));
+
+  margin-top:18px;
+}
+
+#site-offline-overlay.restarting .s-countdown{
+  display:block;
+}
+
+#site-offline-overlay .s-count-label{
+  font-family:'Inter',sans-serif;
+
+  font-size:12px;
+
+  color:#8b8f94;
+
+  margin-bottom:7px;
+}
+
+#site-offline-overlay .s-count-num{
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:26px;
+  font-weight:600;
+
+  color:#e0b84f;
+
+  margin-bottom:11px;
+}
+
+#site-offline-overlay .s-bar{
+  height:4px;
+
+  width:100%;
+
+  border-radius:2px;
+
+  background:#1a1a1a;
+
+  overflow:hidden;
+}
+
+#site-offline-overlay .s-bar-fill{
+  height:100%;
+  width:0%;
+
+  border-radius:2px;
+
+  background:linear-gradient(
+    90deg,
+    #e0b84f,
+    #2dd4bf
+  );
+
+  transition:width .9s linear;
 }
 
 
@@ -1377,7 +1519,9 @@ body{
 
 /* ================= BYPASS ================= */
 
-#maintenance-overlay .m-bypass{
+/* Condiviso: usato sia dall'overlay di manutenzione sia da quello di offline */
+
+.m-bypass{
   position:absolute;
 
   left:50%;
@@ -1390,7 +1534,7 @@ body{
   text-align:center;
 }
 
-#maintenance-overlay .m-bypass-text{
+.m-bypass-text{
   color:#fff;
 
   font-family:'Inter',sans-serif;
@@ -1400,7 +1544,7 @@ body{
   margin-bottom:4px;
 }
 
-#maintenance-overlay .m-bypass-subtext{
+.m-bypass-subtext{
   color:#666;
 
   font-family:'Inter',sans-serif;
@@ -1410,7 +1554,7 @@ body{
   margin-bottom:14px;
 }
 
-#maintenance-overlay .m-bypass-form{
+.m-bypass-form{
   display:flex;
 
   align-items:center;
@@ -1418,7 +1562,7 @@ body{
   gap:7px;
 }
 
-#maintenance-overlay .m-bypass-input{
+.m-bypass-input{
   width:100%;
   height:43px;
 
@@ -1441,15 +1585,15 @@ body{
   transition:border-color .2s ease;
 }
 
-#maintenance-overlay .m-bypass-input::placeholder{
+.m-bypass-input::placeholder{
   color:#4d4d4d;
 }
 
-#maintenance-overlay .m-bypass-input:focus{
+.m-bypass-input:focus{
   border-color:var(--accent);
 }
 
-#maintenance-overlay .m-bypass-submit{
+.m-bypass-submit{
   width:43px;
   height:43px;
 
@@ -1474,17 +1618,17 @@ body{
     transform .2s ease;
 }
 
-#maintenance-overlay .m-bypass-submit:hover{
+.m-bypass-submit:hover{
   background:#ddd;
   transform:translateX(2px);
 }
 
-#maintenance-overlay .m-bypass-submit svg{
+.m-bypass-submit svg{
   width:16px;
   height:16px;
 }
 
-#maintenance-overlay .m-bypass-message{
+.m-bypass-message{
   height:16px;
 
   margin-top:9px;
@@ -1500,15 +1644,15 @@ body{
   transition:opacity .2s ease;
 }
 
-#maintenance-overlay .m-bypass-message.show{
+.m-bypass-message.show{
   opacity:1;
 }
 
-#maintenance-overlay .m-bypass-message.error{
+.m-bypass-message.error{
   color:#c75c5c;
 }
 
-#maintenance-overlay .m-bypass-message.success{
+.m-bypass-message.success{
   color:#71b86a;
 }
 
@@ -1571,7 +1715,7 @@ body{
 
 @media(max-width:600px){
 
-  #maintenance-overlay .m-bypass{
+  .m-bypass{
     bottom:22px;
   }
 }
@@ -1592,388 +1736,10 @@ body{
   }
 }
 
-/* ================= INTRO / CLICK TO ENTER ================= */
-
-#intro-overlay{
-  position:fixed;
-  inset:0;
-  z-index:10000;
-
-  background:#000;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  overflow:hidden;
-
-  cursor:pointer;
-  outline:none;
-
-  transition:
-    opacity .85s ease,
-    transform .85s ease;
-}
-
-#intro-overlay.intro-exit{
-  opacity:0;
-  transform:scale(1.16);
-  pointer-events:none;
-}
-
-/* --- rotating ambient glow --- */
-
-.intro-bg{
-  position:absolute;
-  inset:0;
-
-  background:radial-gradient(
-    circle at 50% 45%,
-    rgba(255,255,255,.07),
-    transparent 55%
-  );
-}
-
-.intro-bg::before{
-  content:'';
-
-  position:absolute;
-  left:50%;
-  top:50%;
-
-  width:150vmax;
-  height:150vmax;
-
-  margin:-75vmax 0 0 -75vmax;
-
-  background:conic-gradient(
-    from 0deg,
-    transparent 0 68%,
-    rgba(255,255,255,.06) 82%,
-    transparent 100%
-  );
-
-  animation:intro-rotate 20s linear infinite;
-}
-
-@keyframes intro-rotate{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-/* --- sonar pulse rings --- */
-
-.intro-sonar{
-  position:absolute;
-  left:50%;
-  top:50%;
-
-  width:0;
-  height:0;
-
-  pointer-events:none;
-}
-
-.intro-sonar span{
-  position:absolute;
-  left:0;
-  top:0;
-
-  width:180px;
-  height:180px;
-
-  margin:-90px 0 0 -90px;
-
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:50%;
-
-  animation:intro-sonar 3.4s ease-out infinite;
-}
-
-.intro-sonar span:nth-child(2){
-  animation-delay:1.13s;
-}
-
-.intro-sonar span:nth-child(3){
-  animation-delay:2.26s;
-}
-
-@keyframes intro-sonar{
-  0%{
-    transform:scale(.35);
-    opacity:.6;
-  }
-
-  100%{
-    transform:scale(3.4);
-    opacity:0;
-  }
-}
-
-/* --- floating particles --- */
-
-.intro-particles{
-  position:absolute;
-  inset:0;
-
-  overflow:hidden;
-
-  pointer-events:none;
-}
-
-.intro-particle{
-  position:absolute;
-  bottom:-12px;
-
-  border-radius:50%;
-
-  background:rgba(255,255,255,.7);
-
-  box-shadow:0 0 6px rgba(255,255,255,.55);
-
-  opacity:0;
-
-  animation-name:intro-particle-rise;
-  animation-timing-function:linear;
-  animation-iteration-count:infinite;
-}
-
-@keyframes intro-particle-rise{
-  0%{
-    transform:translateY(0) translateX(0);
-    opacity:0;
-  }
-
-  10%{
-    opacity:.85;
-  }
-
-  85%{
-    opacity:.5;
-  }
-
-  100%{
-    transform:translateY(-112vh) translateX(var(--drift,0));
-    opacity:0;
-  }
-}
-
-/* --- content + title --- */
-
-.intro-content{
-  position:relative;
-  z-index:2;
-
-  text-align:center;
-  padding:0 24px;
-
-  animation:intro-breathe 4.5s ease-in-out infinite;
-}
-
-@keyframes intro-breathe{
-  0%,100%{
-    transform:scale(1);
-  }
-
-  50%{
-    transform:scale(1.03);
-  }
-}
-
-.intro-brand{
-  margin-bottom:18px;
-
-  font-family:'JetBrains Mono',monospace;
-  font-size:11.5px;
-
-  letter-spacing:.42em;
-  text-transform:uppercase;
-
-  color:rgba(255,255,255,.45);
-
-  text-shadow:0 0 12px rgba(255,255,255,.35);
-
-  opacity:0;
-
-  animation:brand-in 1.1s ease .05s forwards;
-}
-
-@keyframes brand-in{
-  to{
-    opacity:1;
-  }
-}
-
-.intro-title{
-  font-family:'Poppins',sans-serif;
-  font-weight:700;
-
-  font-size:clamp(30px,7.5vw,66px);
-
-  letter-spacing:.03em;
-  line-height:1.1;
-
-  color:#fff;
-
-  animation:title-glow 2.4s ease-in-out infinite;
-}
-
-#intro-overlay:hover .intro-title{
-  filter:brightness(1.12);
-}
-
-@keyframes title-glow{
-  0%,100%{
-    text-shadow:
-      0 0 8px rgba(255,255,255,.45),
-      0 0 22px rgba(255,255,255,.25),
-      0 0 48px rgba(255,255,255,.12);
-  }
-
-  50%{
-    text-shadow:
-      0 0 16px rgba(255,255,255,.9),
-      0 0 44px rgba(255,255,255,.55),
-      0 0 92px rgba(255,255,255,.32);
-  }
-}
-
-/* --- per-letter entrance --- */
-
-.intro-letter{
-  display:inline-block;
-
-  opacity:0;
-  transform:translateY(28px);
-
-  animation:letter-in .62s cubic-bezier(.2,.7,.2,1) forwards;
-}
-
-@keyframes letter-in{
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-/* --- per-letter scatter on click --- */
-
-#intro-overlay.intro-exit .intro-letter{
-  animation:letter-scatter .72s cubic-bezier(.5,0,.75,0) forwards;
-  animation-delay:calc(var(--i,0) * 28ms);
-}
-
-@keyframes letter-scatter{
-  to{
-    opacity:0;
-
-    transform:
-      translate(var(--dx,0), var(--dy,-160px))
-      rotate(var(--rot,0))
-      scale(.35);
-
-    filter:blur(9px);
-  }
-}
-
-/* --- hint --- */
-
-.intro-hint{
-  margin-top:22px;
-
-  font-family:'JetBrains Mono',monospace;
-  font-size:12.5px;
-
-  letter-spacing:.32em;
-  text-transform:uppercase;
-
-  color:rgba(255,255,255,.55);
-
-  animation:hint-blink 1.8s ease-in-out infinite;
-}
-
-@keyframes hint-blink{
-  0%,100%{
-    opacity:.3;
-    transform:translateY(0);
-  }
-
-  50%{
-    opacity:.9;
-    transform:translateY(3px);
-  }
-}
-
-/* --- white flash on enter --- */
-
-.intro-flash{
-  position:absolute;
-  inset:0;
-
-  background:#fff;
-
-  opacity:0;
-
-  pointer-events:none;
-}
-
-#intro-overlay.intro-exit .intro-flash{
-  animation:intro-flash .55s ease-out forwards;
-}
-
-@keyframes intro-flash{
-  0%{
-    opacity:0;
-  }
-
-  18%{
-    opacity:.4;
-  }
-
-  100%{
-    opacity:0;
-  }
-}
-
 </style>
 </head>
 
 <body>
-
-<!-- ================= INTRO / CLICK TO ENTER ================= -->
-
-<div
-  id="intro-overlay"
-  role="button"
-  tabindex="0"
-  aria-label="Clicca per entrare nel sito"
->
-
-  <div class="intro-bg"></div>
-
-  <div class="intro-sonar">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <div class="intro-particles" id="introParticles"></div>
-
-  <div class="intro-content">
-
-    <div class="intro-brand">EzPingu</div>
-
-    <div class="intro-title" id="introTitle"></div>
-
-    <div class="intro-hint">clicca in un punto qualsiasi</div>
-
-  </div>
-
-  <div class="intro-flash"></div>
-
-</div>
-
 
 <div class="bg-grid"></div>
 <div class="bg-glow one"></div>
@@ -3930,7 +3696,7 @@ initMusic();
 <script>
 
 /* =====================================================
-   BOT / MAINTENANCE / DEVMODE
+   BOT / MAINTENANCE / SITE STATE / DEVMODE
    ===================================================== */
 
 (function(){
@@ -3958,6 +3724,32 @@ initMusic();
 
   let overlay =
     null;
+
+
+  /* overlay di /stop e /restart, con lo stato del suo countdown */
+
+  let offlineOverlay =
+    null;
+
+
+  let restartTimer =
+    null;
+
+
+  let restartEndsAt =
+    0;
+
+
+  let restartTotalMs =
+    0;
+
+
+  let restartRefetched =
+    false;
+
+
+  let lastRestartRefetch =
+    0;
 
 
   let devmodeActive =
@@ -4191,23 +3983,23 @@ initMusic();
 
   /* ---------- BYPASS FORM ---------- */
 
-  function setupBypassForm(){
+  function setupBypassForm(root){
 
     const form =
-      document.getElementById(
-        "m-bypass-form"
+      root.querySelector(
+        ".m-bypass-form"
       );
 
 
     const input =
-      document.getElementById(
-        "m-bypass-input"
+      root.querySelector(
+        ".m-bypass-input"
       );
 
 
     const message =
-      document.getElementById(
-        "m-bypass-message"
+      root.querySelector(
+        ".m-bypass-message"
       );
 
 
@@ -4282,7 +4074,7 @@ initMusic();
 
 
               setTimeout(
-                hideMaintenance,
+                hideBlockingOverlays,
                 500
               );
 
@@ -4326,6 +4118,43 @@ initMusic();
   }
 
 
+  /* ---------- MARKUP BYPASS (condiviso) ---------- */
+
+  function bypassMarkup(){
+
+    return '' +
+
+      '<div class="m-bypass">' +
+
+        '<div class="m-bypass-text">Hai un codice bypass?</div>' +
+
+        '<div class="m-bypass-subtext">inseriscilo qui sotto:</div>' +
+
+        '<form class="m-bypass-form">' +
+
+          '<input class="m-bypass-input" type="text" placeholder="Codice bypass" autocomplete="off" spellcheck="false">' +
+
+          '<button class="m-bypass-submit" type="submit" aria-label="Invia codice">' +
+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+
+              '<path d="M5 12h14"></path>' +
+
+              '<path d="m13 6 6 6-6 6"></path>' +
+
+            '</svg>' +
+
+          '</button>' +
+
+        '</form>' +
+
+        '<div class="m-bypass-message"></div>' +
+
+      '</div>';
+
+  }
+
+
   /* ---------- MAINTENANCE ---------- */
 
   function showMaintenance(
@@ -4365,33 +4194,7 @@ initMusic();
 
         '</div>' +
 
-        '<div class="m-bypass">' +
-
-          '<div class="m-bypass-text">Hai un codice bypass della manutenzione?</div>' +
-
-          '<div class="m-bypass-subtext">inseriscilo qui sotto:</div>' +
-
-          '<form class="m-bypass-form" id="m-bypass-form">' +
-
-            '<input class="m-bypass-input" id="m-bypass-input" type="text" placeholder="Codice bypass" autocomplete="off" spellcheck="false">' +
-
-            '<button class="m-bypass-submit" type="submit" aria-label="Invia codice">' +
-
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-
-                '<path d="M5 12h14"></path>' +
-
-                '<path d="m13 6 6 6-6 6"></path>' +
-
-              '</svg>' +
-
-            '</button>' +
-
-          '</form>' +
-
-          '<div class="m-bypass-message" id="m-bypass-message"></div>' +
-
-        '</div>';
+        bypassMarkup();
 
 
       document.body.appendChild(
@@ -4399,7 +4202,9 @@ initMusic();
       );
 
 
-      setupBypassForm();
+      setupBypassForm(
+        overlay
+      );
 
     }
 
@@ -4512,6 +4317,447 @@ initMusic();
   }
 
 
+  /* ---------- SITE OFFLINE / RESTART ---------- */
+  /* Stato pilotato dai comandi /stop, /start e /restart del bot Discord.
+     Ha la precedenza sulla manutenzione: se il sito è fermo non ha senso
+     mostrare "in manutenzione". Il countdown del riavvio scorre in locale
+     e si risincronizza a ogni poll. */
+
+  function showSiteOffline(
+    site,
+    botOnline
+  ){
+
+    const restarting =
+      site.status === "restarting";
+
+
+    hideMaintenance();
+
+
+    if(!offlineOverlay){
+
+      offlineOverlay =
+        document.createElement(
+          "div"
+        );
+
+
+      offlineOverlay.id =
+        "site-offline-overlay";
+
+
+      offlineOverlay.innerHTML =
+
+        '<div class="s-badge">' +
+
+          '<span class="s-badge-dot"></span>' +
+
+          '<span class="s-badge-text"></span>' +
+
+        '</div>' +
+
+        '<div class="m-title"></div>' +
+
+        '<div class="m-info"></div>' +
+
+        '<div class="m-message"></div>' +
+
+        '<div class="s-countdown">' +
+
+          '<div class="s-count-label">Il sito torna online tra</div>' +
+
+          '<div class="s-count-num">--</div>' +
+
+          '<div class="s-bar">' +
+
+            '<div class="s-bar-fill"></div>' +
+
+          '</div>' +
+
+        '</div>' +
+
+        '<div class="m-sent-by">Inviato dal bot Discord tramite comando</div>' +
+
+        '<div class="m-bot-status">' +
+
+          '<span class="m-dot"></span>' +
+
+          '<span class="m-dot-label"></span>' +
+
+        '</div>' +
+
+        bypassMarkup();
+
+
+      document.body.appendChild(
+        offlineOverlay
+      );
+
+
+      setupBypassForm(
+        offlineOverlay
+      );
+
+    }
+
+
+    offlineOverlay.classList.toggle(
+      "restarting",
+      restarting
+    );
+
+
+    const badge =
+      offlineOverlay.querySelector(
+        ".s-badge-text"
+      );
+
+
+    if(badge){
+
+      badge.textContent =
+        restarting
+          ?
+          "Riavvio in corso"
+          :
+          "Sito fermato";
+
+    }
+
+
+    const title =
+      offlineOverlay.querySelector(
+        ".m-title"
+      );
+
+
+    if(title){
+
+      title.textContent =
+        restarting
+          ?
+          "RIAVVIO IN CORSO"
+          :
+          "SITO OFFLINE";
+
+    }
+
+
+    const info =
+      offlineOverlay.querySelector(
+        ".m-info"
+      );
+
+
+    if(info){
+
+      info.textContent =
+        (
+          restarting
+            ?
+            "Riavviato da "
+            :
+            "Fermato da "
+        ) +
+        (site.by || "staff") +
+        " alle ore " +
+        (site.at || "--:--");
+
+    }
+
+
+    const msg =
+      offlineOverlay.querySelector(
+        ".m-message"
+      );
+
+
+    if(msg){
+
+      msg.innerHTML =
+        "Messaggio: <b>" +
+        escapeHtml(
+          site.message ||
+          (
+            restarting
+              ?
+              "Il sito si sta riavviando, torno tra pochissimo!"
+              :
+              "Il sito è stato fermato temporaneamente, torna più tardi!"
+          )
+        ) +
+        "</b>";
+
+    }
+
+
+    const dot =
+      offlineOverlay.querySelector(
+        ".m-dot"
+      );
+
+
+    const label =
+      offlineOverlay.querySelector(
+        ".m-dot-label"
+      );
+
+
+    if(dot && label){
+
+      dot.className =
+        "m-dot " +
+        (
+          botOnline
+            ?
+            "online"
+            :
+            "offline"
+        );
+
+
+      label.textContent =
+        botOnline
+          ?
+          "Bot Discord connesso"
+          :
+          "Bot Discord non raggiungibile";
+
+    }
+
+
+    if(restarting){
+
+      syncRestartCountdown(
+        site
+      );
+
+    }else{
+
+      stopRestartCountdown();
+
+    }
+
+  }
+
+
+  function hideSiteOffline(){
+
+    stopRestartCountdown();
+
+
+    if(offlineOverlay){
+
+      offlineOverlay.remove();
+
+      offlineOverlay =
+        null;
+
+    }
+
+  }
+
+
+  function hideBlockingOverlays(){
+
+    hideMaintenance();
+
+    hideSiteOffline();
+
+  }
+
+
+  /* ---------- COUNTDOWN DEL RIAVVIO ---------- */
+
+  function syncRestartCountdown(site){
+
+    const left =
+      Number(
+        site.secondsLeft
+      ) || 0;
+
+
+    /* la fine è calcolata sull'orologio locale partendo dai secondi
+       rimanenti dati dal bot: così un orologio sfasato non rompe il conto */
+
+    restartEndsAt =
+      Date.now() +
+      left * 1000;
+
+
+    restartTotalMs =
+      restartSpanMs(
+        site
+      );
+
+
+    /* il refetch immediato serve solo se un countdown c'è davvero: se il bot
+       dice già 0 secondi (riavvio rimasto appeso) non ha senso richiamarlo */
+
+    restartRefetched =
+      left <= 0;
+
+
+    renderRestartCountdown();
+
+
+    if(!restartTimer){
+
+      restartTimer =
+        setInterval(
+          renderRestartCountdown,
+          1000
+        );
+
+    }
+
+  }
+
+
+  function restartSpanMs(site){
+
+    /* durata totale del riavvio, presa dai due timestamp del bot
+       (differenza fra server e server: immune allo sfasamento locale) */
+
+    const start =
+      Date.parse(
+        site.since
+      );
+
+
+    const end =
+      Date.parse(
+        site.until
+      );
+
+
+    if(
+      isFinite(start) &&
+      isFinite(end) &&
+      end > start
+    ){
+
+      return end - start;
+
+    }
+
+
+    return Math.max(
+      1000,
+      Number(site.secondsLeft) * 1000 || 1000
+    );
+
+  }
+
+
+  function renderRestartCountdown(){
+
+    if(!offlineOverlay)
+      return;
+
+
+    const num =
+      offlineOverlay.querySelector(
+        ".s-count-num"
+      );
+
+
+    const fill =
+      offlineOverlay.querySelector(
+        ".s-bar-fill"
+      );
+
+
+    const leftMs =
+      Math.max(
+        0,
+        restartEndsAt - Date.now()
+      );
+
+
+    const leftSec =
+      Math.ceil(
+        leftMs / 1000
+      );
+
+
+    if(num){
+
+      num.textContent =
+        leftMs > 0
+          ?
+          leftSec + "s"
+          :
+          "sto tornando online...";
+
+    }
+
+
+    if(fill){
+
+      const done =
+        restartTotalMs > 0
+          ?
+          1 - leftMs / restartTotalMs
+          :
+          1;
+
+
+      fill.style.width =
+        Math.min(
+          100,
+          Math.max(
+            0,
+            done * 100
+          )
+        ) + "%";
+
+    }
+
+
+    /* countdown finito: chiedi subito lo stato al bot invece di
+       aspettare il prossimo poll da 10s. Il cooldown evita che un riavvio
+       rimasto appeso lato bot trasformi il countdown in un polling al secondo */
+
+    if(
+      leftMs <= 0 &&
+      !restartRefetched &&
+      Date.now() - lastRestartRefetch > 5000
+    ){
+
+      restartRefetched =
+        true;
+
+
+      lastRestartRefetch =
+        Date.now();
+
+
+      checkMaintenance();
+
+    }
+
+  }
+
+
+  function stopRestartCountdown(){
+
+    if(restartTimer){
+
+      clearInterval(
+        restartTimer
+      );
+
+
+      restartTimer =
+        null;
+
+    }
+
+  }
+
+
   /* ---------- CHECK MAINTENANCE ---------- */
 
   function checkMaintenance(){
@@ -4546,10 +4792,43 @@ initMusic();
               return;
 
 
+            /* un dev-link valido bypassa sia lo stop sia la manutenzione */
+
+            if(bypass){
+
+              hideBlockingOverlays();
+
+              return;
+
+            }
+
+
+            const site =
+              data.site ||
+              {
+                status:"online"
+              };
+
+
             if(
-              data.active &&
-              !bypass
+              site.status === "offline" ||
+              site.status === "restarting"
             ){
+
+              showSiteOffline(
+                site,
+                data.botOnline
+              );
+
+              return;
+
+            }
+
+
+            hideSiteOffline();
+
+
+            if(data.active){
 
               showMaintenance(
                 data.by,
@@ -4588,228 +4867,6 @@ initMusic();
     checkMaintenance,
     10000
   );
-
-})();
-
-</script>
-
-<script>
-
-/* =====================================================
-   INTRO — CLICK TO ENTER
-   ===================================================== */
-
-(function(){
-
-  const overlay =
-    document.getElementById("intro-overlay");
-
-  const titleEl =
-    document.getElementById("introTitle");
-
-  const particlesEl =
-    document.getElementById("introParticles");
-
-
-  if(!overlay || !titleEl)
-    return;
-
-
-  const reduce =
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-
-  /* ---------- avoid scroll behind overlay ---------- */
-
-  document.body.style.overflow = "hidden";
-
-
-  /* ---------- build title letters ---------- */
-
-  const TITLE = "Clicca per entrare";
-
-
-  [...TITLE].forEach(
-    (ch,i) => {
-
-      const span =
-        document.createElement("span");
-
-
-      span.className = "intro-letter";
-
-      span.textContent =
-        ch === " " ? " " : ch;
-
-
-      /* staggered entrance */
-      span.style.animationDelay =
-        (0.15 + i * 0.045) + "s";
-
-
-      /* scatter direction for exit */
-      const dir = i < TITLE.length / 2 ? -1 : 1;
-
-      span.style.setProperty("--i", i);
-
-      span.style.setProperty(
-        "--dx",
-        (dir * (60 + Math.random() * 160)).toFixed(0) + "px"
-      );
-
-      span.style.setProperty(
-        "--dy",
-        (-120 - Math.random() * 160).toFixed(0) + "px"
-      );
-
-      span.style.setProperty(
-        "--rot",
-        ((Math.random() * 90 - 45)).toFixed(0) + "deg"
-      );
-
-
-      titleEl.appendChild(span);
-
-    }
-  );
-
-
-  /* ---------- floating particles ---------- */
-
-  if(particlesEl && !reduce){
-
-    const COUNT = 26;
-
-
-    for(let i = 0; i < COUNT; i++){
-
-      const p =
-        document.createElement("span");
-
-
-      p.className = "intro-particle";
-
-
-      const size =
-        (2 + Math.random() * 4).toFixed(1);
-
-
-      p.style.width = size + "px";
-      p.style.height = size + "px";
-
-      p.style.left =
-        (Math.random() * 100).toFixed(2) + "%";
-
-      p.style.setProperty(
-        "--drift",
-        ((Math.random() * 120 - 60)).toFixed(0) + "px"
-      );
-
-      p.style.animationDuration =
-        (7 + Math.random() * 9).toFixed(1) + "s";
-
-      p.style.animationDelay =
-        (-Math.random() * 12).toFixed(1) + "s";
-
-
-      particlesEl.appendChild(p);
-
-    }
-
-  }
-
-
-  /* ---------- enter ---------- */
-
-  let entered = false;
-
-
-  function enter(){
-
-    if(entered)
-      return;
-
-    entered = true;
-
-
-    overlay.classList.add("intro-exit");
-
-
-    /* the intro click is a user gesture: start audio now */
-    try{
-
-      if(typeof getAudioCtx === "function"){
-        getAudioCtx();
-      }
-
-      if(typeof playClickTone === "function"){
-        playClickTone();
-      }
-
-      if(
-        typeof bgMusic !== "undefined" &&
-        bgMusic &&
-        !bgMusic.muted
-      ){
-        bgMusic.play().catch(() => {});
-      }
-
-    }catch(e){}
-
-
-    /* restore page scroll */
-    document.body.style.overflow = "";
-
-
-    /* remove overlay after the transition */
-    const cleanup = () => {
-
-      if(overlay && overlay.parentNode){
-        overlay.parentNode.removeChild(overlay);
-      }
-
-    };
-
-
-    overlay.addEventListener(
-      "transitionend",
-      cleanup,
-      {once:true}
-    );
-
-
-    /* fallback in case transitionend never fires */
-    setTimeout(cleanup, 1100);
-
-  }
-
-
-  overlay.addEventListener("click", enter);
-
-  overlay.addEventListener(
-    "keydown",
-    event => {
-
-      if(
-        event.key === "Enter" ||
-        event.key === " "
-      ){
-        event.preventDefault();
-        enter();
-      }
-
-    }
-  );
-
-
-  /* focus so keyboard users can press Enter */
-  try{
-    overlay.focus({preventScroll:true});
-  }catch(e){
-    overlay.focus();
-  }
 
 })();
 
