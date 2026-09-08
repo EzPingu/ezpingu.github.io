@@ -141,7 +141,6 @@ body{
 }
 
 
-/* ================= SIDEBAR ================= */
 
 .sidebar{
   width:var(--sidebar-w);
@@ -284,7 +283,7 @@ body{
 }
 
 
-/* ================= PANEL ================= */
+
 
 .panel{
   flex:1;
@@ -352,7 +351,6 @@ body{
 }
 
 
-/* ================= SECTIONS ================= */
 
 .view{
   scroll-margin-top:20px;
@@ -386,7 +384,7 @@ body{
 }
 
 
-/* ================= HERO ================= */
+
 
 .hero{
   text-align:center;
@@ -562,7 +560,6 @@ body{
 }
 
 
-/* ================= LABELS ================= */
 
 .section-label{
   display:flex;
@@ -610,7 +607,6 @@ body{
 }
 
 
-/* ================= REVEAL ================= */
 
 .reveal{
   opacity:0;
@@ -628,7 +624,6 @@ body{
 }
 
 
-/* ================= GRID ================= */
 
 .grid{
   display:grid;
@@ -637,7 +632,6 @@ body{
 }
 
 
-/* ================= CARDS ================= */
 
 .card{
   --card-color:var(--accent);
@@ -755,7 +749,6 @@ body{
 }
 
 
-/* ================= HOVER HINT ("clicca per le prove") ================= */
 
 .card-content{
   transition:opacity .22s ease;
@@ -793,7 +786,6 @@ body{
 }
 
 
-/* ================= RIPPLE ================= */
 
 .ripple{
   position:absolute;
@@ -823,7 +815,6 @@ body{
 }
 
 
-/* ================= CARD CONTENT ================= */
 
 .card-title{
   font-weight:600;
@@ -852,7 +843,6 @@ body{
 }
 
 
-/* ================= BADGES ================= */
 
 .badge{
   display:inline-flex;
@@ -922,7 +912,6 @@ body{
 }
 
 
-/* ================= LINKS / ICON ================= */
 
 .link-icon{
   width:24px;
@@ -1012,7 +1001,6 @@ body{
 }
 
 
-/* ================= SCROLLBAR ================= */
 
 ::-webkit-scrollbar{
   width:9px;
@@ -1028,7 +1016,6 @@ body{
 }
 
 
-/* ================= SOUND ================= */
 
 .sound-toggle-wrap{
   position:fixed;
@@ -1106,7 +1093,6 @@ body{
 }
 
 
-/* ================= VOLUME ================= */
 
 .volume-popup{
   width:38px;
@@ -1201,7 +1187,6 @@ body{
 }
 
 
-/* ================= RANK MODAL ================= */
 
 .rank-modal-overlay{
   position:fixed;
@@ -1371,8 +1356,6 @@ body{
 }
 
 
-/* ========= MAINTENANCE + SITE OFFLINE (base condivisa) ========= */
-
 #maintenance-overlay,
 #site-offline-overlay{
   position:fixed;
@@ -1515,7 +1498,6 @@ body{
 }
 
 
-/* ================= SITE OFFLINE / RESTART ================= */
 
 #site-offline-overlay .s-badge{
   display:flex;
@@ -1581,7 +1563,6 @@ body{
   color:#fff;
 }
 
-/* ---------- countdown del riavvio ---------- */
 
 #site-offline-overlay .s-countdown{
   display:none;
@@ -1643,8 +1624,6 @@ body{
   transition:width .9s linear;
 }
 
-
-/* ================= DEVMODE ================= */
 
 .devmode-badge{
   position:fixed;
@@ -1722,7 +1701,6 @@ body{
 }
 
 
-/* ================= BYPASS ================= */
 
 .m-bypass{
   position:absolute;
@@ -1860,7 +1838,6 @@ body{
 }
 
 
-/* ================= RESPONSIVE ================= */
 
 @media(max-width:820px){
 
@@ -2031,7 +2008,6 @@ body{
   <main class="panel">
 
 
-    <!-- ================= ABOUT ================= -->
 
     <section
       id="about"
@@ -2148,7 +2124,6 @@ body{
     </section>
 
 
-    <!-- ================= EXPERIENCE ================= -->
 
     <section
       id="experience"
@@ -2178,7 +2153,7 @@ body{
     </section>
 
 
-    <!-- ================= CONTENT CREATOR ================= -->
+
 
     <section
       id="content"
@@ -2212,7 +2187,6 @@ body{
 </div>
 
 
-<!-- ================= SOUND ================= -->
 
 <div
   class="sound-toggle-wrap"
@@ -2273,7 +2247,6 @@ body{
 </div>
 
 
-<!-- ================= RANK MODAL ================= -->
 
 <div class="rank-modal-overlay" id="rankModalOverlay">
 
@@ -2294,9 +2267,6 @@ body{
 
 <script>
 
-/* =====================================================
-   PROFILO
-   ===================================================== */
 
 const PROFILE = {
 
@@ -2668,8 +2638,7 @@ const PROFILE = {
         link:"https://youtu.be/23ZBr55Y9Wo",
         visible:true,
 
-        /* esempio di server con "Menu rank" disattivato: cliccando la
-           card si va dritti al link, come prima */
+
 
         menuRank:false,
         ranks:[
@@ -2712,9 +2681,7 @@ const PROFILE = {
 };
 
 
-/* =====================================================
-   ICONS
-   ===================================================== */
+
 
 const ICONS = {
 
@@ -2730,9 +2697,7 @@ const ICONS = {
 };
 
 
-/* =====================================================
-   COLORI
-   ===================================================== */
+
 
 const COLOR_VAR = {
 
@@ -2748,9 +2713,6 @@ const COLOR_VAR = {
 };
 
 
-/* =====================================================
-   CARD
-   ===================================================== */
 
 function makeCard({
   inner,
@@ -2880,9 +2842,7 @@ function makeCard({
 }
 
 
-/* =====================================================
-   VISIBILITÀ
-   ===================================================== */
+
 
 function isVisible(item){
 
@@ -2892,9 +2852,6 @@ function isVisible(item){
 }
 
 
-/* =====================================================
-   RENDER PRINCIPALE
-   ===================================================== */
 
 function render(){
 
@@ -2958,7 +2915,7 @@ function render(){
   }
 
 
-  /* ---------- CURRENTLY ---------- */
+
 
   const curGrid =
     document.getElementById(
@@ -3021,7 +2978,7 @@ function render(){
   }
 
 
-  /* ---------- LINKS ---------- */
+
 
   const linksGrid =
     document.getElementById(
@@ -3110,9 +3067,7 @@ function render(){
 }
 
 
-/* =====================================================
-   EXPERIENCE
-   ===================================================== */
+
 
 function renderExperienceBlock(
   containerId,
@@ -3249,9 +3204,7 @@ function renderExperienceBlock(
 }
 
 
-/* =====================================================
-   RANK MODAL
-   ===================================================== */
+
 
 function openRankModal(item){
 
@@ -3434,9 +3387,7 @@ function setupRankModal(){
 }
 
 
-/* =====================================================
-   NAVIGAZIONE
-   ===================================================== */
+
 
 function setupNavClicks(){
 
@@ -3505,9 +3456,7 @@ function setupNavClicks(){
 }
 
 
-/* =====================================================
-   SCROLL SPY
-   ===================================================== */
+
 
 function setupScrollSpy(){
 
@@ -3591,9 +3540,7 @@ function setupScrollSpy(){
 }
 
 
-/* =====================================================
-   REVEAL
-   ===================================================== */
+
 
 function setupRevealOnScroll(){
 
@@ -3659,9 +3606,7 @@ function setupRevealOnScroll(){
 }
 
 
-/* =====================================================
-   MUSICA
-   ===================================================== */
+
 
 const SONGS = [
 
@@ -3811,9 +3756,7 @@ function playClickTone(){
 }
 
 
-/* =====================================================
-   RIPPLE
-   ===================================================== */
+
 
 function spawnRipple(
   el,
@@ -3879,9 +3822,7 @@ function spawnRipple(
 }
 
 
-/* =====================================================
-   CLICK FEEDBACK
-   ===================================================== */
+
 
 function setupClickFeedback(){
 
@@ -3928,9 +3869,7 @@ function setupClickFeedback(){
 }
 
 
-/* =====================================================
-   INIT MUSIC
-   ===================================================== */
+
 
 function initMusic(){
 
@@ -4097,9 +4036,7 @@ function initMusic(){
 }
 
 
-/* =====================================================
-   SOUND ICON
-   ===================================================== */
+
 
 function updateSoundIcon(){
 
@@ -4121,9 +4058,7 @@ function updateSoundIcon(){
 }
 
 
-/* =====================================================
-   SOUND TOGGLE
-   ===================================================== */
+
 
 function setupSoundToggle(){
 
@@ -4195,9 +4130,7 @@ function setupSoundToggle(){
 }
 
 
-/* =====================================================
-   VOLUME POPUP
-   ===================================================== */
+
 
 function setupVolumePopup(){
 
@@ -4353,9 +4286,7 @@ function setupVolumePopup(){
 }
 
 
-/* =====================================================
-   START
-   ===================================================== */
+
 
 render();
 
@@ -4380,9 +4311,7 @@ initMusic();
 
 <script>
 
-/* =====================================================
-   BOT / MAINTENANCE / SITE STATE / DEVMODE
-   ===================================================== */
+
 
 (function(){
 
@@ -4443,7 +4372,7 @@ initMusic();
     null;
 
 
-  /* ---------- BADGE ---------- */
+
 
   function showDevBadge(){
 
@@ -4483,7 +4412,6 @@ initMusic();
   }
 
 
-  /* ---------- VERIFY TOKEN ---------- */
 
   function verifyDevToken(token){
 
@@ -4533,7 +4461,7 @@ initMusic();
   }
 
 
-  /* ---------- INIT DEVMODE ---------- */
+  
 
   function initDevMode(){
 
@@ -4604,7 +4532,7 @@ initMusic();
   }
 
 
-  /* ---------- CHECK DEVMODE ---------- */
+
 
   function checkDevMode(){
 
@@ -4664,7 +4592,7 @@ initMusic();
   }
 
 
-  /* ---------- BYPASS FORM ---------- */
+
 
   function setupBypassForm(root){
 
@@ -4801,7 +4729,7 @@ initMusic();
   }
 
 
-  /* ---------- MARKUP BYPASS (condiviso) ---------- */
+
 
   function bypassMarkup(){
 
@@ -4838,7 +4766,6 @@ initMusic();
   }
 
 
-  /* ---------- MAINTENANCE ---------- */
 
   function showMaintenance(
     by,
@@ -4965,7 +4892,6 @@ initMusic();
   }
 
 
-  /* ---------- ESCAPE HTML ---------- */
 
   function escapeHtml(str){
 
@@ -4984,7 +4910,6 @@ initMusic();
   }
 
 
-  /* ---------- HIDE MAINTENANCE ---------- */
 
   function hideMaintenance(){
 
@@ -5000,7 +4925,7 @@ initMusic();
   }
 
 
-  /* ---------- SITE OFFLINE / RESTART ---------- */
+
 
   function showSiteOffline(
     site,
@@ -5247,7 +5172,7 @@ initMusic();
   }
 
 
-  /* ---------- COUNTDOWN DEL RIAVVIO ---------- */
+
 
   function syncRestartCountdown(site){
 
@@ -5424,7 +5349,6 @@ initMusic();
   }
 
 
-  /* ---------- CHECK MAINTENANCE ---------- */
 
   function checkMaintenance(){
 
@@ -5520,7 +5444,6 @@ initMusic();
   }
 
 
-  /* ---------- START ---------- */
 
   initDevMode();
 
