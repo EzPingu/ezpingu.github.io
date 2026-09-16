@@ -3633,17 +3633,15 @@ let upcomingAudio = null;
 let upcomingTrackIndex = -1;
 let currentTrackIndex = 0;
 let userVolume = .5;
+let skippedTrackIndices = new Set();
 let transitionTimer = null;
-let fadeFrame = null;
-let fadeInFrame = null;
-let fadeState = null;
+let transitionState = null;
 let autoplayResumeBound = false;
 let failedTracks = 0;
 
-const FADE_IN_DURATION = 3500;
-const FADE_OUT_DURATION = 3500;
-const CROSSFADE_DURATION = 3500;
-
+const FADE_IN_DURATION = 2500;
+const FADE_OUT_DURATION = 6000;
+const CROSSFADE_DURATION = 6000;
 
 function getAudioCtx(){
 
@@ -3658,13 +3656,11 @@ function getAudioCtx(){
 
       try{
 
-        audioCtx =
-          new Ctx();
+        audioCtx = new Ctx();
 
       }catch(e){
 
-        audioCtx =
-          null;
+        audioCtx = null;
 
       }
 
@@ -3678,10 +3674,9 @@ function getAudioCtx(){
     audioCtx.state === "suspended"
   ){
 
-    audioCtx.resume()
-      .catch(
-        () => {}
-      );
+    audioCtx.resume().catch(
+      () => {}
+    );
 
   }
 
@@ -3710,10 +3705,8 @@ function playClickTone(){
     const now =
       ctx.currentTime;
 
-
     const osc =
       ctx.createOscillator();
-
 
     const gain =
       ctx.createGain();
@@ -3722,257 +3715,212 @@ function playClickTone(){
     osc.type =
       "sine";
 
-
     osc.frequency.setValueAtTime(
       760,
       now
     );
-
 
     osc.frequency.exponentialRampToValueAtTime(
       520,
       now + .09
     );
 
-
     gain.gain.setValueAtTime(
       .0001,
       now
     );
-
 
     gain.gain.exponentialRampToValueAtTime(
       .045,
       now + .006
     );
 
-
     gain.gain.exponentialRampToValueAtTime(
       .0001,
       now + .14
     );
 
-
     osc.connect(gain);
-
-    gain.connect(
-      ctx.destination
-    );
-
-
+    gain.connect(ctx.destination);
     osc.start(now);
-
-    osc.stop(
-      now + .15
-    );
+    osc.stop(now + .15);
 
   }catch(e){}
 
 }
 
 
+function getTrackGain(audio){
+
+  return audio && audio._trackGain
+    ? audio._trackGain.gain
+    : null;
+
+}
 
 
-function spawnRipple(
-  el,
-  clientX,
-  clientY
-){
+function getMasterGain(){
 
-  if(!el)
+  const ctx =
+    getAudioCtx();
+
+
+  if(!ctx)
+    return null;
+
+
+  if(!ctx._musicMasterGain){
+
+    ctx._musicMasterGain =
+      ctx.createGain();
+
+    ctx._musicMasterGain.gain.setValueAtTime(
+      soundMuted ? 0 : userVolume,
+      ctx.currentTime
+    );
+
+    ctx._musicMasterGain.connect(
+      ctx.destination
+    );
+
+  }
+
+
+  return ctx._musicMasterGain;
+
+}
+
+
+function setAudioParamNow(param, value, now){
+
+  if(!param)
     return;
 
 
-  const rect =
-    el.getBoundingClientRect();
-
-
-  const size =
-    Math.max(
-      rect.width,
-      rect.height
-    ) * 1.4;
-
-
-  const span =
-    document.createElement(
-      "span"
-    );
-
-
-  span.className =
-    "ripple";
-
-
-  span.style.width =
-    span.style.height =
-    size + "px";
-
-
-  span.style.left =
-    (
-      clientX -
-      rect.left -
-      size / 2
-    ) + "px";
-
-
-  span.style.top =
-    (
-      clientY -
-      rect.top -
-      size / 2
-    ) + "px";
-
-
-  el.appendChild(span);
-
-
-  span.addEventListener(
-    "animationend",
-    () => span.remove(),
-    {once:true}
+  param.cancelScheduledValues(now);
+  param.setValueAtTime(
+    Math.max(0, Math.min(1, value)),
+    now
   );
 
 }
 
 
+function rampAudioParam(param, from, to, duration, now){
+
+  if(!param)
+    return;
 
 
-function setupClickFeedback(){
+  setAudioParamNow(
+    param,
+    from,
+    now
+  );
 
-  const reduce =
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-
-  document.addEventListener(
-    "pointerdown",
-    event => {
-
-      const target =
-        event.target instanceof Element
-        ?
-        event.target.closest(
-          ".card, .nav-btn"
-        )
-        :
-        null;
-
-
-      if(!target)
-        return;
-
-
-      if(!reduce){
-
-        spawnRipple(
-          target,
-          event.clientX,
-          event.clientY
-        );
-
-      }
-
-
-      playClickTone();
-
-    }
+  param.linearRampToValueAtTime(
+    Math.max(0, Math.min(1, to)),
+    now + Math.max(.01, duration)
   );
 
 }
 
 
-
-
-function applyMusicVolumes(){
-
-  if(
-    fadeState &&
-    fadeState.oldAudio &&
-    fadeState.newAudio
-  ){
-
-    fadeState.oldAudio.volume =
-      userVolume * (1 - fadeState.progress);
-
-    fadeState.newAudio.volume =
-      userVolume * fadeState.progress;
-
-    return;
-
-  }
-
-  if(
-    fadeInFrame !== null &&
-    currentAudio
-  )
-    return;
-
-
-  if(currentAudio)
-    currentAudio.volume = userVolume;
-
-}
-
-
-function stopFade(){
-
-  if(fadeFrame !== null){
-
-    cancelAnimationFrame(
-      fadeFrame
-    );
-
-    fadeFrame =
-      null;
-
-  }
-
-  if(fadeInFrame !== null){
-
-    cancelAnimationFrame(
-      fadeInFrame
-    );
-
-    fadeInFrame =
-      null;
-
-  }
-
-
-  fadeState =
-    null;
-
-}
-
-
-function clearTransitionTimer(){
+function stopTransitionTimer(){
 
   if(transitionTimer !== null){
 
-    clearTimeout(
-      transitionTimer
-    );
-
-    transitionTimer =
-      null;
+    clearTimeout(transitionTimer);
+    transitionTimer = null;
 
   }
 
 }
 
 
-function releaseAudio(audio){
+function disconnectTrackAudio(audio){
 
   if(!audio)
     return;
 
 
-  audio.pause();
+  try{
+
+    audio.pause();
+
+    if(audio._trackGain){
+
+      audio._trackGain.gain.cancelScheduledValues(
+        audioCtx ? audioCtx.currentTime : 0
+      );
+
+      audio._trackGain.disconnect();
+
+    }
+
+    if(audio._trackSource)
+      audio._trackSource.disconnect();
+
+  }catch(e){}
+
+
+  if(audio._listeners){
+
+    audio._listeners.forEach(
+      listener => audio.removeEventListener(
+        listener[0],
+        listener[1]
+      )
+    );
+
+    audio._listeners = [];
+
+  }
+
   audio.removeAttribute("src");
   audio.load();
+  audio._trackGain = null;
+  audio._trackSource = null;
+
+}
+
+
+function clearTransition(){
+
+  stopTransitionTimer();
+  skippedTrackIndices.add(
+    audio._trackIndex
+  );
+
+
+  if(transitionState){
+
+    const state =
+      transitionState;
+
+    transitionState = null;
+
+    if(state.oldAudio)
+      disconnectTrackAudio(state.oldAudio);
+
+    if(
+      state.newAudio &&
+      state.newAudio !== currentAudio
+    )
+      disconnectTrackAudio(state.newAudio);
+
+  }
+
+
+  nextAudio = null;
+
+  if(upcomingAudio){
+
+    disconnectTrackAudio(upcomingAudio);
+    upcomingAudio = null;
+    upcomingTrackIndex = -1;
+
+  }
 
 }
 
@@ -3988,11 +3936,262 @@ function prepareUpcomingTrack(){
 
 
   upcomingTrackIndex =
-    (currentTrackIndex + 1) % SONGS.length;
+    getNextPlayableIndex(currentTrackIndex);
+
+  if(upcomingTrackIndex < 0)
+    return;
 
   upcomingAudio =
-    createTrackAudio(
-      upcomingTrackIndex
+    createTrackAudio(upcomingTrackIndex);
+
+}
+
+
+function getNextPlayableIndex(index){
+
+  if(
+    !Array.isArray(SONGS) ||
+    !SONGS.length
+  )
+    return -1;
+
+
+  for(
+    let offset = 1;
+    offset <= SONGS.length;
+    offset++
+  ){
+
+    const candidate =
+      (index + offset) % SONGS.length;
+
+
+    if(!skippedTrackIndices.has(candidate))
+      return candidate;
+
+  }
+
+
+  return -1;
+
+}
+
+
+function createTrackAudio(index){
+
+  const ctx =
+    getAudioCtx();
+
+
+  if(!ctx)
+    return null;
+
+
+  let audio;
+
+
+  try{
+
+    audio =
+      new Audio(SONGS[index]);
+
+    audio.preload =
+      "auto";
+
+    audio.muted =
+      false;
+
+
+    const source =
+      ctx.createMediaElementSource(audio);
+
+    const trackGain =
+      ctx.createGain();
+
+
+    trackGain.gain.setValueAtTime(
+      0,
+      ctx.currentTime
+    );
+
+    source.connect(trackGain);
+    trackGain.connect(getMasterGain());
+
+    audio._trackSource = source;
+    audio._trackGain = trackGain;
+    audio._trackIndex = index;
+    audio._transitionStarted = false;
+    audio._listeners = [];
+
+  }catch(e){
+
+    if(audio)
+      disconnectTrackAudio(audio);
+
+    return null;
+
+  }
+
+
+  const onTimeUpdate =
+    () => {
+
+      if(
+        audio !== currentAudio ||
+        transitionState ||
+        !Number.isFinite(audio.duration) ||
+        audio.duration <= 0
+      )
+        return;
+
+
+      const remaining =
+        audio.duration - audio.currentTime;
+
+      const duration =
+        getCrossfadeDuration(audio.duration);
+
+
+      if(remaining <= duration)
+        startCrossfade(duration);
+
+    };
+
+  const onLoadedMetadata =
+    () => {
+
+      if(audio === currentAudio)
+        scheduleCrossfade(audio);
+
+    };
+
+  const onEnded =
+    () => {
+
+      if(audio === currentAudio && !transitionState)
+        startCrossfade(getCrossfadeDuration(audio.duration));
+
+    };
+
+  const onError =
+    () => handleTrackError(audio);
+
+  const onPause =
+    () => {
+
+      if(audio === currentAudio && !transitionState)
+        stopTransitionTimer();
+
+    };
+
+  const onPlay =
+    () => {
+
+      if(audio === currentAudio && !transitionState)
+        scheduleCrossfade(audio);
+
+    };
+
+  audio.addEventListener(
+    "timeupdate",
+    onTimeUpdate
+  );
+
+  audio.addEventListener(
+    "loadedmetadata",
+    onLoadedMetadata,
+    {once:true}
+  );
+
+  audio.addEventListener(
+    "ended",
+    onEnded,
+    {once:true}
+  );
+
+  audio.addEventListener(
+    "error",
+    onError,
+    {once:true}
+  );
+
+  audio.addEventListener(
+    "pause",
+    onPause
+  );
+
+  audio.addEventListener(
+    "play",
+    onPlay
+  );
+
+  audio._listeners = [
+    ["timeupdate", onTimeUpdate],
+    ["loadedmetadata", onLoadedMetadata],
+    ["ended", onEnded],
+    ["error", onError],
+    ["pause", onPause],
+    ["play", onPlay]
+  ];
+
+  audio.load();
+
+  return audio;
+
+}
+
+
+function getCrossfadeDuration(trackDuration){
+
+  if(
+    !Number.isFinite(trackDuration) ||
+    trackDuration <= 0
+  )
+    return CROSSFADE_DURATION;
+
+
+  return Math.min(
+    CROSSFADE_DURATION,
+    Math.max(
+      1,
+      trackDuration / 2
+    )
+  );
+
+}
+
+
+function scheduleCrossfade(audio){
+
+  if(
+    audio !== currentAudio ||
+    transitionState ||
+    audio.paused ||
+    !Number.isFinite(audio.duration)
+  )
+    return;
+
+
+  stopTransitionTimer();
+
+
+  const duration =
+    getCrossfadeDuration(audio.duration);
+
+  const remaining =
+    Math.max(
+      0,
+      (audio.duration - audio.currentTime) * 1000
+    );
+
+
+  transitionTimer =
+    setTimeout(
+      () => startCrossfade(duration),
+      Math.max(
+        0,
+        remaining - duration * 1000
+      )
     );
 
 }
@@ -4024,23 +4223,24 @@ function bindAutoplayResume(){
       autoplayResumeBound =
         false;
 
+      getAudioCtx();
 
       if(currentAudio)
-        currentAudio.play().catch(
-          () => {}
-        );
+        playAudio(currentAudio);
 
     };
 
 
   document.addEventListener(
     "pointerdown",
-    resume
+    resume,
+    {once:true}
   );
 
   document.addEventListener(
     "keydown",
-    resume
+    resume,
+    {once:true}
   );
 
 }
@@ -4052,26 +4252,35 @@ function playAudio(audio){
     return;
 
 
-  audio.muted =
-    soundMuted;
+  const ctx =
+    getAudioCtx();
 
 
-  audio.play()
-    .then(
-      () => {
+  if(!ctx)
+    return;
 
-        failedTracks =
-          0;
 
-      }
-    )
-    .catch(
-      () => {
-
-        bindAutoplayResume();
-
-      }
+  if(ctx.state === "suspended")
+    ctx.resume().catch(
+      () => {}
     );
+
+
+  audio.play().then(
+    () => {
+
+      failedTracks =
+        0;
+      skippedTrackIndices.delete(
+        currentTrackIndex
+      );
+
+      scheduleCrossfade(audio);
+
+    }
+  ).catch(
+    () => bindAutoplayResume()
+  );
 
 }
 
@@ -4082,24 +4291,27 @@ function setMusicMuted(muted){
     muted;
 
 
-  if(currentAudio)
-    currentAudio.muted =
-      muted;
+  const master =
+    getMasterGain();
 
-  if(nextAudio)
-    nextAudio.muted =
-      muted;
 
-  if(upcomingAudio)
-    upcomingAudio.muted =
-      muted;
+  if(!master)
+    return;
 
-  if(
-    fadeState &&
-    fadeState.oldAudio
-  )
-    fadeState.oldAudio.muted =
-      muted;
+
+  const now =
+    audioCtx.currentTime;
+
+
+  master.gain.cancelScheduledValues(now);
+  master.gain.setValueAtTime(
+    master.gain.value,
+    now
+  );
+  master.gain.linearRampToValueAtTime(
+    muted ? 0 : userVolume,
+    now + .12
+  );
 
 }
 
@@ -4107,81 +4319,259 @@ function setMusicMuted(muted){
 function setMusicVolume(volume){
 
   userVolume =
-    Math.min(
-      1,
-      Math.max(
-        0,
+    Math.max(
+      0,
+      Math.min(
+        1,
         volume
       )
     );
 
 
-  applyMusicVolumes();
+  const master =
+    getMasterGain();
+
+
+  if(!master || soundMuted)
+    return;
+
+
+  const now =
+    audioCtx.currentTime;
+
+
+  master.gain.cancelScheduledValues(now);
+  master.gain.setValueAtTime(
+    master.gain.value,
+    now
+  );
+  master.gain.linearRampToValueAtTime(
+    userVolume,
+    now + .08
+  );
 
 }
 
 
-function animateCrossfade(oldAudio, newAudio, duration){
+function startTrackFadeIn(audio){
 
-  stopFade();
+  const gain =
+    getTrackGain(audio);
+
+  const ctx =
+    getAudioCtx();
 
 
-  const start =
-    performance.now();
+  if(!gain || !ctx)
+    return;
 
 
-  fadeState = {
+  rampAudioParam(
+    gain,
+    0,
+    1,
+    FADE_IN_DURATION / 1000,
+    ctx.currentTime
+  );
+
+}
+
+
+function startCrossfade(
+  duration = CROSSFADE_DURATION,
+  targetIndex = null
+){
+
+  if(
+    !currentAudio ||
+    transitionState ||
+    !Array.isArray(SONGS) ||
+    !SONGS.length
+  )
+    return;
+
+
+  stopTransitionTimer();
+
+
+  const ctx =
+    getAudioCtx();
+
+
+  if(!ctx)
+    return;
+
+
+  const oldAudio =
+    currentAudio;
+
+  const oldGain =
+    getTrackGain(oldAudio);
+
+  const nextIndex =
+    Number.isInteger(targetIndex)
+      ? (
+        targetIndex +
+        SONGS.length
+      ) % SONGS.length
+      : getNextPlayableIndex(currentTrackIndex);
+
+  if(nextIndex < 0)
+    return;
+
+  let newAudio = null;
+
+  if(
+    upcomingAudio &&
+    upcomingTrackIndex === nextIndex
+  ){
+
+    newAudio = upcomingAudio;
+    upcomingAudio = null;
+    upcomingTrackIndex = -1;
+
+  }else{
+
+    newAudio =
+      createTrackAudio(nextIndex);
+
+  }
+
+
+  if(!newAudio){
+
+    failedTracks++;
+
+    if(failedTracks < SONGS.length)
+      startTrack(nextIndex);
+
+    return;
+
+  }
+
+
+  const newGain =
+    getTrackGain(newAudio);
+
+  const safeDuration =
+    Math.min(
+      duration,
+      getCrossfadeDuration(oldAudio.duration) * 1000
+    ) / 1000;
+
+  const now =
+    ctx.currentTime;
+
+
+  transitionState = {
     oldAudio,
     newAudio,
-    progress:0
+    duration: safeDuration,
+    endTime: now + safeDuration,
+    paused: false
   };
 
-
-  const step =
-    now => {
-
-      if(!fadeState)
-        return;
+  nextAudio =
+    newAudio;
+  currentTrackIndex =
+    nextIndex;
 
 
-      fadeState.progress =
-        Math.min(
-          1,
-          (now - start) / duration
-        );
+  setAudioParamNow(
+    oldGain,
+    1,
+    now
+  );
+
+  setAudioParamNow(
+    newGain,
+    0,
+    now
+  );
+
+  rampAudioParam(
+    oldGain,
+    1,
+    0,
+    safeDuration,
+    now
+  );
+
+  rampAudioParam(
+    newGain,
+    0,
+    1,
+    safeDuration,
+    now
+  );
+
+  playAudio(newAudio);
 
 
-      applyMusicVolumes();
+  scheduleTransitionFinish();
+
+}
 
 
-      if(fadeState.progress < 1){
+function scheduleTransitionFinish(){
 
-        fadeFrame =
-          requestAnimationFrame(
-            step
-          );
-
-        return;
-
-      }
+  stopTransitionTimer();
 
 
-      stopFade();
-      releaseAudio(oldAudio);
-      nextAudio =
-        null;
-      transitionTimer =
-        null;
-      scheduleTrackTransition(newAudio);
-      prepareUpcomingTrack();
-
-    };
+  if(!transitionState)
+    return;
 
 
-  fadeFrame =
-    requestAnimationFrame(
-      step
+  const ctx =
+    getAudioCtx();
+
+  const remaining =
+    Math.max(
+      .01,
+      transitionState.endTime -
+      ctx.currentTime
     );
+
+
+  transitionTimer =
+    setTimeout(
+      () => finishCrossfade(transitionState),
+      remaining * 1000 + 80
+    );
+
+}
+
+
+function finishCrossfade(state){
+
+  transitionTimer =
+    null;
+
+  if(
+    !state ||
+    transitionState !== state
+  )
+    return;
+
+
+  transitionState =
+    null;
+
+  disconnectTrackAudio(
+    state.oldAudio
+  );
+
+  currentAudio =
+    state.newAudio;
+
+  bgMusic =
+    currentAudio;
+
+  nextAudio =
+    null;
+
+  prepareUpcomingTrack();
+  scheduleCrossfade(currentAudio);
 
 }
 
@@ -4195,264 +4585,73 @@ function handleTrackError(audio){
   )
     return;
 
+  if(audio === upcomingAudio){
+
+    skippedTrackIndices.add(
+      audio._trackIndex
+    );
+
+    upcomingAudio =
+      null;
+    upcomingTrackIndex =
+      -1;
+
+    disconnectTrackAudio(audio);
+    prepareUpcomingTrack();
+    return;
+
+  }
+
 
   if(audio === nextAudio){
 
     nextAudio =
       null;
 
-    releaseAudio(audio);
-    failedTracks++;
+    if(transitionState){
 
+      const state =
+        transitionState;
 
-    if(failedTracks < SONGS.length){
+      transitionState =
+        null;
 
-      startCrossfade();
-
-    }
-
-    return;
-
-  }
-
-  if(audio === upcomingAudio){
-
-    upcomingAudio =
-      null;
-
-    upcomingTrackIndex =
-      -1;
-
-    releaseAudio(audio);
-    return;
-
-  }
-
-
-  clearTransitionTimer();
-  stopFade();
-  releaseAudio(audio);
-  currentAudio =
-    null;
-  bgMusic =
-    null;
-
-
-  if(failedTracks >= SONGS.length)
-    return;
-
-
-  failedTracks++;
-  startTrack(
-    (currentTrackIndex + 1) % SONGS.length
-  );
-
-}
-
-
-function createTrackAudio(index){
-
-  const audio =
-    new Audio();
-
-
-  audio.src =
-    SONGS[index];
-
-  audio.preload =
-    "auto";
-
-  audio.muted =
-    soundMuted;
-
-  audio.volume =
-    0;
-
-  audio.addEventListener(
-    "ended",
-    () => {
-
-      if(audio === currentAudio)
-        startCrossfade();
-
-    },
-    {once:true}
-  );
-
-  audio.addEventListener(
-    "error",
-    () => handleTrackError(audio),
-    {once:true}
-  );
-
-  audio.addEventListener(
-    "loadedmetadata",
-    () => scheduleTrackTransition(audio),
-    {once:true}
-  );
-
-  audio.addEventListener(
-    "timeupdate",
-    () => {
-
-      if(
-        audio !== currentAudio ||
-        audio._transitionStarted ||
-        !Number.isFinite(audio.duration)
-      )
-        return;
-
-
-      const remaining =
-        audio.duration -
-        audio.currentTime;
-
-
-      if(
-        remaining <=
-        Math.min(
-          CROSSFADE_DURATION,
-          FADE_OUT_DURATION,
-          Math.max(
-            500,
-            audio.duration * .5
-          )
-        )
-      ){
-
-        audio._transitionStarted =
-          true;
-
-        startCrossfade(
-          Math.min(
-            CROSSFADE_DURATION,
-            FADE_OUT_DURATION,
-            Math.max(
-              500,
-              audio.duration * 500
-            )
-          )
-        );
-
-      }
-
-    }
-  );
-
-  audio.load();
-
-
-  return audio;
-
-}
-
-
-function scheduleTrackTransition(audio){
-
-  if(audio !== currentAudio)
-    return;
-
-
-  clearTransitionTimer();
-
-
-  if(
-    !Number.isFinite(audio.duration) ||
-    audio.duration <= 0
-  )
-    return;
-
-
-  const fadeDuration =
-    Math.min(
-      CROSSFADE_DURATION,
-      FADE_OUT_DURATION,
-      Math.max(
-        500,
-        audio.duration * 500
-      )
-    );
-
-
-  transitionTimer =
-    setTimeout(
-      () => startCrossfade(fadeDuration),
-      Math.max(
-        0,
-        (audio.duration * 1000) -
-        fadeDuration
-      )
-    );
-
-}
-
-
-function startCrossfade(duration = CROSSFADE_DURATION){
-
-  if(
-    !currentAudio ||
-    nextAudio ||
-    !SONGS.length
-  )
-    return;
-
-
-  clearTransitionTimer();
-
-
-  const oldAudio =
-    currentAudio;
-
-  oldAudio._transitionStarted =
-    true;
-
-
-  currentTrackIndex =
-    (currentTrackIndex + 1) % SONGS.length;
-
-
-  let newAudio =
-    null;
-
-
-  if(
-    upcomingAudio &&
-    upcomingTrackIndex === currentTrackIndex
-  ){
-
-    newAudio =
-      upcomingAudio;
-    upcomingAudio =
-      null;
-    upcomingTrackIndex =
-      -1;
-
-  }else{
-
-    newAudio =
-      createTrackAudio(
-        currentTrackIndex
+      disconnectTrackAudio(
+        state.oldAudio
       );
 
+      currentAudio =
+        null;
+
+    }
+
+    disconnectTrackAudio(audio);
+    startTrack(
+      getNextPlayableIndex(currentTrackIndex)
+    );
+    return;
+
   }
 
 
-  nextAudio =
-    newAudio;
-
-  currentAudio =
-    newAudio;
-
-  bgMusic =
-    newAudio;
-
-
-  playAudio(newAudio);
-  animateCrossfade(
-    oldAudio,
-    newAudio,
-    duration
+  stopTransitionTimer();
+  skippedTrackIndices.add(
+    audio._trackIndex
   );
+  disconnectTrackAudio(audio);
+  currentAudio =
+    null;
+  bgMusic =
+    null;
+  failedTracks++;
+
+
+  if(
+    failedTracks < SONGS.length
+  )
+    startTrack(
+      getNextPlayableIndex(currentTrackIndex)
+    );
 
 }
 
@@ -4466,26 +4665,12 @@ function startTrack(index){
     return;
 
 
-  clearTransitionTimer();
-  stopFade();
+  clearTransition();
 
 
   if(currentAudio)
-    releaseAudio(currentAudio);
+    disconnectTrackAudio(currentAudio);
 
-  if(nextAudio)
-    releaseAudio(nextAudio);
-
-  if(upcomingAudio)
-    releaseAudio(upcomingAudio);
-
-
-  nextAudio =
-    null;
-  upcomingAudio =
-    null;
-  upcomingTrackIndex =
-    -1;
 
   currentTrackIndex =
     (
@@ -4494,58 +4679,184 @@ function startTrack(index){
     ) % SONGS.length;
 
   currentAudio =
-    createTrackAudio(
-      currentTrackIndex
-    );
+    createTrackAudio(currentTrackIndex);
+
+
+  if(!currentAudio){
+
+    failedTracks++;
+
+    if(failedTracks < SONGS.length)
+      startTrack(
+        getNextPlayableIndex(currentTrackIndex)
+      );
+
+    return;
+
+  }
+
 
   bgMusic =
     currentAudio;
 
-  currentAudio.volume =
-    0;
-
-  playAudio(currentAudio);
   prepareUpcomingTrack();
+  startTrackFadeIn(currentAudio);
+  playAudio(currentAudio);
 
-  const fadeStart =
-    performance.now();
-
-
-  const step =
-    now => {
-
-      if(
-        currentAudio === null ||
-        currentAudio.volume >= userVolume ||
-        fadeInFrame === null
-      ){
-
-        fadeInFrame =
-          null;
-
-        return;
-      }
-
-      currentAudio.volume =
-        userVolume *
-        Math.min(
-          1,
-          (now - fadeStart) /
-          FADE_IN_DURATION
-        );
-
-      fadeInFrame =
-        requestAnimationFrame(
-          step
-        );
-
-    };
+}
 
 
-  fadeInFrame =
-    requestAnimationFrame(
-      step
+function nextTrack(){
+
+  if(!SONGS.length)
+    return;
+
+
+  const index =
+    (currentTrackIndex + 1) % SONGS.length;
+
+
+  if(currentAudio)
+    startCrossfade(
+      Math.min(
+        FADE_OUT_DURATION,
+        CROSSFADE_DURATION
+      ),
+      index
     );
+  else
+    startTrack(index);
+
+}
+
+
+function previousTrack(){
+
+  const index =
+    (currentTrackIndex - 1 + SONGS.length) % SONGS.length;
+
+
+  if(currentAudio)
+    startCrossfade(
+      Math.min(
+        FADE_OUT_DURATION,
+        CROSSFADE_DURATION
+      ),
+      index
+    );
+  else
+    startTrack(index);
+
+}
+
+
+function pauseMusic(){
+
+  stopTransitionTimer();
+
+  if(transitionState){
+
+    const ctx =
+      getAudioCtx();
+
+    const now =
+      ctx.currentTime;
+
+    const oldGain =
+      getTrackGain(
+        transitionState.oldAudio
+      );
+
+    const newGain =
+      getTrackGain(
+        transitionState.newAudio
+      );
+
+    setAudioParamNow(
+      oldGain,
+      oldGain ? oldGain.value : 0,
+      now
+    );
+
+    setAudioParamNow(
+      newGain,
+      newGain ? newGain.value : 0,
+      now
+    );
+
+    transitionState.paused =
+      true;
+
+    if(transitionState.oldAudio)
+      transitionState.oldAudio.pause();
+
+    if(transitionState.newAudio)
+      transitionState.newAudio.pause();
+
+    return;
+
+  }
+
+  if(currentAudio)
+    currentAudio.pause();
+
+}
+
+
+function resumeMusic(){
+
+  if(transitionState){
+
+    const ctx =
+      getAudioCtx();
+
+    const now =
+      ctx.currentTime;
+
+    const remaining =
+      Math.max(
+        .01,
+        transitionState.endTime - now
+      );
+
+    rampAudioParam(
+      getTrackGain(
+        transitionState.oldAudio
+      ),
+      transitionState.oldAudio._trackGain.gain.value,
+      0,
+      remaining,
+      now
+    );
+
+    rampAudioParam(
+      getTrackGain(
+        transitionState.newAudio
+      ),
+      transitionState.newAudio._trackGain.gain.value,
+      1,
+      remaining,
+      now
+    );
+
+    transitionState.endTime =
+      now + remaining;
+    transitionState.paused =
+      false;
+
+    playAudio(
+      transitionState.oldAudio
+    );
+    playAudio(
+      transitionState.newAudio
+    );
+    scheduleTransitionFinish();
+    return;
+
+  }
+
+  if(currentAudio)
+    playAudio(currentAudio);
 
 }
 
@@ -4574,14 +4885,10 @@ function initMusic(){
     if(v !== null){
 
       const parsed =
-        Number.parseInt(
-          v,
-          10
-        );
+        Number.parseInt(v, 10);
 
 
-      if(Number.isFinite(parsed)){
-
+      if(Number.isFinite(parsed))
         savedVolume =
           Math.min(
             100,
@@ -4590,8 +4897,6 @@ function initMusic(){
               parsed
             )
           );
-
-      }
 
     }
 
@@ -4623,13 +4928,11 @@ function initMusic(){
       String(savedVolume);
 
 
+  getAudioCtx();
   startTrack(0);
   updateSoundIcon();
 
 }
-
-
-
 
 function updateSoundIcon(){
 
