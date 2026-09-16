@@ -3609,6 +3609,16 @@ function setupRevealOnScroll(){
 
 const SONGS = [
 
+  "Flowrondo.mp3",
+  "Flowrondo.mp3",
+  "Flowrondo.mp3",
+  "Khodi - 440.mp3",
+  "Khodi - 440.mp3",
+  "Dry V.mp3",
+  "Old Fashion.mp3",
+  "Old Fashion.mp3",
+  "Old Fashion.mp3",
+  "Old Fashion.mp3",
   "Old Fashion.mp3"
 
 ];
@@ -3619,10 +3629,13 @@ let audioCtx = null;
 let bgMusic = null;
 let currentAudio = null;
 let nextAudio = null;
+let upcomingAudio = null;
+let upcomingTrackIndex = -1;
 let currentTrackIndex = 0;
 let userVolume = .5;
 let transitionTimer = null;
 let fadeFrame = null;
+let fadeInFrame = null;
 let fadeState = null;
 let autoplayResumeBound = false;
 let failedTracks = 0;
@@ -3891,6 +3904,12 @@ function applyMusicVolumes(){
 
   }
 
+  if(
+    fadeInFrame !== null &&
+    currentAudio
+  )
+    return;
+
 
   if(currentAudio)
     currentAudio.volume = userVolume;
@@ -3907,6 +3926,17 @@ function stopFade(){
     );
 
     fadeFrame =
+      null;
+
+  }
+
+  if(fadeInFrame !== null){
+
+    cancelAnimationFrame(
+      fadeInFrame
+    );
+
+    fadeInFrame =
       null;
 
   }
@@ -3943,6 +3973,27 @@ function releaseAudio(audio){
   audio.pause();
   audio.removeAttribute("src");
   audio.load();
+
+}
+
+
+function prepareUpcomingTrack(){
+
+  if(
+    upcomingAudio ||
+    !Array.isArray(SONGS) ||
+    !SONGS.length
+  )
+    return;
+
+
+  upcomingTrackIndex =
+    (currentTrackIndex + 1) % SONGS.length;
+
+  upcomingAudio =
+    createTrackAudio(
+      upcomingTrackIndex
+    );
 
 }
 
@@ -4039,6 +4090,10 @@ function setMusicMuted(muted){
     nextAudio.muted =
       muted;
 
+  if(upcomingAudio)
+    upcomingAudio.muted =
+      muted;
+
   if(
     fadeState &&
     fadeState.oldAudio
@@ -4118,6 +4173,7 @@ function animateCrossfade(oldAudio, newAudio, duration){
       transitionTimer =
         null;
       scheduleTrackTransition(newAudio);
+      prepareUpcomingTrack();
 
     };
 
@@ -4134,7 +4190,8 @@ function handleTrackError(audio){
 
   if(
     audio !== currentAudio &&
-    audio !== nextAudio
+    audio !== nextAudio &&
+    audio !== upcomingAudio
   )
     return;
 
@@ -4154,6 +4211,19 @@ function handleTrackError(audio){
 
     }
 
+    return;
+
+  }
+
+  if(audio === upcomingAudio){
+
+    upcomingAudio =
+      null;
+
+    upcomingTrackIndex =
+      -1;
+
+    releaseAudio(audio);
     return;
 
   }
@@ -4221,6 +4291,56 @@ function createTrackAudio(index){
     {once:true}
   );
 
+  audio.addEventListener(
+    "timeupdate",
+    () => {
+
+      if(
+        audio !== currentAudio ||
+        audio._transitionStarted ||
+        !Number.isFinite(audio.duration)
+      )
+        return;
+
+
+      const remaining =
+        audio.duration -
+        audio.currentTime;
+
+
+      if(
+        remaining <=
+        Math.min(
+          CROSSFADE_DURATION,
+          FADE_OUT_DURATION,
+          Math.max(
+            500,
+            audio.duration * .5
+          )
+        )
+      ){
+
+        audio._transitionStarted =
+          true;
+
+        startCrossfade(
+          Math.min(
+            CROSSFADE_DURATION,
+            FADE_OUT_DURATION,
+            Math.max(
+              500,
+              audio.duration * 500
+            )
+          )
+        );
+
+      }
+
+    }
+  );
+
+  audio.load();
+
 
   return audio;
 
@@ -4283,15 +4403,38 @@ function startCrossfade(duration = CROSSFADE_DURATION){
   const oldAudio =
     currentAudio;
 
+  oldAudio._transitionStarted =
+    true;
+
 
   currentTrackIndex =
     (currentTrackIndex + 1) % SONGS.length;
 
 
-  const newAudio =
-    createTrackAudio(
-      currentTrackIndex
-    );
+  let newAudio =
+    null;
+
+
+  if(
+    upcomingAudio &&
+    upcomingTrackIndex === currentTrackIndex
+  ){
+
+    newAudio =
+      upcomingAudio;
+    upcomingAudio =
+      null;
+    upcomingTrackIndex =
+      -1;
+
+  }else{
+
+    newAudio =
+      createTrackAudio(
+        currentTrackIndex
+      );
+
+  }
 
 
   nextAudio =
@@ -4333,9 +4476,16 @@ function startTrack(index){
   if(nextAudio)
     releaseAudio(nextAudio);
 
+  if(upcomingAudio)
+    releaseAudio(upcomingAudio);
+
 
   nextAudio =
     null;
+  upcomingAudio =
+    null;
+  upcomingTrackIndex =
+    -1;
 
   currentTrackIndex =
     (
@@ -4355,9 +4505,9 @@ function startTrack(index){
     0;
 
   playAudio(currentAudio);
+  prepareUpcomingTrack();
 
-
-  const start =
+  const fadeStart =
     performance.now();
 
 
@@ -4366,20 +4516,25 @@ function startTrack(index){
 
       if(
         currentAudio === null ||
-        currentAudio.volume >= userVolume
-      )
-        return;
+        currentAudio.volume >= userVolume ||
+        fadeInFrame === null
+      ){
 
+        fadeInFrame =
+          null;
+
+        return;
+      }
 
       currentAudio.volume =
         userVolume *
         Math.min(
           1,
-          (now - start) /
+          (now - fadeStart) /
           FADE_IN_DURATION
         );
 
-      fadeFrame =
+      fadeInFrame =
         requestAnimationFrame(
           step
         );
@@ -4387,7 +4542,7 @@ function startTrack(index){
     };
 
 
-  fadeFrame =
+  fadeInFrame =
     requestAnimationFrame(
       step
     );
