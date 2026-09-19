@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1356,488 +1357,6 @@ body{
 }
 
 
-#maintenance-overlay,
-#site-offline-overlay{
-  position:fixed;
-  inset:0;
-
-  z-index:9999;
-
-  background:#000;
-
-  color:#fff;
-
-  display:flex;
-  flex-direction:column;
-
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-
-  padding:24px;
-
-  gap:10px;
-
-  font-family:'Poppins',sans-serif;
-}
-
-#maintenance-overlay .m-title,
-#site-offline-overlay .m-title{
-  font-size:clamp(28px,6vw,56px);
-
-  font-weight:700;
-
-  letter-spacing:.02em;
-}
-
-#maintenance-overlay .m-info,
-#site-offline-overlay .m-info{
-  font-family:'Inter',sans-serif;
-
-  font-size:14px;
-
-  color:#8b8f94;
-
-  margin-top:2px;
-}
-
-#maintenance-overlay .m-message,
-#site-offline-overlay .m-message{
-  font-family:'Inter',sans-serif;
-
-  font-size:17px;
-
-  color:#e7e6e2;
-
-  max-width:560px;
-
-  line-height:1.5;
-
-  margin-top:14px;
-}
-
-#maintenance-overlay .m-message b,
-#site-offline-overlay .m-message b{
-  color:#2dd4bf;
-  font-weight:600;
-}
-
-#maintenance-overlay .m-sent-by,
-#site-offline-overlay .m-sent-by{
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:11px;
-
-  color:#5c6066;
-
-  letter-spacing:.03em;
-
-  margin-top:4px;
-}
-
-#maintenance-overlay .m-bot-status,
-#site-offline-overlay .m-bot-status{
-  display:flex;
-
-  align-items:center;
-
-  gap:8px;
-
-  font-family:'Inter',sans-serif;
-
-  font-size:13px;
-
-  color:#8b8f94;
-
-  margin-top:22px;
-
-  padding:8px 16px;
-
-  border:1px solid #2c3138;
-
-  border-radius:20px;
-
-  background:#12151acc;
-}
-
-#maintenance-overlay .m-dot,
-#site-offline-overlay .m-dot{
-  width:9px;
-  height:9px;
-
-  border-radius:50%;
-
-  flex-shrink:0;
-
-  box-shadow:0 0 6px currentColor;
-}
-
-#maintenance-overlay .m-dot.online,
-#site-offline-overlay .m-dot.online{
-  background:#4ade80;
-  color:#4ade80;
-}
-
-#maintenance-overlay .m-dot.offline,
-#site-offline-overlay .m-dot.offline{
-  background:#ef4444;
-  color:#ef4444;
-
-  animation:m-pulse 1.4s ease-in-out infinite;
-}
-
-@keyframes m-pulse{
-  0%,100%{
-    opacity:1;
-  }
-
-  50%{
-    opacity:.35;
-  }
-}
-
-
-
-#site-offline-overlay .s-badge{
-  display:flex;
-
-  align-items:center;
-
-  gap:8px;
-
-  padding:7px 15px;
-
-  border-radius:20px;
-
-  border:1px solid #ef444455;
-
-  background:#ef44440f;
-
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:11px;
-  font-weight:600;
-
-  letter-spacing:.1em;
-
-  text-transform:uppercase;
-
-  color:#ef4444;
-
-  margin-bottom:6px;
-}
-
-#site-offline-overlay.restarting .s-badge{
-  border-color:#e0b84f55;
-
-  background:#e0b84f0f;
-
-  color:#e0b84f;
-}
-
-#site-offline-overlay .s-badge-dot{
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:currentColor;
-
-  box-shadow:0 0 6px currentColor;
-
-  flex-shrink:0;
-
-  animation:m-pulse 1.4s ease-in-out infinite;
-}
-
-#site-offline-overlay .m-title{
-  color:#ef4444;
-}
-
-#site-offline-overlay.restarting .m-title{
-  color:#e0b84f;
-}
-
-#site-offline-overlay .m-message b{
-  color:#fff;
-}
-
-
-#site-offline-overlay .s-countdown{
-  display:none;
-
-  width:min(320px,calc(100% - 40px));
-
-  margin-top:18px;
-}
-
-#site-offline-overlay.restarting .s-countdown{
-  display:block;
-}
-
-#site-offline-overlay .s-count-label{
-  font-family:'Inter',sans-serif;
-
-  font-size:12px;
-
-  color:#8b8f94;
-
-  margin-bottom:7px;
-}
-
-#site-offline-overlay .s-count-num{
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:26px;
-  font-weight:600;
-
-  color:#e0b84f;
-
-  margin-bottom:11px;
-}
-
-#site-offline-overlay .s-bar{
-  height:4px;
-
-  width:100%;
-
-  border-radius:2px;
-
-  background:#1a1a1a;
-
-  overflow:hidden;
-}
-
-#site-offline-overlay .s-bar-fill{
-  height:100%;
-  width:0%;
-
-  border-radius:2px;
-
-  background:linear-gradient(
-    90deg,
-    #e0b84f,
-    #2dd4bf
-  );
-
-  transition:width .9s linear;
-}
-
-
-.devmode-badge{
-  position:fixed;
-
-  top:16px;
-  right:16px;
-
-  z-index:9997;
-
-  display:flex;
-  align-items:center;
-
-  gap:7px;
-
-  padding:7px 13px;
-
-  background:#0a0a0ad9;
-
-  border:1px solid #a78bfa55;
-
-  border-radius:20px;
-
-  backdrop-filter:blur(8px);
-
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:11px;
-  font-weight:600;
-
-  letter-spacing:.06em;
-
-  color:var(--purple);
-
-  text-transform:uppercase;
-
-  opacity:0;
-
-  transform:translateY(-6px);
-
-  transition:
-    opacity .3s ease,
-    transform .3s ease;
-
-  pointer-events:none;
-}
-
-.devmode-badge.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.devmode-badge .devmode-dot{
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:var(--purple);
-
-  box-shadow:0 0 6px var(--purple);
-
-  flex-shrink:0;
-
-  animation:devmode-pulse 2s ease-in-out infinite;
-}
-
-@keyframes devmode-pulse{
-  0%,100%{
-    opacity:1;
-  }
-
-  50%{
-    opacity:.4;
-  }
-}
-
-
-
-.m-bypass{
-  position:absolute;
-
-  left:50%;
-  bottom:38px;
-
-  transform:translateX(-50%);
-
-  width:min(400px,calc(100% - 40px));
-
-  text-align:center;
-}
-
-.m-bypass-text{
-  color:#fff;
-
-  font-family:'Inter',sans-serif;
-
-  font-size:13px;
-
-  margin-bottom:4px;
-}
-
-.m-bypass-subtext{
-  color:#666;
-
-  font-family:'Inter',sans-serif;
-
-  font-size:12px;
-
-  margin-bottom:14px;
-}
-
-.m-bypass-form{
-  display:flex;
-
-  align-items:center;
-
-  gap:7px;
-}
-
-.m-bypass-input{
-  width:100%;
-  height:43px;
-
-  background:#0a0a0a;
-
-  border:1px solid #222;
-
-  border-radius:5px;
-
-  color:#fff;
-
-  padding:0 13px;
-
-  outline:none;
-
-  font-family:'JetBrains Mono',monospace;
-
-  font-size:13px;
-
-  transition:border-color .2s ease;
-}
-
-.m-bypass-input::placeholder{
-  color:#4d4d4d;
-}
-
-.m-bypass-input:focus{
-  border-color:var(--accent);
-}
-
-.m-bypass-submit{
-  width:43px;
-  height:43px;
-
-  flex:0 0 43px;
-
-  border:1px solid #222;
-
-  border-radius:5px;
-
-  background:#fff;
-
-  color:#000;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  cursor:pointer;
-
-  transition:
-    background .2s ease,
-    transform .2s ease;
-}
-
-.m-bypass-submit:hover{
-  background:#ddd;
-  transform:translateX(2px);
-}
-
-.m-bypass-submit svg{
-  width:16px;
-  height:16px;
-}
-
-.m-bypass-message{
-  height:16px;
-
-  margin-top:9px;
-
-  font-family:'Inter',sans-serif;
-
-  font-size:11px;
-
-  color:#666;
-
-  opacity:0;
-
-  transition:opacity .2s ease;
-}
-
-.m-bypass-message.show{
-  opacity:1;
-}
-
-.m-bypass-message.error{
-  color:#c75c5c;
-}
-
-.m-bypass-message.success{
-  color:#71b86a;
-}
-
-
 
 @media(max-width:820px){
 
@@ -1893,13 +1412,6 @@ body{
   }
 }
 
-@media(max-width:600px){
-
-  .m-bypass{
-    bottom:22px;
-  }
-}
-
 @media(prefers-reduced-motion:reduce){
 
   *,
@@ -1917,6 +1429,7 @@ body{
 }
 
 </style>
+
 </head>
 
 <body>
@@ -1926,267 +1439,259 @@ body{
 <div class="bg-glow two"></div>
 <div class="grain"></div>
 
-
-<div class="devmode-badge" id="devmodeBadge">
-  <span class="devmode-dot"></span>
-  <span>Dev Mode Link</span>
-</div>
-
-
 <div class="app">
 
   <aside class="sidebar">
 
-    <div class="sidebar-title">
-      Menu
-    </div>
+```
+<div class="sidebar-title">
+  Menu
+</div>
 
 
-    <a
-      class="nav-btn active"
-      data-view="about"
-      href="#about"
-    >
+<a
+  class="nav-btn active"
+  data-view="about"
+  href="#about"
+>
 
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <circle cx="12" cy="8" r="4"/>
-        <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
-      </svg>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+  </svg>
 
-      About myself
+  About myself
 
-    </a>
-
-
-    <a
-      class="nav-btn"
-      data-view="experience"
-      href="#experience"
-    >
-
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/>
-      </svg>
-
-      Staff Experience
-
-    </a>
+</a>
 
 
-    <a
-      class="nav-btn"
-      data-view="content"
-      href="#content"
-    >
+<a
+  class="nav-btn"
+  data-view="experience"
+  href="#experience"
+>
 
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-      </svg>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/>
+  </svg>
 
-      Content Creator Experience
+  Staff Experience
 
-    </a>
+</a>
+
+
+<a
+  class="nav-btn"
+  data-view="content"
+  href="#content"
+>
+
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
+  </svg>
+
+  Content Creator Experience
+
+</a>
+```
 
   </aside>
 
-
   <main class="panel">
 
+```
+<section
+  id="about"
+  class="view"
+>
 
+  <div class="view-header">
 
-    <section
-      id="about"
-      class="view"
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
     >
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+    </svg>
 
-      <div class="view-header">
+    <span class="view-title">
+      About myself
+    </span>
 
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
-        </svg>
-
-        <span class="view-title">
-          About myself
-        </span>
-
-      </div>
+  </div>
 
 
-      <div class="hero">
+  <div class="hero">
 
-        <div class="avatar-wrap">
+    <div class="avatar-wrap">
 
-          <div class="avatar-ring"></div>
-
-          <div
-            class="avatar"
-            id="avatarInitial"
-          ></div>
-
-        </div>
-
-
-        <h1
-          class="name"
-          id="pName"
-        ></h1>
-
-
-        <div class="role">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="11" cy="11" r="7"/>
-            <path d="M21 21l-4.3-4.3"/>
-          </svg>
-
-          <span id="pRole"></span>
-
-        </div>
-
-
-        <div
-          class="stat-row"
-          id="pStats"
-        ></div>
-
-      </div>
-
-
-      <div class="section-label">
-
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M17 20h5v-2a4 4 0 00-3-3.9M9 20H4v-2a4 4 0 013-3.9m5-3a4 4 0 100-8 4 4 0 000 8zm6 1a4 4 0 100-8"/>
-        </svg>
-
-        Currently
-
-      </div>
-
+      <div class="avatar-ring"></div>
 
       <div
-        class="grid"
-        id="currentlyGrid"
+        class="avatar"
+        id="avatarInitial"
       ></div>
 
-
-      <div class="section-label">
-
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M10 13a5 5 0 007.5.4l2-2a5 5 0 00-7-7l-1.2 1.1M14 11a5 5 0 00-7.5-.4l-2 2a5 5 0 007 7l1.1-1.1"/>
-        </svg>
-
-        Links
-
-      </div>
+    </div>
 
 
-      <div
-        class="grid"
-        id="linksGrid"
-      ></div>
-
-    </section>
+    <h1
+      class="name"
+      id="pName"
+    ></h1>
 
 
+    <div class="role">
 
-    <section
-      id="experience"
-      class="view"
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="11" cy="11" r="7"/>
+        <path d="M21 21l-4.3-4.3"/>
+      </svg>
+
+      <span id="pRole"></span>
+
+    </div>
+
+
+    <div
+      class="stat-row"
+      id="pStats"
+    ></div>
+
+  </div>
+
+
+  <div class="section-label">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
     >
+      <path d="M17 20h5v-2a4 4 0 00-3-3.9M9 20H4v-2a4 4 0 013-3.9m5-3a4 4 0 100-8 4 4 0 000 8zm6 1a4 4 0 100-8"/>
+    </svg>
 
-      <div class="view-header">
+    Currently
 
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/>
-        </svg>
-
-        <span class="view-title">
-          Staff Experience
-        </span>
-
-      </div>
+  </div>
 
 
-      <div id="experienceContent"></div>
+  <div
+    class="grid"
+    id="currentlyGrid"
+  ></div>
 
-    </section>
 
+  <div class="section-label">
 
-
-
-    <section
-      id="content"
-      class="view"
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
     >
+      <path d="M10 13a5 5 0 007.5.4l2-2a5 5 0 00-7-7l-1.2 1.1M14 11a5 5 0 00-7.5-.4l-2 2a5 5 0 007 7l1.1-1.1"/>
+    </svg>
 
-      <div class="view-header">
+    Links
 
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-        </svg>
-
-        <span class="view-title">
-          Content Creator Experience
-        </span>
-
-      </div>
+  </div>
 
 
-      <div id="contentExperienceContent"></div>
+  <div
+    class="grid"
+    id="linksGrid"
+  ></div>
 
-    </section>
+</section>
+
+
+
+<section
+  id="experience"
+  class="view"
+>
+
+  <div class="view-header">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a4 4 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/>
+    </svg>
+
+    <span class="view-title">
+      Staff Experience
+    </span>
+
+  </div>
+
+
+  <div id="experienceContent"></div>
+
+</section>
+
+
+
+
+<section
+  id="content"
+  class="view"
+>
+
+  <div class="view-header">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
+    </svg>
+
+    <span class="view-title">
+      Content Creator Experience
+    </span>
+
+  </div>
+
+
+  <div id="contentExperienceContent"></div>
+
+</section>
+```
 
   </main>
 
 </div>
-
-
 
 <div
   class="sound-toggle-wrap"
@@ -2198,75 +1703,77 @@ body{
     id="volumePopup"
   >
 
-    <input
-      type="range"
-      class="volume-slider"
-      id="volumeSlider"
-      min="0"
-      max="100"
-      value="50"
-      aria-label="Volume musica"
-    >
+```
+<input
+  type="range"
+  class="volume-slider"
+  id="volumeSlider"
+  min="0"
+  max="100"
+  value="50"
+  aria-label="Volume musica"
+>
+```
 
   </div>
 
+<button
+class="sound-toggle"
+id="soundToggle"
+type="button"
+aria-label="Attiva/disattiva musica"
 
-  <button
-    class="sound-toggle"
-    id="soundToggle"
-    type="button"
-    aria-label="Attiva/disattiva musica"
-  >
+>
 
-    <svg
-      class="icon-on"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-    >
-      <path d="M4 9v6h4l5 5V4L8 9H4z"/>
-      <path d="M17.5 8.5a5 5 0 010 7"/>
-      <path d="M20 6a9 9 0 010 12"/>
-    </svg>
+```
+<svg
+  class="icon-on"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+>
+  <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+  <path d="M17.5 8.5a5 5 0 010 7"/>
+  <path d="M20 6a9 9 0 010 12"/>
+</svg>
 
 
-    <svg
-      class="icon-off"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-    >
-      <path d="M4 9v6h4l5 5V4L8 9H4z"/>
-      <path d="M17 9l5 6M22 9l-5 6"/>
-    </svg>
+<svg
+  class="icon-off"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+>
+  <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+  <path d="M17 9l5 6M22 9l-5 6"/>
+</svg>
+```
 
   </button>
 
 </div>
 
-
-
 <div class="rank-modal-overlay" id="rankModalOverlay">
 
   <div class="rank-modal">
 
-    <div class="rank-modal-title" id="rankModalTitle"></div>
+```
+<div class="rank-modal-title" id="rankModalTitle"></div>
 
-    <div class="rank-modal-sub">Seleziona il rank per vedere le prove</div>
+<div class="rank-modal-sub">Seleziona il rank per vedere le prove</div>
 
-    <div class="rank-list" id="rankModalList"></div>
+<div class="rank-list" id="rankModalList"></div>
 
-    <button class="rank-modal-close" id="rankModalClose" type="button">Chiudi</button>
+<button class="rank-modal-close" id="rankModalClose" type="button">Chiudi</button>
+```
 
   </div>
 
 </div>
 
-
 <script>
-
 
 const PROFILE = {
 
@@ -2306,10 +1813,6 @@ const PROFILE = {
       badgeColor:"blue",
       link:"https://imgur.com/a/xVC5HCE",
       visible:true,
-
-      /* menuRank:true -> cliccando la card si apre il menu dei rank sotto,
-         invece di andare direttamente al link. Cambia in false per tornare
-         al comportamento normale (click = link diretto). */
 
       menuRank:true,
 
@@ -2637,9 +2140,6 @@ const PROFILE = {
         badgeColor:"cyan",
         link:"https://youtu.be/23ZBr55Y9Wo",
         visible:true,
-
-
-
         menuRank:false,
         ranks:[
           { name:"Trainee", visible:false, link:"#" },
@@ -2682,7 +2182,6 @@ const PROFILE = {
 
 
 
-
 const ICONS = {
 
   discord:
@@ -2695,7 +2194,6 @@ const ICONS = {
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.5.4l2-2a5 5 0 00-7-7l-1.2 1.1M14 11a5 5 0 00-7.5-.4l-2 2a5 5 0 007 7l1.1-1.1"/></svg>'
 
 };
-
 
 
 
@@ -2840,7 +2338,6 @@ function makeCard({
   return tag;
 
 }
-
 
 
 
@@ -4295,1157 +3792,6 @@ setupVolumePopup();
 setupRankModal();
 
 initMusic();
-
-</script>
-
-
-<script>
-
-
-
-(function(){
-
-  const BOT_API_URL =
-    "https://portfoliio-bot-production.up.railway.app/api";
-
-
-  /* ---------- VISITA ---------- */
-
-  try{
-
-    fetch(
-      BOT_API_URL + "/visit",
-      {
-        method:"POST",
-        keepalive:true
-      }
-    ).catch(
-      () => {}
-    );
-
-  }catch(e){}
-
-
-  let overlay =
-    null;
-
-
-  let offlineOverlay =
-    null;
-
-
-  let restartTimer =
-    null;
-
-
-  let restartEndsAt =
-    0;
-
-
-  let restartTotalMs =
-    0;
-
-
-  let restartRefetched =
-    false;
-
-
-  let lastRestartRefetch =
-    0;
-
-
-  let devmodeActive =
-    false;
-
-
-  let devmodeToken =
-    null;
-
-
-
-
-  function showDevBadge(){
-
-    const badge =
-      document.getElementById(
-        "devmodeBadge"
-      );
-
-
-    if(badge){
-
-      badge.classList.add(
-        "show"
-      );
-
-    }
-
-  }
-
-
-  function hideDevBadge(){
-
-    const badge =
-      document.getElementById(
-        "devmodeBadge"
-      );
-
-
-    if(badge){
-
-      badge.classList.remove(
-        "show"
-      );
-
-    }
-
-  }
-
-
-
-  function verifyDevToken(token){
-
-    if(!token)
-      return Promise.resolve(false);
-
-
-    return fetch(
-
-      BOT_API_URL +
-      "/devmode/verify?token=" +
-      encodeURIComponent(token),
-
-      {
-        cache:"no-store"
-      }
-
-    )
-
-    .then(
-      res => {
-
-        return res.ok
-          ? res.json()
-          : {
-              valid:false
-            };
-
-      }
-    )
-
-    .then(
-      data => {
-
-        return Boolean(
-          data &&
-          data.valid
-        );
-
-      }
-    )
-
-    .catch(
-      () => null
-    );
-
-  }
-
-
-  
-
-  function initDevMode(){
-
-    let urlParams;
-
-
-    try{
-
-      urlParams =
-        new URLSearchParams(
-          window.location.search
-        );
-
-    }catch(e){
-
-      checkDevMode();
-
-      return;
-
-    }
-
-
-    const urlToken =
-      urlParams.get(
-        "devmode"
-      );
-
-
-    if(urlToken){
-
-      devmodeToken =
-        urlToken;
-
-
-      urlParams.delete(
-        "devmode"
-      );
-
-
-      const cleanUrl =
-        window.location.pathname +
-        (
-          urlParams.toString()
-            ?
-            "?" +
-            urlParams.toString()
-            :
-            ""
-        ) +
-        window.location.hash;
-
-
-      try{
-
-        window.history.replaceState(
-          {},
-          document.title,
-          cleanUrl
-        );
-
-      }catch(e){}
-
-    }
-
-
-    checkDevMode();
-
-  }
-
-
-
-
-  function checkDevMode(){
-
-    if(!devmodeToken){
-
-      devmodeActive =
-        false;
-
-
-      hideDevBadge();
-
-
-      return Promise.resolve(
-        false
-      );
-
-    }
-
-
-    return verifyDevToken(
-      devmodeToken
-    )
-
-    .then(
-      valid => {
-
-        if(valid === null){
-
-          return devmodeActive;
-
-        }
-
-
-        devmodeActive =
-          valid;
-
-
-        if(valid){
-
-          showDevBadge();
-
-        }else{
-
-          devmodeToken =
-            null;
-
-          hideDevBadge();
-
-        }
-
-
-        return devmodeActive;
-
-      }
-    );
-
-  }
-
-
-
-
-  function setupBypassForm(root){
-
-    const form =
-      root.querySelector(
-        ".m-bypass-form"
-      );
-
-
-    const input =
-      root.querySelector(
-        ".m-bypass-input"
-      );
-
-
-    const message =
-      root.querySelector(
-        ".m-bypass-message"
-      );
-
-
-    if(
-      !form ||
-      !input ||
-      !message
-    )
-      return;
-
-
-    form.addEventListener(
-      "submit",
-      event => {
-
-        event.preventDefault();
-
-
-        const code =
-          input.value.trim();
-
-
-        message.className =
-          "m-bypass-message";
-
-
-        if(!code){
-
-          message.textContent =
-            "Inserisci un codice.";
-
-
-          message.classList.add(
-            "show",
-            "error"
-          );
-
-
-          return;
-
-        }
-
-
-        verifyDevToken(
-          code
-        )
-
-        .then(
-          valid => {
-
-            if(valid === true){
-
-              devmodeToken =
-                code;
-
-
-              devmodeActive =
-                true;
-
-
-              showDevBadge();
-
-
-              message.textContent =
-                "Codice valido.";
-
-
-              message.classList.add(
-                "show",
-                "success"
-              );
-
-
-              setTimeout(
-                hideBlockingOverlays,
-                500
-              );
-
-            }
-
-            else if(valid === false){
-
-              message.textContent =
-                "Codice non valido.";
-
-
-              message.classList.add(
-                "show",
-                "error"
-              );
-
-
-              input.select();
-
-            }
-
-            else{
-
-              message.textContent =
-                "Impossibile verificare il codice ora, riprova.";
-
-
-              message.classList.add(
-                "show",
-                "error"
-              );
-
-            }
-
-          }
-        );
-
-      }
-    );
-
-  }
-
-
-
-
-  function bypassMarkup(){
-
-    return '' +
-
-      '<div class="m-bypass">' +
-
-        '<div class="m-bypass-text">Hai un codice bypass?</div>' +
-
-        '<div class="m-bypass-subtext">inseriscilo qui sotto:</div>' +
-
-        '<form class="m-bypass-form">' +
-
-          '<input class="m-bypass-input" type="text" placeholder="Codice bypass" autocomplete="off" spellcheck="false">' +
-
-          '<button class="m-bypass-submit" type="submit" aria-label="Invia codice">' +
-
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-
-              '<path d="M5 12h14"></path>' +
-
-              '<path d="m13 6 6 6-6 6"></path>' +
-
-            '</svg>' +
-
-          '</button>' +
-
-        '</form>' +
-
-        '<div class="m-bypass-message"></div>' +
-
-      '</div>';
-
-  }
-
-
-
-  function showMaintenance(
-    by,
-    at,
-    message,
-    botOnline
-  ){
-
-    if(!overlay){
-
-      overlay =
-        document.createElement(
-          "div"
-        );
-
-
-      overlay.id =
-        "maintenance-overlay";
-
-
-      overlay.innerHTML =
-
-        '<div class="m-title">SITO IN MANUTENZIONE</div>' +
-
-        '<div class="m-info" id="m-info"></div>' +
-
-        '<div class="m-message" id="m-message"></div>' +
-
-        '<div class="m-sent-by">Inviato dal bot Discord tramite comando</div>' +
-
-        '<div class="m-bot-status">' +
-
-          '<span class="m-dot" id="m-dot"></span>' +
-
-          '<span id="m-dot-label"></span>' +
-
-        '</div>' +
-
-        bypassMarkup();
-
-
-      document.body.appendChild(
-        overlay
-      );
-
-
-      setupBypassForm(
-        overlay
-      );
-
-    }
-
-
-    const info =
-      document.getElementById(
-        "m-info"
-      );
-
-
-    if(info){
-
-      info.textContent =
-        "Avviato da " +
-        (by || "staff") +
-        " alle ore " +
-        (at || "--:--");
-
-    }
-
-
-    const msg =
-      document.getElementById(
-        "m-message"
-      );
-
-
-    if(msg){
-
-      msg.innerHTML =
-        "Messaggio: <b>" +
-        escapeHtml(
-          message ||
-          "Sto sistemando qualcosa nel sito, torno presto!"
-        ) +
-        "</b>";
-
-    }
-
-
-    const dot =
-      document.getElementById(
-        "m-dot"
-      );
-
-
-    const label =
-      document.getElementById(
-        "m-dot-label"
-      );
-
-
-    if(dot && label){
-
-      dot.className =
-        "m-dot " +
-        (
-          botOnline
-            ?
-            "online"
-            :
-            "offline"
-        );
-
-
-      label.textContent =
-        botOnline
-          ?
-          "Bot Discord connesso"
-          :
-          "Bot Discord non raggiungibile";
-
-    }
-
-  }
-
-
-
-  function escapeHtml(str){
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-
-    div.textContent =
-      String(str);
-
-
-    return div.innerHTML;
-
-  }
-
-
-
-  function hideMaintenance(){
-
-    if(overlay){
-
-      overlay.remove();
-
-      overlay =
-        null;
-
-    }
-
-  }
-
-
-
-
-  function showSiteOffline(
-    site,
-    botOnline
-  ){
-
-    const restarting =
-      site.status === "restarting";
-
-
-    hideMaintenance();
-
-
-    if(!offlineOverlay){
-
-      offlineOverlay =
-        document.createElement(
-          "div"
-        );
-
-
-      offlineOverlay.id =
-        "site-offline-overlay";
-
-
-      offlineOverlay.innerHTML =
-
-        '<div class="s-badge">' +
-
-          '<span class="s-badge-dot"></span>' +
-
-          '<span class="s-badge-text"></span>' +
-
-        '</div>' +
-
-        '<div class="m-title"></div>' +
-
-        '<div class="m-info"></div>' +
-
-        '<div class="m-message"></div>' +
-
-        '<div class="s-countdown">' +
-
-          '<div class="s-count-label">Il sito torna online tra</div>' +
-
-          '<div class="s-count-num">--</div>' +
-
-          '<div class="s-bar">' +
-
-            '<div class="s-bar-fill"></div>' +
-
-          '</div>' +
-
-        '</div>' +
-
-        '<div class="m-sent-by">Inviato dal bot Discord tramite comando</div>' +
-
-        '<div class="m-bot-status">' +
-
-          '<span class="m-dot"></span>' +
-
-          '<span class="m-dot-label"></span>' +
-
-        '</div>' +
-
-        bypassMarkup();
-
-
-      document.body.appendChild(
-        offlineOverlay
-      );
-
-
-      setupBypassForm(
-        offlineOverlay
-      );
-
-    }
-
-
-    offlineOverlay.classList.toggle(
-      "restarting",
-      restarting
-    );
-
-
-    const badge =
-      offlineOverlay.querySelector(
-        ".s-badge-text"
-      );
-
-
-    if(badge){
-
-      badge.textContent =
-        restarting
-          ?
-          "Riavvio in corso"
-          :
-          "Sito fermato";
-
-    }
-
-
-    const title =
-      offlineOverlay.querySelector(
-        ".m-title"
-      );
-
-
-    if(title){
-
-      title.textContent =
-        restarting
-          ?
-          "RIAVVIO IN CORSO"
-          :
-          "SITO OFFLINE";
-
-    }
-
-
-    const info =
-      offlineOverlay.querySelector(
-        ".m-info"
-      );
-
-
-    if(info){
-
-      info.textContent =
-        (
-          restarting
-            ?
-            "Riavviato da "
-            :
-            "Fermato da "
-        ) +
-        (site.by || "staff") +
-        " alle ore " +
-        (site.at || "--:--");
-
-    }
-
-
-    const msg =
-      offlineOverlay.querySelector(
-        ".m-message"
-      );
-
-
-    if(msg){
-
-      msg.innerHTML =
-        "Messaggio: <b>" +
-        escapeHtml(
-          site.message ||
-          (
-            restarting
-              ?
-              "Il sito si sta riavviando, torno tra pochissimo!"
-              :
-              "Il sito è stato fermato temporaneamente, torna più tardi!"
-          )
-        ) +
-        "</b>";
-
-    }
-
-
-    const dot =
-      offlineOverlay.querySelector(
-        ".m-dot"
-      );
-
-
-    const label =
-      offlineOverlay.querySelector(
-        ".m-dot-label"
-      );
-
-
-    if(dot && label){
-
-      dot.className =
-        "m-dot " +
-        (
-          botOnline
-            ?
-            "online"
-            :
-            "offline"
-        );
-
-
-      label.textContent =
-        botOnline
-          ?
-          "Bot Discord connesso"
-          :
-          "Bot Discord non raggiungibile";
-
-    }
-
-
-    if(restarting){
-
-      syncRestartCountdown(
-        site
-      );
-
-    }else{
-
-      stopRestartCountdown();
-
-    }
-
-  }
-
-
-  function hideSiteOffline(){
-
-    stopRestartCountdown();
-
-
-    if(offlineOverlay){
-
-      offlineOverlay.remove();
-
-      offlineOverlay =
-        null;
-
-    }
-
-  }
-
-
-  function hideBlockingOverlays(){
-
-    hideMaintenance();
-
-    hideSiteOffline();
-
-  }
-
-
-
-
-  function syncRestartCountdown(site){
-
-    const left =
-      Number(
-        site.secondsLeft
-      ) || 0;
-
-
-    restartEndsAt =
-      Date.now() +
-      left * 1000;
-
-
-    restartTotalMs =
-      restartSpanMs(
-        site
-      );
-
-
-    restartRefetched =
-      left <= 0;
-
-
-    renderRestartCountdown();
-
-
-    if(!restartTimer){
-
-      restartTimer =
-        setInterval(
-          renderRestartCountdown,
-          1000
-        );
-
-    }
-
-  }
-
-
-  function restartSpanMs(site){
-
-    const start =
-      Date.parse(
-        site.since
-      );
-
-
-    const end =
-      Date.parse(
-        site.until
-      );
-
-
-    if(
-      isFinite(start) &&
-      isFinite(end) &&
-      end > start
-    ){
-
-      return end - start;
-
-    }
-
-
-    return Math.max(
-      1000,
-      Number(site.secondsLeft) * 1000 || 1000
-    );
-
-  }
-
-
-  function renderRestartCountdown(){
-
-    if(!offlineOverlay)
-      return;
-
-
-    const num =
-      offlineOverlay.querySelector(
-        ".s-count-num"
-      );
-
-
-    const fill =
-      offlineOverlay.querySelector(
-        ".s-bar-fill"
-      );
-
-
-    const leftMs =
-      Math.max(
-        0,
-        restartEndsAt - Date.now()
-      );
-
-
-    const leftSec =
-      Math.ceil(
-        leftMs / 1000
-      );
-
-
-    if(num){
-
-      num.textContent =
-        leftMs > 0
-          ?
-          leftSec + "s"
-          :
-          "sto tornando online...";
-
-    }
-
-
-    if(fill){
-
-      const done =
-        restartTotalMs > 0
-          ?
-          1 - leftMs / restartTotalMs
-          :
-          1;
-
-
-      fill.style.width =
-        Math.min(
-          100,
-          Math.max(
-            0,
-            done * 100
-          )
-        ) + "%";
-
-    }
-
-
-    if(
-      leftMs <= 0 &&
-      !restartRefetched &&
-      Date.now() - lastRestartRefetch > 5000
-    ){
-
-      restartRefetched =
-        true;
-
-
-      lastRestartRefetch =
-        Date.now();
-
-
-      checkMaintenance();
-
-    }
-
-  }
-
-
-  function stopRestartCountdown(){
-
-    if(restartTimer){
-
-      clearInterval(
-        restartTimer
-      );
-
-
-      restartTimer =
-        null;
-
-    }
-
-  }
-
-
-
-  function checkMaintenance(){
-
-    checkDevMode()
-
-    .then(
-      bypass => {
-
-        return fetch(
-          BOT_API_URL +
-          "/maintenance",
-          {
-            cache:"no-store"
-          }
-        )
-
-        .then(
-          res => {
-
-            return res.ok
-              ? res.json()
-              : null;
-
-          }
-        )
-
-        .then(
-          data => {
-
-            if(!data)
-              return;
-
-
-            if(bypass){
-
-              hideBlockingOverlays();
-
-              return;
-
-            }
-
-
-            const site =
-              data.site ||
-              {
-                status:"online"
-              };
-
-
-            if(
-              site.status === "offline" ||
-              site.status === "restarting"
-            ){
-
-              showSiteOffline(
-                site,
-                data.botOnline
-              );
-
-              return;
-
-            }
-
-
-            hideSiteOffline();
-
-
-            if(data.active){
-
-              showMaintenance(
-                data.by,
-                data.at,
-                data.message,
-                data.botOnline
-              );
-
-            }else{
-
-              hideMaintenance();
-
-            }
-
-          }
-        );
-
-      }
-    )
-
-    .catch(
-      () => {}
-    );
-
-  }
-
-
-
-  initDevMode();
-
-  checkMaintenance();
-
-
-  setInterval(
-    checkMaintenance,
-    10000
-  );
-
-})();
 
 </script>
 
