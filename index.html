@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -6,33 +7,30 @@
 <title>EzPingu — Staff Profile</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
-  --bg:#03070d;
-  --bg2:#06101b;
-  --surface:rgba(8,18,30,.78);
-  --surface2:rgba(10,24,39,.9);
-  --border:rgba(65,160,220,.18);
-  --border-hover:rgba(0,170,255,.48);
-
-  --text:#eaf7ff;
-  --muted:#718899;
-
-  --blue:#0088dd;
-  --cyan:#00c8ff;
-  --cyan-soft:#00aaff;
-
-  --green:#45e68b;
-  --red:#ff5265;
-  --purple:#a98cff;
-  --pink:#ff72bd;
-  --yellow:#e5c55b;
-  --gray:#9ba9b4;
-
-  --sidebar-w:235px;
-  --radius:14px;
+  --bg:#050c2e;
+  --bg-2:#081338;
+  --surface:#12151acc;
+  --surface-2:#161a1fdb;
+  --border:#2c3138b0;
+  --text:#e7e6e2;
+  --muted:#8b8f94;
+  --accent:#2dd4bf;
+  --accent-dim:#2dd4bf22;
+  --teal:#14b8a6;
+  --purple:#a78bfa;
+  --blue:#60a5fa;
+  --green:#4ade80;
+  --red:#ef4444;
+  --pink:#f472b6;
+  --gray:#9aa0a8;
+  --yellow:#e0b84f;
+  --radius:10px;
+  --sidebar-w:230px;
 }
 
 *{
@@ -43,133 +41,141 @@
 
 html{
   scroll-behavior:smooth;
-  overflow-x:hidden;
+  overflow-y:auto;
 }
 
 body{
   min-height:100vh;
-  background:
-    radial-gradient(circle at 15% 10%,rgba(0,130,220,.13),transparent 28%),
-    radial-gradient(circle at 85% 35%,rgba(0,190,255,.08),transparent 25%),
-    linear-gradient(135deg,#020407,#030a11 45%,#020509);
+
+  background:linear-gradient(
+    135deg,
+    #050505 0%,
+    #0e0e0e 22%,
+    #020202 45%,
+    #101010 68%,
+    #040404 100%
+  );
+
+  background-size:340% 340%;
+  animation:metal-shift 22s ease-in-out infinite;
+
   color:var(--text);
   font-family:'Inter',sans-serif;
+  position:relative;
+
   overflow-x:hidden;
+  overflow-y:auto;
 }
 
-/* BACKGROUND */
+@keyframes metal-shift{
+  0%{
+    background-position:0% 30%;
+  }
+
+  50%{
+    background-position:100% 70%;
+  }
+
+  100%{
+    background-position:0% 30%;
+  }
+}
 
 .bg-grid{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  opacity:.22;
-  background-image:
-    linear-gradient(rgba(0,160,255,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,160,255,.035) 1px,transparent 1px);
-  background-size:50px 50px;
-  mask-image:linear-gradient(to bottom,black,transparent 90%);
+  display:none;
 }
 
 .bg-glow{
-  position:fixed;
-  width:500px;
-  height:500px;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:0;
-  filter:blur(100px);
-  opacity:.11;
-}
-
-.bg-glow.one{
-  background:#0077cc;
-  top:-250px;
-  left:-200px;
-}
-
-.bg-glow.two{
-  background:#00c8ff;
-  right:-250px;
-  top:35%;
+  display:none;
 }
 
 .grain{
   position:fixed;
   inset:0;
-  z-index:1;
+  z-index:0;
   pointer-events:none;
-  opacity:.025;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+  opacity:.035;
+  mix-blend-mode:overlay;
 
-/* APP */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
 .app{
   position:relative;
-  z-index:2;
+  z-index:1;
 
-  width:100%;
+  max-width:100%;
+  margin:0;
+  padding:0;
   min-height:100vh;
 
   display:flex;
+  gap:0;
+  align-items:stretch;
 
   opacity:0;
-  animation:appIn .7s ease forwards;
+  animation:app-in .7s ease forwards;
+
+  zoom:1.15;
 }
 
-@keyframes appIn{
+@supports not (zoom:1){
+  .app{
+    zoom:normal;
+    transform:scale(1.15);
+    transform-origin:top center;
+    width:87%;
+    margin:0 auto;
+  }
+}
+
+@keyframes app-in{
   from{
     opacity:0;
     transform:translateY(8px);
   }
+
   to{
     opacity:1;
     transform:translateY(0);
   }
 }
 
-/* SIDEBAR */
+
 
 .sidebar{
   width:var(--sidebar-w);
   flex-shrink:0;
 
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
+  background:linear-gradient(
+    160deg,
+    #070707 0%,
+    #000000 60%,
+    #050505 100%
+  );
 
-  padding:28px 12px;
+  border:none;
+  border-right:1px solid #1a1a1a;
+  border-radius:0;
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(3,10,17,.97),
-      rgba(2,7,12,.98)
-    );
+  padding:22px 8px;
+  position:relative;
 
-  border-right:1px solid rgba(0,170,255,.12);
-
-  box-shadow:
-    12px 0 50px rgba(0,0,0,.2);
-
-  z-index:20;
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.04);
 }
 
 .sidebar-title{
-  padding:12px 14px 14px;
+  padding:12px 14px;
 
-  color:#4f7389;
+  color:var(--muted);
 
-  font-size:10px;
-  font-weight:600;
-  letter-spacing:.18em;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.12em;
   text-transform:uppercase;
 
-  border-bottom:1px solid rgba(255,255,255,.055);
-  margin-bottom:10px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:6px;
 }
 
 .nav-btn{
@@ -177,133 +183,184 @@ body{
 
   display:flex;
   align-items:center;
-  gap:11px;
+  gap:10px;
 
-  padding:12px 14px;
+  padding:11px 14px;
 
-  color:#668092;
   background:transparent;
+  border:none;
+  border-radius:6px;
 
-  border:1px solid transparent;
-  border-radius:9px;
+  color:var(--muted);
 
-  font-size:13px;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
   font-weight:500;
 
   cursor:pointer;
+  text-align:left;
   text-decoration:none;
+
+  position:relative;
+  overflow:hidden;
 
   transition:
     color .25s ease,
     background .25s ease,
-    border-color .25s ease,
-    transform .25s ease;
+    transform .18s cubic-bezier(.2,.7,.2,1);
+
+  margin-bottom:2px;
 }
 
-.nav-btn + .nav-btn{
-  margin-top:4px;
+.nav-btn:active{
+  transform:translateX(2px) scale(.98);
 }
 
 .nav-btn svg{
-  width:17px;
-  height:17px;
+  width:16px;
+  height:16px;
   flex-shrink:0;
-  transition:color .25s ease;
+
+  opacity:.75;
+
+  transition:
+    opacity .25s ease,
+    transform .25s ease,
+    color .25s ease;
 }
 
 .nav-btn:hover{
-  color:#dff5ff;
-  background:rgba(0,170,255,.055);
-  border-color:rgba(0,170,255,.08);
+  color:var(--text);
+  background:#ffffff06;
   transform:translateX(2px);
 }
 
+.nav-btn:nth-child(2) svg{
+  color:var(--accent);
+  opacity:.55;
+}
+
+.nav-btn:nth-child(3) svg{
+  color:var(--purple);
+  opacity:.55;
+}
+
+.nav-btn:nth-child(4) svg{
+  color:var(--pink);
+  opacity:.55;
+}
+
 .nav-btn.active{
-  color:#eafaff;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0,150,230,.13),
-      rgba(0,150,230,.025)
-    );
-  border-color:rgba(0,170,255,.16);
+  color:var(--text);
+  background:#ffffff09;
 }
 
 .nav-btn.active svg{
-  color:var(--cyan);
+  opacity:1;
 }
 
 .nav-btn::before{
-  content:"";
+  content:'';
+
   position:absolute;
   left:0;
+  top:8px;
+  bottom:8px;
 
   width:2px;
-  height:24px;
+  border-radius:2px;
 
-  background:var(--cyan);
-  border-radius:0 3px 3px 0;
+  background:var(--accent);
 
   transform:scaleY(0);
-  transition:transform .25s ease;
-}
+  transform-origin:center;
 
-.nav-btn{
-  position:relative;
+  transition:
+    transform .3s cubic-bezier(.4,0,.2,1);
 }
 
 .nav-btn.active::before{
   transform:scaleY(1);
 }
 
-/* PANEL */
+
+
 
 .panel{
-  width:calc(100% - var(--sidebar-w));
-  margin-left:var(--sidebar-w);
-
+  flex:1;
+  min-width:0;
   min-height:100vh;
 
-  padding:65px clamp(30px,7vw,100px) 100px;
+  background:linear-gradient(
+    160deg,
+    #060606 0%,
+    #000000 55%,
+    #030303 100%
+  );
+
+  border:none;
+  border-radius:0;
+
+  padding:64px 64px 80px;
 
   position:relative;
+
+  overflow:visible;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 0 90px rgba(255,255,255,.015);
 }
 
 .panel::before{
-  content:"";
+  content:'';
 
   position:absolute;
-  top:0;
-  left:0;
-  right:0;
+  top:-60%;
+  left:-30%;
 
-  height:1px;
+  width:70%;
+  height:220%;
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(0,190,255,.4),
-      transparent
-    );
+  background:linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255,255,255,.08) 48%,
+    rgba(255,255,255,.02) 55%,
+    transparent 70%
+  );
 
-  opacity:.45;
+  pointer-events:none;
+  z-index:0;
+
+  animation:sheen-sweep 12s ease-in-out infinite;
 }
 
-/* VIEWS */
+@keyframes sheen-sweep{
+  0%,100%{
+    transform:translateX(0) translateY(0);
+  }
+
+  50%{
+    transform:translateX(45%) translateY(10%);
+  }
+}
+
+.panel > *{
+  position:relative;
+  z-index:1;
+}
+
+
 
 .view{
-  max-width:1050px;
-  margin:0 auto;
-
-  scroll-margin-top:35px;
+  scroll-margin-top:20px;
 }
 
 .view + .view{
-  margin-top:90px;
-  padding-top:75px;
-
-  border-top:1px solid rgba(0,170,255,.1);
+  margin-top:64px;
+  padding-top:56px;
+  border-top:1px solid var(--border);
 }
 
 .view-header{
@@ -312,40 +369,41 @@ body{
   justify-content:center;
   gap:9px;
 
-  margin-bottom:34px;
-
-  color:#7e9aaa;
+  margin-bottom:8px;
 }
 
 .view-header svg{
-  width:17px;
-  height:17px;
-  color:var(--cyan);
+  width:18px;
+  height:18px;
+  color:var(--accent);
 }
 
 .view-title{
-  font-size:11px;
+  font-family:'Poppins',sans-serif;
+  font-size:14.5px;
   font-weight:600;
-  letter-spacing:.17em;
-  text-transform:uppercase;
 }
 
-/* HERO */
+
+
 
 .hero{
   text-align:center;
-  margin-bottom:58px;
+  margin:32px 0 28px;
 }
 
 .avatar-wrap{
-  width:116px;
-  height:116px;
-
   position:relative;
 
-  margin:0 auto 25px;
+  width:112px;
+  height:112px;
 
-  animation:rise .7s ease forwards;
+  margin:0 auto 20px;
+
+  opacity:0;
+
+  animation:rise .6s ease forwards;
+  animation-delay:.05s;
 }
 
 .avatar-ring{
@@ -354,214 +412,207 @@ body{
 
   border-radius:50%;
 
-  background:
-    conic-gradient(
-      from 0deg,
-      #0066aa,
-      #00c8ff,
-      #0088dd,
-      #005080,
-      #00c8ff,
-      #0066aa
-    );
+  background:linear-gradient(
+    135deg,
+    var(--accent),
+    var(--purple)
+  );
 
-  animation:ringRotate 7s linear infinite;
+  opacity:.7;
 
-  box-shadow:
-    0 0 25px rgba(0,180,255,.16);
+  animation:ring-spin 10s linear infinite;
+
+  background-size:200% 200%;
 }
 
-.avatar-ring::after{
-  content:"";
-  position:absolute;
-  inset:2px;
+@keyframes ring-spin{
+  0%{
+    background-position:0% 50%;
+  }
 
-  border-radius:50%;
-
-  background:#03080e;
-}
-
-@keyframes ringRotate{
-  to{
-    transform:rotate(360deg);
+  100%{
+    background-position:200% 50%;
   }
 }
 
 .avatar{
   position:absolute;
-  inset:4px;
+  inset:3px;
 
   border-radius:50%;
+
+  background:radial-gradient(
+    circle at 35% 30%,
+    #1c1f24,
+    #0b0d10
+  );
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  background:
-    radial-gradient(
-      circle at 35% 25%,
-      #163b52,
-      #07111b 70%
-    );
-
-  border:1px solid rgba(0,190,255,.2);
-
-  font-size:36px;
+  font-family:'Poppins',sans-serif;
+  font-size:32px;
   font-weight:700;
 
-  color:var(--cyan);
-
-  z-index:2;
+  color:var(--accent);
 }
 
 .name{
-  font-size:38px;
+  font-family:'Poppins',sans-serif;
+  font-size:34px;
   font-weight:700;
-  letter-spacing:-.035em;
 
-  margin-bottom:9px;
+  letter-spacing:-.01em;
 
-  background:
-    linear-gradient(
-      100deg,
-      #f0fbff 10%,
-      #72ddff 45%,
-      #00aaff 65%,
-      #eafaff 90%
-    );
+  margin-bottom:8px;
 
-  background-size:220% 100%;
-  background-position:0% 50%;
+  opacity:0;
+
+  animation:
+    rise .6s ease forwards,
+    name-glow 9s ease-in-out infinite;
+
+  animation-delay:.14s,.7s;
+
+  background:linear-gradient(
+    100deg,
+    var(--text) 30%,
+    var(--accent) 55%,
+    var(--purple) 75%,
+    var(--text) 95%
+  );
+
+  background-size:260% 100%;
 
   -webkit-background-clip:text;
   background-clip:text;
-  color:transparent;
 
-  animation:
-    rise .7s ease forwards,
-    nameShift 8s ease-in-out infinite;
+  color:transparent;
 }
 
-@keyframes nameShift{
+@keyframes name-glow{
   0%,100%{
     background-position:0% 50%;
   }
+
   50%{
     background-position:100% 50%;
   }
 }
 
 .role{
-  display:flex;
-  justify-content:center;
+  display:inline-flex;
   align-items:center;
   gap:7px;
 
-  color:#718b9b;
+  color:var(--muted);
 
-  font-size:13px;
+  font-size:14.5px;
+  font-weight:500;
 
-  margin-bottom:25px;
+  margin-bottom:20px;
 
-  animation:rise .7s .08s ease both;
+  opacity:0;
+
+  animation:rise .6s ease forwards;
+  animation-delay:.22s;
 }
 
 .role svg{
-  width:14px;
-  height:14px;
-  color:var(--cyan);
+  width:13px;
+  height:13px;
 }
 
 .stat-row{
   display:flex;
   justify-content:center;
+  gap:32px;
+
   flex-wrap:wrap;
-  gap:10px;
 
-  animation:rise .7s .14s ease both;
-}
+  font-size:13.5px;
 
-.stat-row span{
-  padding:7px 12px;
+  opacity:0;
 
-  border:1px solid rgba(0,170,255,.11);
-  border-radius:7px;
-
-  background:rgba(0,120,180,.035);
-
-  color:#6e8797;
-
-  font-size:11.5px;
+  animation:rise .6s ease forwards;
+  animation-delay:.3s;
 }
 
 .stat-row b{
-  color:#ccebf7;
+  color:var(--text);
   font-weight:600;
+}
+
+.stat-row span{
+  color:var(--muted);
 }
 
 @keyframes rise{
   from{
     opacity:0;
-    transform:translateY(12px);
+    transform:translateY(10px);
   }
+
   to{
     opacity:1;
     transform:translateY(0);
   }
 }
 
-/* LABELS */
+
 
 .section-label{
   display:flex;
   align-items:center;
+  gap:9px;
+
   justify-content:center;
-  gap:10px;
 
   margin:38px 0 16px;
 
-  color:#547286;
+  color:var(--muted);
 
-  font-size:10px;
-  font-weight:600;
-  letter-spacing:.17em;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;
+
+  letter-spacing:.12em;
   text-transform:uppercase;
 }
 
 .section-label svg{
   width:13px;
   height:13px;
-  color:var(--cyan);
 }
 
 .section-label::before,
 .section-label::after{
-  content:"";
-  height:1px;
-  width:70px;
+  content:'';
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(0,170,255,.18)
-    );
+  height:1px;
+  width:56px;
+
+  background:linear-gradient(
+    90deg,
+    transparent,
+    var(--border)
+  );
 }
 
 .section-label::after{
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0,170,255,.18),
-      transparent
-    );
+  background:linear-gradient(
+    90deg,
+    var(--border),
+    transparent
+  );
 }
 
-/* REVEAL */
+
 
 .reveal{
   opacity:0;
-  transform:translateY(15px);
+
+  transform:translateY(16px);
 
   transition:
     opacity .55s cubic-bezier(.2,.7,.2,1),
@@ -573,142 +624,135 @@ body{
   transform:translateY(0);
 }
 
-/* GRID */
+
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:13px;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
-/* CARDS */
+
 
 .card{
-  --card-color:var(--cyan);
+  --card-color:var(--accent);
 
-  position:relative;
-  display:block;
+  background:linear-gradient(
+    155deg,
+    #151b23b3,
+    #10141ab3
+  );
 
-  padding:21px 19px;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
 
-  min-height:110px;
+  border:1px solid var(--border);
+  border-radius:8px;
 
-  overflow:hidden;
-
-  color:inherit;
-  text-decoration:none;
+  padding:19px 18px;
 
   text-align:center;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(10,27,42,.82),
-      rgba(5,14,23,.86)
-    );
-
-  border:1px solid rgba(75,150,190,.13);
-  border-radius:12px;
-
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-
   cursor:pointer;
 
+  position:relative;
+
+  text-decoration:none;
+  color:inherit;
+
+  display:block;
+
+  overflow:hidden;
+
   transition:
-    transform .3s cubic-bezier(.2,.7,.2,1),
     border-color .3s ease,
+    transform .3s cubic-bezier(.2,.7,.2,1),
     background .3s ease,
     box-shadow .3s ease;
 }
 
 .card::before{
-  content:"";
+  content:'';
 
   position:absolute;
-  top:0;
-  left:18%;
-  right:18%;
 
-  height:1px;
+  top:0;
+  left:14%;
+  right:14%;
+
+  height:2px;
+
+  border-radius:0 0 2px 2px;
 
   background:var(--card-color);
 
-  opacity:.45;
+  opacity:.35;
 
   transition:
+    opacity .3s ease,
     left .3s ease,
-    right .3s ease,
-    opacity .3s ease;
+    right .3s ease;
 }
 
 .card::after{
-  content:"";
+  content:'';
 
   position:absolute;
-  width:190px;
-  height:100px;
+  inset:0;
 
-  top:-55px;
-  left:50%;
-
-  transform:translateX(-50%);
-
-  background:var(--card-color);
+  background:radial-gradient(
+    180px 100px at 50% -10%,
+    color-mix(
+      in srgb,
+      var(--card-color) 16%,
+      transparent
+    ),
+    transparent 70%
+  );
 
   opacity:0;
-  filter:blur(55px);
-
-  pointer-events:none;
 
   transition:opacity .35s ease;
+
+  pointer-events:none;
 }
 
 .card:hover{
-  transform:translateY(-4px);
+  border-color:color-mix(
+    in srgb,
+    var(--card-color) 45%,
+    var(--border)
+  );
 
-  border-color:
-    color-mix(
-      in srgb,
-      var(--card-color) 45%,
-      rgba(75,150,190,.13)
-    );
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(10,31,48,.92),
-      rgba(5,15,25,.92)
-    );
+  transform:translateY(-3px);
 
   box-shadow:
-    0 18px 45px rgba(0,0,0,.25),
-    0 0 25px color-mix(
+    0 16px 32px -18px #000b,
+    0 0 0 1px color-mix(
       in srgb,
-      var(--card-color) 8%,
+      var(--card-color) 22%,
       transparent
     );
 }
 
 .card:hover::before{
-  left:7%;
-  right:7%;
-  opacity:.9;
+  opacity:1;
+  left:6%;
+  right:6%;
 }
 
 .card:hover::after{
-  opacity:.13;
+  opacity:1;
 }
 
 .card:active{
-  transform:translateY(-1px) scale(.985);
+  transform:translateY(-1px) scale(.98);
 }
 
-.card-content{
-  position:relative;
-  z-index:2;
 
-  transition:opacity .2s ease;
+
+.card-content{
+  transition:opacity .22s ease;
 }
 
 .card:hover .card-content.has-hint{
@@ -723,122 +767,164 @@ body{
   align-items:center;
   justify-content:center;
 
-  padding:15px;
+  padding:0 16px;
+  text-align:center;
+
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  font-size:13.5px;
 
   color:var(--card-color);
 
-  font-size:12px;
-  font-weight:600;
-
   opacity:0;
+  pointer-events:none;
 
-  transition:opacity .2s ease;
-
-  z-index:3;
+  transition:opacity .22s ease;
 }
 
 .card:hover .card-hover-hint{
   opacity:1;
 }
 
+
+
+.ripple{
+  position:absolute;
+
+  border-radius:50%;
+
+  transform:scale(0);
+
+  background:radial-gradient(
+    circle,
+    var(--card-color,var(--accent)) 0%,
+    transparent 72%
+  );
+
+  opacity:.55;
+
+  pointer-events:none;
+
+  animation:ripple-out .65s cubic-bezier(.22,.7,.2,1) forwards;
+}
+
+@keyframes ripple-out{
+  to{
+    transform:scale(2.4);
+    opacity:0;
+  }
+}
+
+
+
 .card-title{
-  margin-bottom:6px;
-
-  color:#dff4ff;
-
-  font-size:14px;
   font-weight:600;
+  font-size:14.5px;
+  margin-bottom:4px;
 }
 
-.card-date,
+.card-date{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:11px;
+  font-family:'JetBrains Mono',monospace;
+}
+
 .card-period{
-  margin-bottom:13px;
-
-  color:#627d8e;
-
-  font-size:10.5px;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:11px;
+  font-family:'JetBrains Mono',monospace;
 }
+
+.card-value{
+  color:var(--accent);
+  font-weight:600;
+  font-size:14px;
+}
+
+
 
 .badge{
   display:inline-flex;
   align-items:center;
-  justify-content:center;
+  gap:5px;
 
-  padding:5px 9px;
+  font-family:'JetBrains Mono',monospace;
+
+  font-size:10px;
+  font-weight:600;
+
+  letter-spacing:.05em;
+
+  padding:5px 10px;
+
+  border-radius:5px;
 
   border:1px solid transparent;
-  border-radius:6px;
-
-  font-size:9px;
-  font-weight:600;
-  letter-spacing:.07em;
-  text-transform:uppercase;
 }
 
 .badge.cyan{
-  color:var(--cyan);
-  background:rgba(0,200,255,.08);
-  border-color:rgba(0,200,255,.2);
+  color:var(--accent);
+  background:#2dd4bf20;
+  border-color:#2dd4bf45;
 }
 
-.badge.blue{
-  color:#66bfff;
-  background:rgba(60,150,255,.08);
-  border-color:rgba(60,150,255,.2);
+.badge.teal{
+  color:var(--teal);
+  background:#14b8a620;
+  border-color:#14b8a645;
 }
 
 .badge.green{
   color:var(--green);
-  background:rgba(69,230,139,.08);
-  border-color:rgba(69,230,139,.2);
+  background:#4ade8020;
+  border-color:#4ade8045;
 }
 
-.badge.red{
-  color:var(--red);
-  background:rgba(255,82,101,.08);
-  border-color:rgba(255,82,101,.2);
+.badge.blue{
+  color:var(--blue);
+  background:#60a5fa20;
+  border-color:#60a5fa45;
 }
 
 .badge.purple{
   color:var(--purple);
-  background:rgba(169,140,255,.08);
-  border-color:rgba(169,140,255,.2);
+  background:#a78bfa20;
+  border-color:#a78bfa45;
+}
+
+.badge.red{
+  color:var(--red);
+  background:#ef444420;
+  border-color:#ef444445;
 }
 
 .badge.pink{
   color:var(--pink);
-  background:rgba(255,114,189,.08);
-  border-color:rgba(255,114,189,.2);
-}
-
-.badge.teal{
-  color:#3de1cc;
-  background:rgba(20,184,166,.08);
-  border-color:rgba(20,184,166,.2);
+  background:#f472b620;
+  border-color:#f472b645;
 }
 
 .badge.gray{
   color:var(--gray);
-  background:rgba(155,169,180,.08);
-  border-color:rgba(155,169,180,.2);
+  background:#9aa0a820;
+  border-color:#9aa0a845;
 }
 
+
+
 .link-icon{
-  width:25px;
-  height:25px;
+  width:24px;
+  height:24px;
 
-  margin:0 auto 10px;
+  margin:0 auto 9px;
 
-  color:#628195;
+  color:var(--muted);
 
   transition:
     color .25s ease,
     transform .25s ease;
-}
-
-.link-icon svg{
-  width:100%;
-  height:100%;
 }
 
 .card:hover .link-icon{
@@ -846,15 +932,48 @@ body{
   transform:scale(1.08);
 }
 
+.category-label{
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  font-size:13.5px;
+
+  color:var(--text);
+
+  margin:28px 0 11px;
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.category-label:first-of-type{
+  margin-top:4px;
+}
+
+.category-label::before{
+  content:'';
+
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  background:var(--dot-color,var(--accent));
+
+  box-shadow:
+    0 0 5px var(--dot-color,var(--accent));
+}
+
 .go{
   position:absolute;
-  top:13px;
-  right:13px;
 
-  width:13px;
-  height:13px;
+  top:14px;
+  right:14px;
 
-  color:#587283;
+  width:14px;
+  height:14px;
+
+  color:var(--muted);
 
   opacity:0;
 
@@ -866,144 +985,96 @@ body{
 }
 
 .card:hover .go{
-  opacity:.9;
+  opacity:.8;
   transform:translate(0,0);
 }
 
-.category-label{
-  display:flex;
-  align-items:center;
-  gap:8px;
-
-  margin:30px 0 12px;
-
-  color:#a5c1d0;
-
-  font-size:12px;
-  font-weight:600;
-}
-
-.category-label:first-child{
-  margin-top:4px;
-}
-
-.category-label::before{
-  content:"";
-
-  width:6px;
-  height:6px;
-
-  border-radius:50%;
-
-  background:var(--dot-color,var(--cyan));
-
-  box-shadow:0 0 8px var(--dot-color,var(--cyan));
-}
-
 .empty-note{
-  grid-column:1/-1;
-
-  padding:20px;
-
-  color:#526d7d;
-
   text-align:center;
 
-  font-size:11px;
+  color:var(--muted);
+
+  font-size:13px;
+
+  font-family:'JetBrains Mono',monospace;
+
+  padding:18px 0 4px;
 }
 
-/* RIPPLE */
 
-.ripple{
-  position:absolute;
 
-  border-radius:50%;
-
-  transform:scale(0);
-
-  background:
-    radial-gradient(
-      circle,
-      var(--card-color,var(--cyan)),
-      transparent 70%
-    );
-
-  opacity:.45;
-
-  pointer-events:none;
-
-  animation:rippleOut .65s ease forwards;
-
-  z-index:5;
+::-webkit-scrollbar{
+  width:9px;
 }
 
-@keyframes rippleOut{
-  to{
-    transform:scale(2.4);
-    opacity:0;
-  }
+::-webkit-scrollbar-track{
+  background:transparent;
 }
 
-/* MUSIC */
+::-webkit-scrollbar-thumb{
+  background:var(--border);
+  border-radius:5px;
+}
+
+
 
 .sound-toggle-wrap{
   position:fixed;
 
-  right:22px;
-  bottom:22px;
+  right:18px;
+  bottom:18px;
 
   z-index:50;
 
   display:flex;
   flex-direction:column;
+
   align-items:center;
-  gap:9px;
+  gap:10px;
 }
 
 .sound-toggle{
-  width:43px;
-  height:43px;
+  width:42px;
+  height:42px;
+
+  border-radius:50%;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  border-radius:50%;
+  background:#0a0a0ad9;
 
-  color:#7895a5;
+  border:1px solid var(--border);
 
-  background:rgba(3,12,20,.88);
-
-  border:1px solid rgba(0,170,255,.18);
-
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  color:var(--muted);
 
   cursor:pointer;
+
+  backdrop-filter:blur(8px);
 
   transition:
     color .25s ease,
     border-color .25s ease,
-    transform .2s ease,
-    box-shadow .25s ease;
-}
-
-.sound-toggle:hover{
-  color:var(--cyan);
-
-  border-color:rgba(0,200,255,.4);
-
-  box-shadow:
-    0 0 20px rgba(0,170,255,.08);
-}
-
-.sound-toggle:active{
-  transform:scale(.9);
+    transform .2s cubic-bezier(.2,.7,.2,1);
 }
 
 .sound-toggle svg{
   width:18px;
   height:18px;
+}
+
+.sound-toggle:hover{
+  color:var(--text);
+  border-color:var(--accent-dim);
+}
+
+.sound-toggle:active{
+  transform:scale(.92);
+}
+
+.sound-toggle.is-muted{
+  color:var(--muted);
 }
 
 .sound-toggle .icon-on{
@@ -1022,22 +1093,25 @@ body{
   display:block;
 }
 
+
+
 .volume-popup{
-  width:40px;
-  height:112px;
+  width:38px;
+  height:110px;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  background:rgba(3,12,20,.94);
+  background:#0a0a0ad9;
 
-  border:1px solid rgba(0,170,255,.18);
-  border-radius:20px;
+  border:1px solid var(--border);
+  border-radius:19px;
 
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(8px);
 
   opacity:0;
+
   transform:translateY(8px) scale(.92);
 
   pointer-events:none;
@@ -1049,29 +1123,31 @@ body{
 
 .volume-popup.show{
   opacity:1;
+
   transform:translateY(0) scale(1);
+
   pointer-events:auto;
 }
 
 .volume-slider{
-  width:80px;
+  -webkit-appearance:none;
+  appearance:none;
+
+  width:78px;
   height:4px;
 
-  appearance:none;
-  -webkit-appearance:none;
+  border-radius:2px;
 
-  background:#173142;
-
-  border-radius:3px;
+  background:var(--border);
 
   transform:rotate(-90deg);
 
   outline:none;
+
   cursor:pointer;
 }
 
 .volume-slider::-webkit-slider-thumb{
-  appearance:none;
   -webkit-appearance:none;
 
   width:13px;
@@ -1079,9 +1155,10 @@ body{
 
   border-radius:50%;
 
-  background:var(--cyan);
+  background:var(--accent);
 
-  box-shadow:0 0 9px rgba(0,200,255,.4);
+  box-shadow:
+    0 0 6px var(--accent-dim);
 
   cursor:pointer;
 }
@@ -1090,15 +1167,27 @@ body{
   width:13px;
   height:13px;
 
-  border:none;
   border-radius:50%;
 
-  background:var(--cyan);
+  background:var(--accent);
+
+  border:none;
+
+  box-shadow:
+    0 0 6px var(--accent-dim);
 
   cursor:pointer;
 }
 
-/* RANK MODAL */
+.volume-slider::-moz-range-track{
+  background:var(--border);
+
+  height:4px;
+
+  border-radius:2px;
+}
+
+
 
 .rank-modal-overlay{
   position:fixed;
@@ -1106,16 +1195,16 @@ body{
 
   z-index:9998;
 
+  background:rgba(0,0,0,.62);
+
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+
   display:flex;
   align-items:center;
   justify-content:center;
 
   padding:20px;
-
-  background:rgba(0,4,8,.72);
-
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
 
   opacity:0;
   pointer-events:none;
@@ -1129,30 +1218,27 @@ body{
 }
 
 .rank-modal{
-  width:min(390px,100%);
+  width:min(380px,100%);
+
+  background:linear-gradient(
+    155deg,
+    #151b23f2,
+    #0d1117f2
+  );
+
+  border:1px solid var(--border);
+  border-radius:12px;
+
+  padding:26px 24px 22px;
 
   max-height:82vh;
   overflow-y:auto;
 
-  padding:27px 24px 22px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(10,29,44,.97),
-      rgba(4,13,22,.98)
-    );
-
-  border:1px solid rgba(0,180,255,.2);
-  border-radius:15px;
-
-  box-shadow:
-    0 30px 80px rgba(0,0,0,.5),
-    0 0 35px rgba(0,140,220,.06);
-
-  transform:translateY(14px) scale(.96);
+  transform:translateY(12px) scale(.96);
 
   transition:transform .28s cubic-bezier(.2,.7,.2,1);
+
+  box-shadow:0 24px 60px -20px #000c;
 }
 
 .rank-modal-overlay.show .rank-modal{
@@ -1160,27 +1246,27 @@ body{
 }
 
 .rank-modal-title{
-  margin-bottom:5px;
-
-  color:#e9f8ff;
-
-  font-size:18px;
+  font-family:'Poppins',sans-serif;
   font-weight:700;
+  font-size:18px;
 
   text-align:center;
+
+  margin-bottom:4px;
 }
 
 .rank-modal-sub{
-  margin-bottom:20px;
+  color:var(--muted);
 
-  color:#587384;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
 
-  font-size:9px;
-  font-weight:600;
-  letter-spacing:.12em;
-
+  letter-spacing:.05em;
   text-transform:uppercase;
+
   text-align:center;
+
+  margin-bottom:18px;
 }
 
 .rank-list{
@@ -1193,36 +1279,41 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:10px;
 
   padding:12px 14px;
 
-  color:#d8edf7;
+  border:1px solid var(--border);
+  border-radius:8px;
 
+  background:#ffffff05;
+
+  color:var(--text);
   text-decoration:none;
 
-  background:rgba(255,255,255,.025);
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+  font-size:14px;
 
-  border:1px solid rgba(80,150,190,.13);
-  border-radius:9px;
-
-  font-size:13px;
+  cursor:pointer;
 
   transition:
-    background .2s ease,
     border-color .2s ease,
+    background .2s ease,
     transform .2s ease;
 }
 
 .rank-item:hover{
-  background:rgba(0,170,255,.07);
-  border-color:rgba(0,190,255,.25);
+  border-color:var(--accent-dim);
+  background:#ffffff0c;
   transform:translateX(3px);
 }
 
 .rank-item svg{
   width:14px;
   height:14px;
-  color:#668697;
+  flex-shrink:0;
+  color:var(--muted);
 }
 
 .rank-modal-close{
@@ -1230,15 +1321,17 @@ body{
 
   margin:18px auto 0;
 
-  padding:9px 18px;
-
-  color:#698696;
   background:transparent;
 
-  border:1px solid rgba(70,140,180,.15);
-  border-radius:7px;
+  border:1px solid var(--border);
+  border-radius:6px;
 
-  font-size:11px;
+  color:var(--muted);
+
+  font-family:'Inter',sans-serif;
+  font-size:12.5px;
+
+  padding:9px 18px;
 
   cursor:pointer;
 
@@ -1248,75 +1341,45 @@ body{
 }
 
 .rank-modal-close:hover{
-  color:#dff6ff;
-  border-color:rgba(0,180,255,.3);
+  color:var(--text);
+  border-color:var(--accent-dim);
 }
 
 .rank-modal-empty{
-  padding:12px;
-
-  color:#587384;
-
-  font-size:11px;
   text-align:center;
+
+  color:var(--muted);
+
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+
+  padding:10px 0;
 }
 
-/* SCROLLBAR */
 
-::-webkit-scrollbar{
-  width:7px;
-}
-
-::-webkit-scrollbar-track{
-  background:#02070b;
-}
-
-::-webkit-scrollbar-thumb{
-  background:#123244;
-  border-radius:10px;
-}
-
-::-webkit-scrollbar-thumb:hover{
-  background:#1b526d;
-}
-
-/* MOBILE */
 
 @media(max-width:820px){
 
   .app{
-    display:block;
+    flex-direction:column;
+    zoom:1.05;
   }
 
   .sidebar{
-    position:fixed;
+    width:100%;
 
-    left:12px;
-    right:12px;
-    bottom:12px;
-    top:auto;
+    position:relative;
+    top:0;
 
-    width:auto;
-    height:61px;
-
-    padding:7px;
+    min-height:auto;
 
     display:flex;
-    align-items:center;
-    gap:5px;
 
-    background:rgba(3,12,20,.91);
+    gap:4px;
 
-    border:1px solid rgba(0,170,255,.14);
-    border-radius:15px;
+    border-right:none;
 
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-
-    box-shadow:
-      0 15px 45px rgba(0,0,0,.45);
-
-    z-index:100;
+    border-bottom:1px solid #1a1a1a;
   }
 
   .sidebar-title{
@@ -1326,72 +1389,26 @@ body{
   .nav-btn{
     flex:1;
     justify-content:center;
-
-    padding:9px 7px;
-
-    font-size:10px;
-  }
-
-  .nav-btn svg{
-    width:16px;
-    height:16px;
-  }
-
-  .nav-btn::before{
-    display:none;
   }
 
   .panel{
-    width:100%;
-    margin-left:0;
-
-    padding:
-      45px
-      20px
-      105px;
-  }
-
-  .view + .view{
-    margin-top:65px;
-    padding-top:55px;
+    padding:36px 20px 44px;
+    min-height:auto;
   }
 
   .name{
-    font-size:31px;
-  }
-
-  .avatar-wrap{
-    width:105px;
-    height:105px;
+    font-size:28px;
   }
 }
 
-@media(max-width:600px){
+@media(max-width:640px){
 
   .grid{
     grid-template-columns:1fr;
   }
 
   .stat-row{
-    gap:7px;
-  }
-
-  .stat-row span{
-    font-size:10.5px;
-  }
-
-  .section-label::before,
-  .section-label::after{
-    width:35px;
-  }
-
-  .card{
-    min-height:105px;
-  }
-
-  .sound-toggle-wrap{
-    right:16px;
-    bottom:86px;
+    gap:12px 24px;
   }
 }
 
@@ -1410,7 +1427,9 @@ body{
     transform:none !important;
   }
 }
+
 </style>
+
 </head>
 
 <body>
@@ -1422,184 +1441,337 @@ body{
 
 <div class="app">
 
-<aside class="sidebar">
+  <aside class="sidebar">
 
-  <div class="sidebar-title">Navigation</div>
+<div class="sidebar-title">
+  Menu
+</div>
 
-  <a class="nav-btn active" data-view="about" href="#about">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="8" r="4"/>
-      <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
-    </svg>
-    About myself
-  </a>
 
-  <a class="nav-btn" data-view="experience" href="#experience">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a4 4 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/>
-    </svg>
-    Staff Experience
-  </a>
+<a
+  class="nav-btn active"
+  data-view="about"
+  href="#about"
+>
 
-  <a class="nav-btn" data-view="content" href="#content">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-    </svg>
-    Content Creator
-  </a>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+  </svg>
 
-</aside>
+  About myself
 
-<main class="panel">
+</a>
 
-<section id="about" class="view">
+
+<a
+  class="nav-btn"
+  data-view="experience"
+  href="#experience"
+>
+
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/>
+  </svg>
+
+  Staff Experience
+
+</a>
+
+
+<a
+  class="nav-btn"
+  data-view="content"
+  href="#content"
+>
+
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
+  </svg>
+
+  Content Creator Experience
+
+</a>
+
+
+  </aside>
+
+  <main class="panel">
+
+<section
+  id="about"
+  class="view"
+>
 
   <div class="view-header">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
       <circle cx="12" cy="8" r="4"/>
       <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
     </svg>
-    <span class="view-title">About myself</span>
+
+    <span class="view-title">
+      About myself
+    </span>
+
   </div>
+
 
   <div class="hero">
 
     <div class="avatar-wrap">
+
       <div class="avatar-ring"></div>
-      <div class="avatar" id="avatarInitial"></div>
+
+      <div
+        class="avatar"
+        id="avatarInitial"
+      ></div>
+
     </div>
 
-    <h1 class="name" id="pName"></h1>
+
+    <h1
+      class="name"
+      id="pName"
+    ></h1>
+
 
     <div class="role">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <circle cx="11" cy="11" r="7"/>
         <path d="M21 21l-4.3-4.3"/>
       </svg>
+
       <span id="pRole"></span>
+
     </div>
 
-    <div class="stat-row" id="pStats"></div>
+
+    <div
+      class="stat-row"
+      id="pStats"
+    ></div>
 
   </div>
 
+
   <div class="section-label">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
       <path d="M17 20h5v-2a4 4 0 00-3-3.9M9 20H4v-2a4 4 0 013-3.9m5-3a4 4 0 100-8 4 4 0 000 8zm6 1a4 4 0 100-8"/>
     </svg>
+
     Currently
+
   </div>
 
-  <div class="grid" id="currentlyGrid"></div>
+
+  <div
+    class="grid"
+    id="currentlyGrid"
+  ></div>
+
 
   <div class="section-label">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
       <path d="M10 13a5 5 0 007.5.4l2-2a5 5 0 00-7-7l-1.2 1.1M14 11a5 5 0 00-7.5-.4l-2 2a5 5 0 007 7l1.1-1.1"/>
     </svg>
+
     Links
+
   </div>
 
-  <div class="grid" id="linksGrid"></div>
+
+  <div
+    class="grid"
+    id="linksGrid"
+  ></div>
 
 </section>
 
-<section id="experience" class="view">
+
+
+<section
+  id="experience"
+  class="view"
+>
 
   <div class="view-header">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
       <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a4 4 0 001.4 0l3.1-3.1a4 4 0 01-5.3 5.3L7 20l-3-3 8.5-8.5a4 4 0 015.3-5.3l-3.1 3.1z"/>
     </svg>
-    <span class="view-title">Staff Experience</span>
+
+    <span class="view-title">
+      Staff Experience
+    </span>
+
   </div>
+
 
   <div id="experienceContent"></div>
 
 </section>
 
-<section id="content" class="view">
+
+
+
+<section
+  id="content"
+  class="view"
+>
 
   <div class="view-header">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
       <path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
     </svg>
-    <span class="view-title">Content Creator Experience</span>
+
+    <span class="view-title">
+      Content Creator Experience
+    </span>
+
   </div>
+
 
   <div id="contentExperienceContent"></div>
 
 </section>
 
-</main>
+
+  </main>
+
 </div>
 
-<!-- MUSIC -->
+<div
+  class="sound-toggle-wrap"
+  id="soundToggleWrap"
+>
 
-<div class="sound-toggle-wrap" id="soundToggleWrap">
-
-  <div class="volume-popup" id="volumePopup">
-    <input
-      type="range"
-      class="volume-slider"
-      id="volumeSlider"
-      min="0"
-      max="100"
-      value="50"
-      aria-label="Volume musica"
-    >
-  </div>
-
-  <button
-    class="sound-toggle"
-    id="soundToggle"
-    type="button"
-    aria-label="Attiva/disattiva musica"
+  <div
+    class="volume-popup"
+    id="volumePopup"
   >
 
-    <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-      <path d="M4 9v6h4l5 5V4L8 9H4z"/>
-      <path d="M17.5 8.5a5 5 0 010 7"/>
-      <path d="M20 6a9 9 0 010 12"/>
-    </svg>
 
-    <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-      <path d="M4 9v6h4l5 5V4L8 9H4z"/>
-      <path d="M17 9l5 6M22 9l-5 6"/>
-    </svg>
+<input
+  type="range"
+  class="volume-slider"
+  id="volumeSlider"
+  min="0"
+  max="100"
+  value="50"
+  aria-label="Volume musica"
+>
+
+
+  </div>
+
+<button
+class="sound-toggle"
+id="soundToggle"
+type="button"
+aria-label="Attiva/disattiva musica"
+
+>
+
+
+<svg
+  class="icon-on"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+>
+  <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+  <path d="M17.5 8.5a5 5 0 010 7"/>
+  <path d="M20 6a9 9 0 010 12"/>
+</svg>
+
+
+<svg
+  class="icon-off"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+>
+  <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+  <path d="M17 9l5 6M22 9l-5 6"/>
+</svg>
+
 
   </button>
-</div>
 
-<!-- RANK MODAL -->
+</div>
 
 <div class="rank-modal-overlay" id="rankModalOverlay">
 
   <div class="rank-modal">
 
-    <div class="rank-modal-title" id="rankModalTitle"></div>
 
-    <div class="rank-modal-sub">
-      Seleziona il rank per vedere le prove
-    </div>
+<div class="rank-modal-title" id="rankModalTitle"></div>
 
-    <div class="rank-list" id="rankModalList"></div>
+<div class="rank-modal-sub">Seleziona il rank per vedere le prove</div>
 
-    <button
-      class="rank-modal-close"
-      id="rankModalClose"
-      type="button"
-    >
-      Chiudi
-    </button>
+<div class="rank-list" id="rankModalList"></div>
+
+<button class="rank-modal-close" id="rankModalClose" type="button">Chiudi</button>
+
 
   </div>
 
 </div>
 
 <script>
-
-/* =========================
-   PROFILE DATA
-========================= */
 
 const PROFILE = {
 
@@ -1615,17 +1787,20 @@ const PROFILE = {
       value:"14 y/o",
       visible:true
     },
+
     {
       label:"Dove?",
       value:"Italy",
       visible:true
     },
+
     {
       label:"Cosa Faccio?",
       value:"Diventando Staff & Ex-Content Creator",
       visible:true
     }
   ],
+
 
   currently:[
     {
@@ -1636,16 +1811,50 @@ const PROFILE = {
       badgeColor:"blue",
       link:"https://imgur.com/a/xVC5HCE",
       visible:true,
+
       menuRank:true,
+
       ranks:[
-        {name:"Trainee",visible:true,link:"https://imgur.com/a/CutX8rT"},
-        {name:"Helper",visible:true,link:"https://imgur.com/a/vIWSenL"},
-        {name:"Mod",visible:true,link:"https://imgur.com/a/5lZgXh1"},
-        {name:"Sr.Mod",visible:false,link:"#"},
-        {name:"Admin",visible:false,link:"#"},
-        {name:"Sr.Admin",visible:false,link:"#"},
-        {name:"Altro",visible:false,link:"#"},
-        {name:"Altro",visible:false,link:"#"}
+        {
+          name:"Trainee",
+          visible:true,
+          link:"https://imgur.com/a/CutX8rT"
+        },
+        {
+          name:"Helper",
+          visible:true,
+          link:"https://imgur.com/a/vIWSenL"
+        },
+        {
+          name:"Mod",
+          visible:true,
+          link:"https://imgur.com/a/5lZgXh1"
+        },
+        {
+          name:"Sr.Mod",
+          visible:false,
+          link:"#"
+        },
+        {
+          name:"Admin",
+          visible:false,
+          link:"#"
+        },
+        {
+          name:"Sr.Admin",
+          visible:false,
+          link:"#"
+        },
+        {
+          name:"Altro",
+          visible:false,
+          link:"#"
+        },
+        {
+          name:"Altro",
+          visible:false,
+          link:"#"
+        }
       ]
     },
 
@@ -1658,9 +1867,19 @@ const PROFILE = {
       link:"https://discord.gg/GfWCM8SZ63",
       visible:true,
       menuRank:false,
-      ranks:[]
+      ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
     }
   ],
+
 
   links:[
     {
@@ -1671,6 +1890,7 @@ const PROFILE = {
       badgeColor:"blue",
       visible:true
     },
+
     {
       name:"guns.lol",
       value:"ezpingu",
@@ -1680,6 +1900,7 @@ const PROFILE = {
       visible:true
     }
   ],
+
 
   experience:{
 
@@ -1695,14 +1916,14 @@ const PROFILE = {
         visible:true,
         menuRank:true,
         ranks:[
-          {name:"Trainee",visible:false,link:"#"},
-          {name:"Helper",visible:true,link:"https://imgur.com/a/zArmhf2"},
-          {name:"Mod",visible:false,link:"#"},
-          {name:"Sr.Mod",visible:false,link:"#"},
-          {name:"Admin",visible:false,link:"#"},
-          {name:"Sr.Admin",visible:false,link:"#"},
-          {name:"Altro",visible:false,link:"#"},
-          {name:"Altro",visible:false,link:"#"}
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:true, link:"https://imgur.com/a/zArmhf2" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
         ]
       },
 
@@ -1716,7 +1937,14 @@ const PROFILE = {
         visible:true,
         menuRank:false,
         ranks:[
-          {name:"Trainee",visible:true,link:"https://imgur.com/a/bcntXtO"}
+          { name:"Trainee", visible:true, link:"https://imgur.com/a/bcntXtO" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
         ]
       },
 
@@ -1729,7 +1957,16 @@ const PROFILE = {
         link:"https://imgur.com/a/bcntXtO",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       },
 
       {
@@ -1741,10 +1978,20 @@ const PROFILE = {
         link:"#",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       }
 
     ],
+
 
     "Discord":[
 
@@ -1757,7 +2004,16 @@ const PROFILE = {
         link:"#",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       },
 
       {
@@ -1769,7 +2025,16 @@ const PROFILE = {
         link:"#",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       },
 
       {
@@ -1781,7 +2046,16 @@ const PROFILE = {
         link:"#",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       },
 
       {
@@ -1793,7 +2067,16 @@ const PROFILE = {
         link:"#",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       },
 
       {
@@ -1805,7 +2088,16 @@ const PROFILE = {
         link:"#",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       },
 
       {
@@ -1817,11 +2109,22 @@ const PROFILE = {
         link:"#",
         visible:false,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       }
 
     ]
+
   },
+
 
   contentExperience:{
 
@@ -1836,7 +2139,16 @@ const PROFILE = {
         link:"https://youtu.be/23ZBr55Y9Wo",
         visible:true,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       },
 
       {
@@ -1848,17 +2160,25 @@ const PROFILE = {
         link:"https://imgur.com/a/4aS9aer",
         visible:true,
         menuRank:false,
-        ranks:[]
+        ranks:[
+          { name:"Trainee", visible:false, link:"#" },
+          { name:"Helper", visible:false, link:"#" },
+          { name:"Mod", visible:false, link:"#" },
+          { name:"Sr.Mod", visible:false, link:"#" },
+          { name:"Admin", visible:false, link:"#" },
+          { name:"Sr.Admin", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" },
+          { name:"Altro", visible:false, link:"#" }
+        ]
       }
 
     ]
+
   }
+
 };
 
 
-/* =========================
-   ICONS
-========================= */
 
 const ICONS = {
 
@@ -1870,61 +2190,88 @@ const ICONS = {
 
   default:
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.5.4l2-2a5 5 0 00-7-7l-1.2 1.1M14 11a5 5 0 00-7.5-.4l-2 2a5 5 0 007 7l1.1-1.1"/></svg>'
+
 };
 
+
+
 const COLOR_VAR = {
-  cyan:"var(--cyan)",
-  teal:"var(--green)",
+
+  cyan:"var(--accent)",
+  teal:"var(--teal)",
   green:"var(--green)",
-  blue:"#5dbdff",
+  blue:"var(--blue)",
   purple:"var(--purple)",
   red:"var(--red)",
   pink:"var(--pink)",
   gray:"var(--gray)"
+
 };
 
 
-/* =========================
-   HELPERS
-========================= */
 
-function isVisible(item){
-  return Boolean(item) && item.visible !== false;
-}
-
-
-function makeCard({inner,link,color,hint,item}){
+function makeCard({
+  inner,
+  link,
+  color,
+  hint,
+  item
+}){
 
   const hasRankMenu =
     Boolean(item) &&
     item.menuRank === true;
 
+
   const isReal =
-    hasRankMenu ||
-    (Boolean(link) && link !== "#");
+    hasRankMenu
+    ?
+    true
+    :
+    Boolean(link) &&
+    link !== "#";
+
 
   const tag =
-    (isReal && !hasRankMenu)
-      ? document.createElement("a")
-      : document.createElement("div");
+    document.createElement(
+      (isReal && !hasRankMenu)
+        ? "a"
+        : "div"
+    );
+
 
   if(isReal && !hasRankMenu){
 
     tag.href = link;
+
     tag.target = "_blank";
+
     tag.rel = "noopener noreferrer";
 
   }
 
+
   if(hasRankMenu){
 
-    tag.setAttribute("role","button");
-    tag.setAttribute("tabindex","0");
-    tag.style.cursor="pointer";
+    tag.setAttribute(
+      "role",
+      "button"
+    );
+
+    tag.setAttribute(
+      "tabindex",
+      "0"
+    );
+
+    tag.style.cursor =
+      "pointer";
 
   }
 
-  tag.className="card reveal";
+
+  tag.className =
+    "card reveal";
+
 
   if(color){
 
@@ -1935,10 +2282,14 @@ function makeCard({inner,link,color,hint,item}){
 
   }
 
+
   const hintHtml =
     hint
-      ? `<div class="card-hover-hint">${hint}</div>`
-      : "";
+    ?
+    `<div class="card-hover-hint">${hint}</div>`
+    :
+    "";
+
 
   tag.innerHTML =
     `<div class="card-content${hint ? " has-hint" : ""}">` +
@@ -1947,11 +2298,12 @@ function makeCard({inner,link,color,hint,item}){
     hintHtml +
     (
       (isReal && !hasRankMenu)
-        ?
-        '<svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg>'
-        :
-        ""
+      ?
+      '<svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg>'
+      :
+      ""
     );
+
 
   if(hasRankMenu){
 
@@ -1970,6 +2322,7 @@ function makeCard({inner,link,color,hint,item}){
         ){
 
           event.preventDefault();
+
           openRankModal(item);
 
         }
@@ -1979,29 +2332,69 @@ function makeCard({inner,link,color,hint,item}){
 
   }
 
+
   return tag;
+
 }
 
 
-/* =========================
-   RENDER
-========================= */
+
+function isVisible(item){
+
+  return Boolean(item) &&
+    item.visible !== false;
+
+}
+
+
 
 function render(){
 
-  const avatar=document.getElementById("avatarInitial");
-  const name=document.getElementById("pName");
-  const role=document.getElementById("pRole");
-  const stats=document.getElementById("pStats");
+  const avatar =
+    document.getElementById(
+      "avatarInitial"
+    );
 
-  if(avatar)
-    avatar.textContent=PROFILE.avatarInitial || PROFILE.name.charAt(0);
+  const name =
+    document.getElementById(
+      "pName"
+    );
 
-  if(name)
-    name.textContent=PROFILE.name || "";
+  const role =
+    document.getElementById(
+      "pRole"
+    );
 
-  if(role)
-    role.textContent=PROFILE.role || "";
+  const stats =
+    document.getElementById(
+      "pStats"
+    );
+
+
+  if(avatar){
+
+    avatar.textContent =
+      PROFILE.avatarInitial ||
+      PROFILE.name.charAt(0);
+
+  }
+
+
+  if(name){
+
+    name.textContent =
+      PROFILE.name || "";
+
+  }
+
+
+  if(role){
+
+    role.textContent =
+      PROFILE.role || "";
+
+  }
+
 
   if(stats){
 
@@ -2017,82 +2410,126 @@ function render(){
   }
 
 
-  const curGrid=document.getElementById("currentlyGrid");
+
+
+  const curGrid =
+    document.getElementById(
+      "currentlyGrid"
+    );
+
 
   if(curGrid){
 
-    curGrid.innerHTML="";
+    curGrid.innerHTML = "";
 
-    const visible=(PROFILE.currently || [])
-      .filter(isVisible);
 
-    if(!visible.length){
+    const currentlyVisible =
+      (PROFILE.currently || [])
+        .filter(isVisible);
 
-      curGrid.innerHTML=
+
+    if(currentlyVisible.length === 0){
+
+      curGrid.innerHTML =
         '<div class="empty-note">Nessun elemento visibile</div>';
 
     }else{
 
-      visible.forEach(c => {
+      currentlyVisible.forEach(
+        c => {
 
-        const dateHtml =
-          c.date
-            ? `<div class="card-date">${c.date}</div>`
-            : "";
+          const dateHtml =
+            c.date
+            ?
+            `<div class="card-date">${c.date}</div>`
+            :
+            "";
 
-        curGrid.appendChild(
-          makeCard({
-            link:c.link,
-            color:c.color,
-            item:c,
-            hint:c.menuRank ? "Clicca per le prove" : null,
-            inner:
-              `<div class="card-title">${c.title}</div>` +
-              dateHtml +
-              `<span class="badge ${c.badgeColor || c.color || "cyan"}">${c.badge}</span>`
-          })
-        );
 
-      });
+          curGrid.appendChild(
+            makeCard({
+
+              link:c.link,
+
+              color:c.color,
+
+              item:c,
+
+              hint:"Clicca per le prove",
+
+              inner:
+                `<div class="card-title">${c.title}</div>` +
+                dateHtml +
+                `<span class="badge ${c.badgeColor || c.color || "cyan"}">${c.badge}</span>`
+
+            })
+          );
+
+        }
+      );
 
     }
 
   }
 
 
-  const linksGrid=document.getElementById("linksGrid");
+
+
+  const linksGrid =
+    document.getElementById(
+      "linksGrid"
+    );
+
 
   if(linksGrid){
 
-    linksGrid.innerHTML="";
+    linksGrid.innerHTML = "";
 
-    const visible=(PROFILE.links || [])
-      .filter(isVisible);
 
-    if(!visible.length){
+    const linkColors = [
+      "blue",
+      "red"
+    ];
 
-      linksGrid.innerHTML=
+
+    const linksVisible =
+      (PROFILE.links || [])
+        .filter(isVisible);
+
+
+    if(linksVisible.length === 0){
+
+      linksGrid.innerHTML =
         '<div class="empty-note">Nessun elemento visibile</div>';
 
     }else{
 
-      visible.forEach((l,i) => {
+      linksVisible.forEach(
+        (l,i) => {
 
-        const cardColor =
-          ["blue","purple","cyan","green"][i % 4];
+          const cardColor =
+            linkColors[
+              i % linkColors.length
+            ];
 
-        linksGrid.appendChild(
-          makeCard({
-            link:l.link,
-            color:cardColor,
-            inner:
-              `<div class="link-icon">${ICONS[l.icon] || ICONS.default}</div>` +
-              `<div class="card-title">${l.name}</div>` +
-              `<span class="badge ${l.badgeColor || cardColor}">${l.value}</span>`
-          })
-        );
 
-      });
+          linksGrid.appendChild(
+            makeCard({
+
+              link:l.link,
+
+              color:cardColor,
+
+              inner:
+                `<div class="link-icon">${ICONS[l.icon] || ICONS.default}</div>` +
+                `<div class="card-title">${l.name}</div>` +
+                `<span class="badge ${l.badgeColor || cardColor}">${l.value}</span>`
+
+            })
+          );
+
+        }
+      );
 
     }
 
@@ -2104,30 +2541,35 @@ function render(){
     PROFILE.experience
   );
 
+
   renderExperienceBlock(
     "contentExperienceContent",
     PROFILE.contentExperience
   );
 
+
   document
     .querySelectorAll(".reveal")
-    .forEach((el,i) => {
+    .forEach(
+      (el,i) => {
 
-      el.style.transitionDelay =
-        `${(i % 6) * 45}ms`;
+        el.style.transitionDelay =
+          `${(i % 6) * 45}ms`;
 
-    });
+      }
+    );
 
 }
 
 
-/* =========================
-   EXPERIENCE
-========================= */
 
-function renderExperienceBlock(containerId,dataObj){
 
-  const categoryColors=[
+function renderExperienceBlock(
+  containerId,
+  dataObj
+){
+
+  const categoryColors = [
     "green",
     "purple",
     "blue",
@@ -2136,72 +2578,120 @@ function renderExperienceBlock(containerId,dataObj){
     "pink"
   ];
 
-  const el=document.getElementById(containerId);
+
+  const el =
+    document.getElementById(
+      containerId
+    );
+
 
   if(!el)
     return;
 
-  el.innerHTML="";
 
-  const entries=Object.entries(dataObj || {});
+  el.innerHTML = "";
 
-  let anyVisible=false;
 
-  entries.forEach(([category,items],i) => {
-
-    const visibleItems =
-      Array.isArray(items)
-        ? items.filter(isVisible)
-        : [];
-
-    if(!visibleItems.length)
-      return;
-
-    anyVisible=true;
-
-    const label=document.createElement("div");
-
-    label.className="category-label reveal";
-
-    label.style.setProperty(
-      "--dot-color",
-      COLOR_VAR[
-        categoryColors[i % categoryColors.length]
-      ] || COLOR_VAR.cyan
+  const entries =
+    Object.entries(
+      dataObj || {}
     );
 
-    label.textContent=category;
 
-    el.appendChild(label);
+  let anyVisible =
+    false;
 
-    const grid=document.createElement("div");
 
-    grid.className="grid";
+  entries.forEach(
+    ([category,items],i) => {
 
-    visibleItems.forEach(item => {
+      const visibleItems =
+        Array.isArray(items)
+        ?
+        items.filter(isVisible)
+        :
+        [];
 
-      grid.appendChild(
-        makeCard({
-          link:item.link,
-          color:item.color,
-          item:item,
-          hint:item.menuRank ? "Clicca per le prove" : null,
-          inner:
-            `<div class="card-title">${item.name}</div>` +
-            `<div class="card-period">${item.period}</div>` +
-            `<span class="badge ${item.badgeColor || item.color || "cyan"}">${item.badge}</span>`
-        })
+
+      if(visibleItems.length === 0)
+        return;
+
+
+      anyVisible = true;
+
+
+      const label =
+        document.createElement(
+          "div"
+        );
+
+
+      label.className =
+        "category-label reveal";
+
+
+      label.style.setProperty(
+        "--dot-color",
+        COLOR_VAR[
+          categoryColors[
+            i % categoryColors.length
+          ]
+        ] || COLOR_VAR.cyan
       );
 
-    });
 
-    el.appendChild(grid);
+      label.textContent =
+        category;
 
-  });
+
+      el.appendChild(label);
+
+
+      const grid =
+        document.createElement(
+          "div"
+        );
+
+
+      grid.className =
+        "grid";
+
+
+      visibleItems.forEach(
+        item => {
+
+          grid.appendChild(
+            makeCard({
+
+              link:item.link,
+
+              color:item.color,
+
+              item:item,
+
+              hint:"Clicca per le prove",
+
+              inner:
+                `<div class="card-title">${item.name}</div>` +
+                `<div class="card-period">${item.period}</div>` +
+                `<span class="badge ${item.badgeColor || item.color || "cyan"}">${item.badge}</span>`
+
+            })
+          );
+
+        }
+      );
+
+
+      el.appendChild(grid);
+
+    }
+  );
+
 
   if(!anyVisible){
 
-    el.innerHTML=
+    el.innerHTML =
       '<div class="empty-note">Nessun elemento visibile</div>';
 
   }
@@ -2209,296 +2699,465 @@ function renderExperienceBlock(containerId,dataObj){
 }
 
 
-/* =========================
-   RANK MODAL
-========================= */
+
 
 function openRankModal(item){
 
-  const overlay=document.getElementById("rankModalOverlay");
-  const title=document.getElementById("rankModalTitle");
-  const list=document.getElementById("rankModalList");
+  const overlay =
+    document.getElementById(
+      "rankModalOverlay"
+    );
 
-  if(!overlay || !title || !list)
+  const title =
+    document.getElementById(
+      "rankModalTitle"
+    );
+
+  const list =
+    document.getElementById(
+      "rankModalList"
+    );
+
+
+  if(
+    !overlay ||
+    !title ||
+    !list
+  )
     return;
 
-  title.textContent=item.title || item.name || "";
 
-  const visibleRanks=(item.ranks || [])
-    .filter(isVisible);
+  title.textContent =
+    item.title ||
+    item.name ||
+    "";
 
-  list.innerHTML="";
 
-  if(!visibleRanks.length){
+  const visibleRanks =
+    (item.ranks || [])
+      .filter(isVisible);
 
-    list.innerHTML=
+
+  list.innerHTML = "";
+
+
+  if(visibleRanks.length === 0){
+
+    list.innerHTML =
       '<div class="rank-modal-empty">Nessun rank disponibile</div>';
 
   }else{
 
-    visibleRanks.forEach(rank => {
+    visibleRanks.forEach(
+      rank => {
 
-      const isReal=
-        Boolean(rank.link) &&
-        rank.link !== "#";
+        const isReal =
+          Boolean(rank.link) &&
+          rank.link !== "#";
 
-      const el=document.createElement(
-        isReal ? "a" : "div"
-      );
 
-      if(isReal){
+        const el =
+          document.createElement(
+            isReal ? "a" : "div"
+          );
 
-        el.href=rank.link;
-        el.target="_blank";
-        el.rel="noopener noreferrer";
 
-      }
+        if(isReal){
 
-      el.className="rank-item";
+          el.href =
+            rank.link;
 
-      el.innerHTML=
-        `<span>${rank.name}</span>` +
-        (
-          isReal
+          el.target =
+            "_blank";
+
+          el.rel =
+            "noopener noreferrer";
+
+        }
+
+
+        el.className =
+          "rank-item";
+
+
+        el.innerHTML =
+          `<span>${rank.name}</span>` +
+          (
+            isReal
             ?
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg>'
             :
             ""
-        );
+          );
 
-      list.appendChild(el);
 
-    });
+        list.appendChild(el);
+
+      }
+    );
 
   }
 
-  overlay.classList.add("show");
+
+  overlay.classList.add(
+    "show"
+  );
+
 }
 
 
 function closeRankModal(){
 
-  const overlay=document.getElementById("rankModalOverlay");
+  const overlay =
+    document.getElementById(
+      "rankModalOverlay"
+    );
 
-  if(overlay)
-    overlay.classList.remove("show");
+
+  if(overlay){
+
+    overlay.classList.remove(
+      "show"
+    );
+
+  }
 
 }
 
 
 function setupRankModal(){
 
-  const overlay=document.getElementById("rankModalOverlay");
-  const closeBtn=document.getElementById("rankModalClose");
+  const overlay =
+    document.getElementById(
+      "rankModalOverlay"
+    );
+
+  const closeBtn =
+    document.getElementById(
+      "rankModalClose"
+    );
+
 
   if(!overlay)
     return;
 
-  overlay.addEventListener("click",event => {
 
-    if(event.target === overlay)
-      closeRankModal();
+  overlay.addEventListener(
+    "click",
+    event => {
 
-  });
+      if(event.target === overlay){
 
-  if(closeBtn)
-    closeBtn.addEventListener("click",closeRankModal);
+        closeRankModal();
 
-  document.addEventListener("keydown",event => {
+      }
 
-    if(event.key === "Escape")
-      closeRankModal();
+    }
+  );
 
-  });
+
+  if(closeBtn){
+
+    closeBtn.addEventListener(
+      "click",
+      closeRankModal
+    );
+
+  }
+
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if(event.key === "Escape"){
+
+        closeRankModal();
+
+      }
+
+    }
+  );
 
 }
 
 
-/* =========================
-   NAVIGATION
-========================= */
+
 
 function setupNavClicks(){
 
-  const buttons=[
-    ...document.querySelectorAll(".nav-btn")
-  ];
+  const buttons =
+    document.querySelectorAll(
+      ".nav-btn"
+    );
 
-  buttons.forEach(btn => {
 
-    btn.addEventListener("click",event => {
+  buttons.forEach(
+    btn => {
 
-      event.preventDefault();
+      btn.addEventListener(
+        "click",
+        event => {
 
-      const target=document.getElementById(
-        btn.dataset.view
+          event.preventDefault();
+
+
+          const target =
+            document.getElementById(
+              btn.dataset.view
+            );
+
+
+          if(!target)
+            return;
+
+
+          buttons.forEach(
+            button =>
+              button.classList.remove(
+                "active"
+              )
+          );
+
+
+          btn.classList.add(
+            "active"
+          );
+
+
+          const targetTop =
+            target.getBoundingClientRect().top +
+            window.scrollY -
+            20;
+
+
+          window.scrollTo({
+
+            top:Math.max(
+              0,
+              targetTop
+            ),
+
+            behavior:"smooth"
+
+          });
+
+        }
       );
 
-      if(!target)
-        return;
-
-      buttons.forEach(button =>
-        button.classList.remove("active")
-      );
-
-      btn.classList.add("active");
-
-      const targetTop =
-        target.getBoundingClientRect().top +
-        window.scrollY -
-        25;
-
-      window.scrollTo({
-        top:Math.max(0,targetTop),
-        behavior:"smooth"
-      });
-
-    });
-
-  });
+    }
+  );
 
 }
+
+
 
 
 function setupScrollSpy(){
 
-  const links=[
-    ...document.querySelectorAll(".nav-btn")
-  ];
+  const links =
+    [...document.querySelectorAll(
+      ".nav-btn"
+    )];
 
-  const sections=links
-    .map(link =>
-      document.getElementById(link.dataset.view)
-    )
-    .filter(Boolean);
 
-  if(!("IntersectionObserver" in window))
+  const sections =
+    links
+      .map(
+        link =>
+          document.getElementById(
+            link.dataset.view
+          )
+      )
+      .filter(Boolean);
+
+
+  if(
+    !("IntersectionObserver" in window)
+  )
     return;
 
-  const observer=new IntersectionObserver(
-    entries => {
 
-      entries.forEach(entry => {
+  const observer =
+    new IntersectionObserver(
 
-        if(!entry.isIntersecting)
-          return;
+      entries => {
 
-        links.forEach(link =>
-          link.classList.remove("active")
+        entries.forEach(
+          entry => {
+
+            if(!entry.isIntersecting)
+              return;
+
+
+            links.forEach(
+              link =>
+                link.classList.remove(
+                  "active"
+                )
+            );
+
+
+            const active =
+              links.find(
+                link =>
+                  link.dataset.view ===
+                  entry.target.id
+              );
+
+
+            if(active){
+
+              active.classList.add(
+                "active"
+              );
+
+            }
+
+          }
         );
 
-        const active=links.find(
-          link =>
-            link.dataset.view === entry.target.id
-        );
+      },
 
-        if(active)
-          active.classList.add("active");
+      {
+        rootMargin:"-40% 0px -55% 0px",
+        threshold:0
+      }
 
-      });
+    );
 
-    },
-    {
-      rootMargin:"-40% 0px -50% 0px",
-      threshold:0
-    }
-  );
 
-  sections.forEach(section =>
-    observer.observe(section)
+  sections.forEach(
+    section =>
+      observer.observe(section)
   );
 
 }
 
 
-/* =========================
-   REVEAL
-========================= */
+
 
 function setupRevealOnScroll(){
 
-  if(!("IntersectionObserver" in window)){
+  if(
+    !("IntersectionObserver" in window)
+  ){
 
     document
       .querySelectorAll(".reveal")
-      .forEach(el =>
-        el.classList.add("in-view")
+      .forEach(
+        el =>
+          el.classList.add(
+            "in-view"
+          )
       );
 
     return;
+
   }
 
-  const revealObserver=new IntersectionObserver(
-    entries => {
 
-      entries.forEach(entry => {
+  const revealObserver =
+    new IntersectionObserver(
 
-        if(entry.isIntersecting){
+      entries => {
 
-          entry.target.classList.add("in-view");
+        entries.forEach(
+          entry => {
 
-          revealObserver.unobserve(
-            entry.target
-          );
+            if(entry.isIntersecting){
 
-        }
+              entry.target.classList.add(
+                "in-view"
+              );
 
-      });
 
-    },
-    {
-      threshold:.12,
-      rootMargin:"0px 0px -35px 0px"
-    }
-  );
+              revealObserver.unobserve(
+                entry.target
+              );
+
+            }
+
+          }
+        );
+
+      },
+
+      {
+        threshold:.15,
+        rootMargin:"0px 0px -40px 0px"
+      }
+
+    );
+
 
   document
     .querySelectorAll(".reveal")
-    .forEach(el =>
-      revealObserver.observe(el)
+    .forEach(
+      el =>
+        revealObserver.observe(el)
     );
 
 }
 
 
-/* =========================
-   CLICK SOUND
-========================= */
 
-let soundMuted=false;
-let audioCtx=null;
-let bgMusic=null;
+
+const SONGS = [
+
+  "Canzoni.MP3"
+
+];
+
+
+let soundMuted = false;
+let audioCtx = null;
+let bgMusic = null;
+
 
 function getAudioCtx(){
 
   if(!audioCtx){
 
-    const Ctx=
+    const Ctx =
       window.AudioContext ||
       window.webkitAudioContext;
+
 
     if(Ctx){
 
       try{
-        audioCtx=new Ctx();
+
+        audioCtx =
+          new Ctx();
+
       }catch(e){
-        audioCtx=null;
+
+        audioCtx =
+          null;
+
       }
 
     }
 
   }
 
+
   if(
     audioCtx &&
     audioCtx.state === "suspended"
   ){
 
-    audioCtx.resume().catch(()=>{});
+    audioCtx.resume()
+      .catch(
+        () => {}
+      );
 
   }
 
+
   return audioCtx;
+
 }
 
 
@@ -2507,115 +3166,174 @@ function playClickTone(){
   if(soundMuted)
     return;
 
-  const ctx=getAudioCtx();
+
+  const ctx =
+    getAudioCtx();
+
 
   if(!ctx)
     return;
 
+
   try{
 
-    const now=ctx.currentTime;
+    const now =
+      ctx.currentTime;
 
-    const osc=ctx.createOscillator();
-    const gain=ctx.createGain();
 
-    osc.type="sine";
+    const osc =
+      ctx.createOscillator();
 
-    osc.frequency.setValueAtTime(760,now);
+
+    const gain =
+      ctx.createGain();
+
+
+    osc.type =
+      "sine";
+
+
+    osc.frequency.setValueAtTime(
+      760,
+      now
+    );
+
 
     osc.frequency.exponentialRampToValueAtTime(
       520,
-      now+.09
+      now + .09
     );
 
-    gain.gain.setValueAtTime(.0001,now);
+
+    gain.gain.setValueAtTime(
+      .0001,
+      now
+    );
+
 
     gain.gain.exponentialRampToValueAtTime(
       .045,
-      now+.006
+      now + .006
     );
+
 
     gain.gain.exponentialRampToValueAtTime(
       .0001,
-      now+.14
+      now + .14
     );
 
+
     osc.connect(gain);
-    gain.connect(ctx.destination);
+
+    gain.connect(
+      ctx.destination
+    );
+
 
     osc.start(now);
-    osc.stop(now+.15);
+
+    osc.stop(
+      now + .15
+    );
 
   }catch(e){}
 
 }
 
 
-/* =========================
-   RIPPLE
-========================= */
 
-function spawnRipple(el,clientX,clientY){
+
+function spawnRipple(
+  el,
+  clientX,
+  clientY
+){
 
   if(!el)
     return;
 
-  const rect=el.getBoundingClientRect();
 
-  const size=
-    Math.max(rect.width,rect.height)*1.4;
+  const rect =
+    el.getBoundingClientRect();
 
-  const span=document.createElement("span");
 
-  span.className="ripple";
+  const size =
+    Math.max(
+      rect.width,
+      rect.height
+    ) * 1.4;
 
-  span.style.width=
-    span.style.height=
-    size+"px";
 
-  span.style.left=
+  const span =
+    document.createElement(
+      "span"
+    );
+
+
+  span.className =
+    "ripple";
+
+
+  span.style.width =
+    span.style.height =
+    size + "px";
+
+
+  span.style.left =
     (
       clientX -
       rect.left -
-      size/2
-    )+"px";
+      size / 2
+    ) + "px";
 
-  span.style.top=
+
+  span.style.top =
     (
       clientY -
       rect.top -
-      size/2
-    )+"px";
+      size / 2
+    ) + "px";
+
 
   el.appendChild(span);
 
+
   span.addEventListener(
     "animationend",
-    ()=>span.remove(),
+    () => span.remove(),
     {once:true}
   );
 
 }
 
 
+
+
 function setupClickFeedback(){
 
-  const reduce=
+  const reduce =
     window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
 
   document.addEventListener(
     "pointerdown",
     event => {
 
-      const target=
+      const target =
         event.target instanceof Element
-          ? event.target.closest(".card,.nav-btn")
-          : null;
+        ?
+        event.target.closest(
+          ".card, .nav-btn"
+        )
+        :
+        null;
+
 
       if(!target)
         return;
+
 
       if(!reduce){
 
@@ -2627,6 +3345,7 @@ function setupClickFeedback(){
 
       }
 
+
       playClickTone();
 
     }
@@ -2635,13 +3354,6 @@ function setupClickFeedback(){
 }
 
 
-/* =========================
-   MUSIC
-========================= */
-
-const SONGS=[
-  "./Canzoni.MP3"
-];
 
 
 function initMusic(){
@@ -2649,41 +3361,67 @@ function initMusic(){
   if(!Array.isArray(SONGS) || !SONGS.length)
     return;
 
-  const chosen=
+
+  const chosen =
     SONGS[
       Math.floor(
-        Math.random()*SONGS.length
+        Math.random() *
+        SONGS.length
       )
     ];
 
+
   try{
-    bgMusic=new Audio(chosen);
+
+    bgMusic =
+      new Audio(chosen);
+
   }catch(e){
-    bgMusic=null;
+
+    bgMusic =
+      null;
+
     return;
+
   }
 
-  bgMusic.loop=true;
 
-  let savedVolume=50;
+  bgMusic.loop =
+    true;
+
+
+  let savedVolume =
+    50;
+
 
   try{
 
-    const v=
+    const v =
       localStorage.getItem(
         "ezpingu-volume"
       );
 
+
     if(v !== null){
 
-      const parsed=Number.parseInt(v,10);
+      const parsed =
+        Number.parseInt(
+          v,
+          10
+        );
 
-      if(Number.isFinite(parsed)){
 
-        savedVolume=
+      if(
+        Number.isFinite(parsed)
+      ){
+
+        savedVolume =
           Math.min(
             100,
-            Math.max(0,parsed)
+            Math.max(
+              0,
+              parsed
+            )
           );
 
       }
@@ -2692,56 +3430,89 @@ function initMusic(){
 
   }catch(e){}
 
-  bgMusic.volume=savedVolume/100;
+
+  bgMusic.volume =
+    savedVolume / 100;
+
 
   try{
 
-    soundMuted=
+    soundMuted =
       localStorage.getItem(
         "ezpingu-muted"
       ) === "1";
 
   }catch(e){}
 
-  bgMusic.muted=soundMuted;
 
-  const slider=
-    document.getElementById("volumeSlider");
+  bgMusic.muted =
+    soundMuted;
 
-  if(slider)
-    slider.value=String(savedVolume);
 
-  const tryPlay=()=>{
+  const slider =
+    document.getElementById(
+      "volumeSlider"
+    );
 
-    if(!bgMusic)
-      return;
 
-    bgMusic.play().catch(()=>{
+  if(slider){
 
-      const resume=()=>{
+    slider.value =
+      String(savedVolume);
 
-        if(!bgMusic)
-          return;
+  }
 
-        bgMusic.play().catch(()=>{});
 
-      };
+  const tryPlay =
+    () => {
 
-      document.addEventListener(
-        "pointerdown",
-        resume,
-        {once:true}
-      );
+      if(!bgMusic)
+        return;
 
-      document.addEventListener(
-        "keydown",
-        resume,
-        {once:true}
-      );
 
-    });
+      bgMusic
+        .play()
+        .catch(
+          () => {
 
-  };
+            const resume =
+              () => {
+
+                if(!bgMusic)
+                  return;
+
+
+                bgMusic
+                  .play()
+                  .catch(
+                    () => {}
+                  );
+
+              };
+
+
+            document.addEventListener(
+              "pointerdown",
+              resume,
+              {
+                once:true
+              }
+            );
+
+
+            document.addEventListener(
+              "keydown",
+              resume,
+              {
+                once:true
+              }
+            );
+
+          }
+        );
+
+    };
+
 
   tryPlay();
 
@@ -2750,16 +3521,19 @@ function initMusic(){
 }
 
 
-/* =========================
-   SOUND TOGGLE
-========================= */
+
 
 function updateSoundIcon(){
 
-  const btn=document.getElementById("soundToggle");
+  const btn =
+    document.getElementById(
+      "soundToggle"
+    );
+
 
   if(!btn)
     return;
+
 
   btn.classList.toggle(
     "is-muted",
@@ -2769,149 +3543,218 @@ function updateSoundIcon(){
 }
 
 
+
+
 function setupSoundToggle(){
 
-  const btn=document.getElementById("soundToggle");
+  const btn =
+    document.getElementById(
+      "soundToggle"
+    );
+
 
   if(!btn)
     return;
 
+
   updateSoundIcon();
 
-  btn.addEventListener("click",()=>{
 
-    soundMuted=!soundMuted;
+  btn.addEventListener(
+    "click",
+    () => {
 
-    updateSoundIcon();
+      soundMuted =
+        !soundMuted;
 
-    if(bgMusic)
-      bgMusic.muted=soundMuted;
 
-    try{
+      updateSoundIcon();
 
-      localStorage.setItem(
-        "ezpingu-muted",
-        soundMuted ? "1" : "0"
-      );
-
-    }catch(e){}
-
-    if(!soundMuted){
-
-      getAudioCtx();
-      playClickTone();
 
       if(bgMusic){
 
-        bgMusic
-          .play()
-          .catch(()=>{});
+        bgMusic.muted =
+          soundMuted;
+
+      }
+
+
+      try{
+
+        localStorage.setItem(
+          "ezpingu-muted",
+          soundMuted
+            ? "1"
+            : "0"
+        );
+
+      }catch(e){}
+
+
+      if(!soundMuted){
+
+        getAudioCtx();
+
+        playClickTone();
+
+        if(bgMusic){
+
+          bgMusic
+            .play()
+            .catch(
+              () => {}
+            );
+
+        }
 
       }
 
     }
-
-  });
+  );
 
 }
 
 
-/* =========================
-   VOLUME POPUP
-========================= */
+
 
 function setupVolumePopup(){
 
-  const wrap=
+  const wrap =
     document.getElementById(
       "soundToggleWrap"
     );
 
-  const popup=
+
+  const popup =
     document.getElementById(
       "volumePopup"
     );
 
-  const slider=
+
+  const slider =
     document.getElementById(
       "volumeSlider"
     );
 
-  if(!wrap || !popup || !slider)
+
+  if(
+    !wrap ||
+    !popup ||
+    !slider
+  )
     return;
 
-  let hoverTimer=null;
-  let hideTimer=null;
+
+  let hoverTimer =
+    null;
+
+
+  let hideTimer =
+    null;
+
 
   function showPopup(){
 
-    clearTimeout(hideTimer);
+    clearTimeout(
+      hideTimer
+    );
 
-    popup.classList.add("show");
+
+    popup.classList.add(
+      "show"
+    );
 
   }
 
+
   function scheduleHide(){
 
-    clearTimeout(hideTimer);
+    clearTimeout(
+      hideTimer
+    );
 
-    hideTimer=
+
+    hideTimer =
       setTimeout(
-        ()=>{
-          popup.classList.remove("show");
+        () => {
+
+          popup.classList.remove(
+            "show"
+          );
+
         },
         350
       );
 
   }
 
+
   wrap.addEventListener(
     "pointerenter",
-    ()=>{
+    () => {
 
-      clearTimeout(hoverTimer);
+      clearTimeout(
+        hoverTimer
+      );
 
-      hoverTimer=
+
+      hoverTimer =
         setTimeout(
           showPopup,
-          300
+          550
         );
 
     }
   );
 
+
   wrap.addEventListener(
     "pointerleave",
-    ()=>{
+    () => {
 
-      clearTimeout(hoverTimer);
+      clearTimeout(
+        hoverTimer
+      );
+
 
       scheduleHide();
 
     }
   );
 
+
   slider.addEventListener(
     "input",
-    ()=>{
+    () => {
 
-      const val=
+      const val =
         Number.parseInt(
           slider.value,
           10
         );
 
+
       if(!Number.isFinite(val))
         return;
 
-      const safeValue=
+
+      const safeValue =
         Math.min(
           100,
-          Math.max(0,val)
+          Math.max(
+            0,
+            val
+          )
         );
 
-      if(bgMusic)
-        bgMusic.volume=safeValue/100;
+
+      if(bgMusic){
+
+        bgMusic.volume =
+          safeValue / 100;
+
+      }
+
 
       try{
 
@@ -2928,19 +3771,24 @@ function setupVolumePopup(){
 }
 
 
-/* =========================
-   START
-========================= */
+
 
 render();
 
 setupNavClicks();
+
 setupScrollSpy();
+
 setupRevealOnScroll();
+
 setupClickFeedback();
+
 setupSoundToggle();
+
 setupVolumePopup();
+
 setupRankModal();
+
 initMusic();
 
 </script>
