@@ -1457,102 +1457,182 @@ function setupClickFeedback(){
 }
 
 function setupRain(){
-  const canvas = document.getElementById("rain");
-  if(!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  try{
+    const canvas = document.getElementById("rain");
+    if(!canvas) throw new Error("canvas #rain non trovato");
+    const ctx = canvas.getContext("2d");
+    const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
+    let W=0, H=0, dpr=1, drops=[], splashes=[];
 
-  const ctx = canvas.getContext("2d");
-  const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  let W = 0, H = 0, dpr = 1;
-  let drops = [];
+    const dropCount = () => Math.min(220, Math.floor(window.innerWidth*window.innerHeight/6000));
 
-  const dropCount = () => Math.min(260, Math.floor(window.innerWidth * window.innerHeight / 6500));
-
-  function resize(){
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function spawn(d, anywhere){
-    d.len = 10 + Math.random() * 14;
-    d.sp  = 4 + Math.random() * 5;
-    d.a   = 0.18 + Math.random() * 0.4;
-    d.vx  = 0;
-    d.vy  = d.sp;
-
-    if(anywhere){
-      d.x = Math.random() * W;
-      d.y = Math.random() * H;
-      return;
+    function resize(){
+      dpr = Math.min(window.devicePixelRatio||1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width  = Math.floor(W*dpr);
+      canvas.height = Math.floor(H*dpr);
+      canvas.style.width  = W+"px";
+      canvas.style.height = H+"px";
+      ctx.setTransform(dpr,0,0,dpr,0,0);
     }
 
-    const edge = Math.random();
-    if(edge < 0.6){
-      d.x = Math.random() * W;
-      d.y = -20;
-    }else if(edge < 0.8){
-      d.x = -20;
-      d.y = Math.random() * H;
-    }else{
-      d.x = W + 20;
-      d.y = Math.random() * H;
+    /* Goccia singola */
+    function spawnDrop(d){
+      d.x   = Math.random()*W;
+      d.y   = -20 - Math.random()*200;
+      d.vy  = 7 + Math.random()*5;
+      d.vx  = 0;
+      d.len = 22 + Math.random()*18;
+      d.w   = 0.6 + Math.random()*0.5;
+      d.a   = 0.18 + Math.random()*0.28;
+      d.hit = false;
     }
-  }
 
-  function frame(){
-    ctx.clearRect(0, 0, W, H);
-    ctx.lineWidth = 1.1;
-    ctx.lineCap = "round";
-
-    for(const d of drops){
-      const dx = mouse.x - d.x;
-      const dy = mouse.y - d.y;
-      const dist = Math.hypot(dx, dy) || 1;
-
-      const tvx = (dx / dist) * d.sp;
-      const tvy = (dy / dist) * d.sp;
-
-      d.vx += (tvx - d.vx) * 0.06;
-      d.vy += (tvy - d.vy) * 0.06;
-      d.x += d.vx;
-      d.y += d.vy;
-
-      const m = Math.hypot(d.vx, d.vy) || 1;
-      ctx.strokeStyle = `rgba(45,212,191,${d.a})`;
-      ctx.beginPath();
-      ctx.moveTo(d.x, d.y);
-      ctx.lineTo(d.x - (d.vx / m) * d.len, d.y - (d.vy / m) * d.len);
-      ctx.stroke();
-
-      const out = d.x < -60 || d.x > W + 60 || d.y < -60 || d.y > H + 60;
-      if(out || dist < 22){
-        spawn(d, false);
+    /* Splash che compare quando la goccia tocca il fondo */
+    function spawnSplash(x, y){
+      const count = 3 + Math.floor(Math.random()*3);
+      for(let i=0;i<count;i++){
+        const angle = Math.PI + Math.random()*Math.PI;
+        const spd   = 0.8 + Math.random()*2.2;
+        splashes.push({
+          x, y,
+          vx: Math.cos(angle)*spd,
+          vy: Math.sin(angle)*spd - 1.5,
+          life: 1,
+          decay: 0.06 + Math.random()*0.06,
+          r: 1 + Math.random()*1.5
+        });
       }
+      splashes.push({
+        x, y,
+        vx:0, vy:0,
+        life:1,
+        decay:0.08,
+        isRing:true,
+        rMax: 5 + Math.random()*6,
+        r:0
+      });
     }
+
+    let wind = 0;
+    let windTarget = 0;
+    let windTimer = 0;
+
+    function updateWind(dt){
+      windTimer -= dt;
+      if(windTimer <= 0){
+        windTarget = (Math.random()-0.5)*1.8;
+        windTimer  = 3000 + Math.random()*5000;
+      }
+      wind += (windTarget - wind)*0.001*dt;
+    }
+
+    let last = performance.now();
+
+    function frame(now){
+      const dt = Math.min(now - last, 50);
+      last = now;
+
+      updateWind(dt);
+
+      ctx.clearRect(0,0,W,H);
+
+      const lean = (mouse.x - W/2) / W;
+
+      for(const d of drops){
+        const targetVx = wind + lean * 2.5;
+        d.vx += (targetVx - d.vx) * 0.015;
+        d.vy += 0.12;
+        if(d.vy > 18) d.vy = 18;
+
+        d.x += d.vx * dt * 0.06;
+        d.y += d.vy * dt * 0.06;
+
+        const m  = Math.hypot(d.vx, d.vy)||1;
+        const nx = d.vx/m, ny = d.vy/m;
+
+        const grad = ctx.createLinearGradient(
+          d.x, d.y,
+          d.x - nx*d.len, d.y - ny*d.len
+        );
+        grad.addColorStop(0,   `rgba(180,220,255,${d.a})`);
+        grad.addColorStop(0.4, `rgba(200,232,255,${d.a*0.7})`);
+        grad.addColorStop(1,   `rgba(200,232,255,0)`);
+
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = grad;
+        ctx.lineWidth   = d.w;
+        ctx.lineCap     = "round";
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x - nx*d.len, d.y - ny*d.len);
+        ctx.stroke();
+        ctx.restore();
+
+        if(d.y > H - 2 && !d.hit){
+          d.hit = true;
+          spawnSplash(d.x, H - 2);
+        }
+
+        if(d.y > H + 10 || d.x < -80 || d.x > W + 80) spawnDrop(d);
+      }
+
+      splashes = splashes.filter(sp => sp.life > 0);
+      for(const sp of splashes){
+        sp.life -= sp.decay;
+        const al = sp.life * 0.55;
+
+        if(sp.isRing){
+          sp.r += 1.1;
+          if(sp.r > sp.rMax){ sp.life = 0; continue; }
+          ctx.save();
+          ctx.globalAlpha = al * (1 - sp.r/sp.rMax);
+          ctx.strokeStyle = "rgba(180,220,255,1)";
+          ctx.lineWidth   = 0.6;
+          ctx.beginPath();
+          ctx.ellipse(sp.x, sp.y, sp.r, sp.r*0.28, 0, 0, Math.PI*2);
+          ctx.stroke();
+          ctx.restore();
+        }else{
+          sp.vy += 0.15;
+          sp.x  += sp.vx;
+          sp.y  += sp.vy;
+          ctx.save();
+          ctx.globalAlpha = al;
+          ctx.fillStyle   = "rgba(180,220,255,1)";
+          ctx.beginPath();
+          ctx.arc(sp.x, sp.y, sp.r*0.5, 0, Math.PI*2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener("pointermove", e=>{
+      mouse.x=e.clientX; mouse.y=e.clientY;
+    },{passive:true});
+    window.addEventListener("touchmove", e=>{
+      const t=e.touches[0];
+      if(t){mouse.x=t.clientX;mouse.y=t.clientY;}
+    },{passive:true});
+    window.addEventListener("resize", resize);
+
+    resize();
+    drops = Array.from({length:dropCount()}, ()=>{
+      const d={};
+      spawnDrop(d);
+      d.y = Math.random()*H;
+      return d;
+    });
 
     requestAnimationFrame(frame);
+  }catch(err){
+    console.error("Pioggia non avviata:", err);
   }
-
-  window.addEventListener("pointermove", e => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  }, { passive:true });
-
-  window.addEventListener("resize", () => {
-    resize();
-  });
-
-  resize();
-  drops = Array.from({ length: dropCount() }, () => {
-    const d = {};
-    spawn(d, true);
-    return d;
-  });
-
-  requestAnimationFrame(frame);
 }
 
 function setupFooterInit(){
