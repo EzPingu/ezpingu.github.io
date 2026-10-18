@@ -348,19 +348,28 @@ body{
 .card:hover .link-icon{color:var(--card-color);transform:scale(1.08)}
 
 .go{
-  position:absolute;top:14px;right:14px;
+  position:absolute;top:14px;left:14px;
   width:14px;height:14px;color:var(--muted);
-  opacity:0;transform:translate(-2px,2px);
+  opacity:0;transform:translate(2px,2px);
   transition:opacity .25s ease,transform .25s ease;
 }
 .card:hover .go{opacity:.8;transform:translate(0,0)}
 
 .new-tag{
-  position:absolute;top:10px;left:10px;
-  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;
-  letter-spacing:.08em;text-transform:uppercase;
-  padding:3px 7px;border-radius:4px;
-  color:#000;background:var(--card-color);
+  position:absolute;top:12px;right:12px;
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 9px;
+  color:#000;
+  background:var(--card-color);
+  border-radius:3px;
+  box-shadow:0 0 10px color-mix(in srgb,var(--card-color) 60%,transparent);
+  animation:new-pulse 2.2s ease-in-out infinite;
+  z-index:3;
+}
+@keyframes new-pulse{
+  0%,100%{box-shadow:0 0 8px color-mix(in srgb,var(--card-color) 50%,transparent)}
+  50%{box-shadow:0 0 18px color-mix(in srgb,var(--card-color) 85%,transparent)}
 }
 
 .badge{
@@ -718,7 +727,7 @@ const PROFILE = {
         { name:"Trainee", visible:true,  link:"https://imgur.com/a/CutX8rT" },
         { name:"Helper",  visible:true,  link:"https://imgur.com/a/vIWSenL" },
         { name:"Mod",     visible:true,  link:"https://imgur.com/a/5lZgXh1" },
-        { name:"Sr.Mod",  visible:true, link:"https://imgur.com/a/K3L9tNS" },
+        { name:"Sr.Mod",  visible:true,  link:"https://imgur.com/a/K3L9tNS" },
         { name:"Admin",   visible:false, link:"#" },
         { name:"Sr.Admin",visible:false, link:"#" },
         { name:"Altro",   visible:false, link:"#" },
@@ -975,7 +984,7 @@ function makeCard({ inner, link, color, hint, item, isNew }){
     tag.style.setProperty("--card-color", COLOR_VAR[color] || COLOR_VAR.cyan);
   }
 
-  const newHtml = isNew === true ? '<span class="new-tag">Nuovo</span>' : "";
+  const newHtml = isNew === true ? '<span class="new-tag">New</span>' : "";
   const hintHtml = hint ? `<div class="card-hover-hint">${hint}</div>` : "";
 
   tag.innerHTML =
@@ -1249,7 +1258,7 @@ function setupRevealOnScroll(){
   els.forEach(el => revealObserver.observe(el));
 }
 
-const SONGS = ["Faneto.mp3","Faneto.mp3","Faneto.mp3","Faneto.mp3","paura.mp3","paura.mp3","paura.mp3","paura.mp3"];
+const SONGS = ["Faneto.mp3","Faneto.mp3","Faneto.mp3","18K.mp3","18K.mp3","paura.mp3","paura.mp3","paura.mp3"];
 
 let soundMuted = false;
 let audioCtx = null;
